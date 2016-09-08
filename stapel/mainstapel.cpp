@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "arraystack.h"
 
 using namespace std;
@@ -10,7 +11,7 @@ void backspace(string invoer)
 
 	// Nog te implementeren: "backspace simulatie"
 	invoerstack.push(invoer[0]);
-	invoerstack.push('b');
+	invoerstack.push('c');
 	invoerstack.pop();
 
 	// Nog te implementeren: Resultaat uitvoeren
