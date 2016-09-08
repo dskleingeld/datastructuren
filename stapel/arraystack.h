@@ -110,21 +110,21 @@ bool ArrayStack<T>::push(char newItem) {
 **/
 template <class T>
 bool ArrayStack<T>::pop() {
-    int i = 0;
-    // Find top item
-    if( array[i] == 0 ) {
-        // Array is already empty, nothing to do here
-        return false;
-    }
-    else {
-        // Array is not empty
-        while( array[i+1] != 0 ) {
-            i = i + 1;
-        }
-        // Remove item from top
-        array[i] = 0;
-    }
-    return true;
+  int i = 0;
+  // Find top item
+  if( array[i] == 0 ) {
+      // Array is already empty, nothing to do here
+      return false;
+  }
+  else {
+      // Array is not empty
+      while( array[i+1] != 0 ) {
+          i = i + 1;
+      }
+      // Remove item from top
+      array[i] = 0;
+  }
+  return true;
 }
 
 /**
