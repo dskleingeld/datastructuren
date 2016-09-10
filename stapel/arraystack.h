@@ -9,11 +9,13 @@
 #ifndef Arraystack_h
 #define Arraystack_h
 
+#define MaxSize 40
+
 template <class T>
 class ArrayStack {
 private:
-    // Array of size -40-
-    T array[40];
+    // Array of certain size
+    T array[MaxSize];
 public:
     ArrayStack();
     bool isEmpty();
@@ -28,15 +30,15 @@ public:
 
 /**
 * @function ArrayStack()
-* @abstract Constructor: Create object ArrayStack
-* @param 
+* @abstract Constructor: Create object ArrayStack, filled with 0s
+* @param MaxSize: the size of the array
 * @return 
-* @pre 
-* @post 
+* @pre
+* @post empty ArrayStack object
 **/
 template <class T>
 ArrayStack<T>::ArrayStack() {
-	for (int m = 0; m < 40; m++) {
+	for (int m = 0; m < MaxSize; m++) {
 		array[m] = 0;
 	}
 }
@@ -69,8 +71,9 @@ bool ArrayStack<T>::isEmpty() {
 template <class T>
 void ArrayStack<T>::clear() {
     int i = 0;
-    while( array[i] != 0 ) {
-        array[i] = 0;
+    while(!ArrayStack<T>::isEmpty()) {
+		ArrayStack<T>::pop();
+        //array[i] = 0;
         i = i + 1;
     }
 }
@@ -124,14 +127,18 @@ bool ArrayStack<T>::pop() {
         // Array is already empty, nothing to do here
         return false;
     }
-    else {
-        // Array is not empty
-        while( array[i+1] != 0 ) {
-            i = i + 1;
-        }
-        // Remove item from top
-        array[i] = 0;
-    }
+	else {
+		bool loop = true;
+		while (loop) {
+			if (array[i + 1] == 0) {
+				array[i] = 0; // pop
+				loop = false;
+			}
+			else {
+				i = i + 1;
+			}
+		}
+	}
     return true;
 }
 
