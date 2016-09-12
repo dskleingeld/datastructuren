@@ -57,3 +57,4 @@ __pycache__
 
 # visual basic studio stuff#
 *.vcxproj*
+*.sln
