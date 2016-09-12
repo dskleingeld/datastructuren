@@ -6,26 +6,24 @@
 * @date 08-09-2016
 **/
 
-#ifndef Arraystack_h
-#define Arraystack_h
+#ifndef ArrayStack_h
+#define ArrayStack_h
 
 #define MaxSize 40
 
 template <class T>
 class ArrayStack {
-private:
-    // Array of certain size
-    T array[MaxSize];
 public:
-    ArrayStack();
-    bool isEmpty();
+    bool empty();
     void clear();
     bool push(T newItem);
     bool pop();
     bool top(T & topItem);
-//protected:
-    //void output(ostream & out, T data);
 	void read();
+private:
+    // Array of certain size
+    T array[MaxSize];
+    ArrayStack();
 };
 
 /**
@@ -44,7 +42,7 @@ ArrayStack<T>::ArrayStack() {
 }
 
 /**
-* @function isEmpty()
+* @function empty()
 * @abstract Check if object ArrayStack is empty
 * @param none
 * @return true (is empty) or false (is not empty)
@@ -52,7 +50,7 @@ ArrayStack<T>::ArrayStack() {
 * @post 
 **/
 template <class T>
-bool ArrayStack<T>::isEmpty() {
+bool ArrayStack<T>::empty() {
     if (array[0] == 0) {
         return true;
     }
@@ -71,8 +69,8 @@ bool ArrayStack<T>::isEmpty() {
 template <class T>
 void ArrayStack<T>::clear() {
     int i = 0;
-    while(!ArrayStack<T>::isEmpty()) {
-		ArrayStack<T>::pop();
+    while(empty() ) {
+		pop();
         //array[i] = 0;
         i = i + 1;
     }
@@ -150,7 +148,7 @@ bool ArrayStack<T>::pop() {
 * @pre Stack of type array
 * @post Stack of type array
 **/
-template <class T>
+template <class T>//TODO maybe a var that keeps the top element?
 bool ArrayStack<T>::top(T & topItem) {
     int i = 0;
     // Find top item
@@ -175,17 +173,13 @@ bool ArrayStack<T>::top(T & topItem) {
 }
 
 /**
-* @function output(ostream & out)
+* @function output(ostream & out) //TODO ask how output and ostream works and if is nesessairy?
 * @abstract Use ostream to give output to user
 * @param out: the data to return
 * @return output
 * @pre input
 * @post output
-*
-template <class T>
-void ArrayStack<T>::output(ostream & out, T data) {
-    out << data;
-}*/
+**/
 
 template <class T>
 void ArrayStack<T>::read() {
