@@ -1,7 +1,8 @@
 #include <iostream>
 // Visual Studio compiler does not directly import <string> 
 #include <string>
-#include "arraystack.h"
+#include "PointerStack.h"
+#include "ArrayStack.h"
 
 using namespace std;
 
@@ -50,12 +51,12 @@ void submenu(T submenu_stack) {
 		case 'C':
 		{
 			// Check if ArrayStack is empty
-			if (submenu_stack.isEmpty()) {
+			if (submenu_stack.empty()) {
 				cout << "The ArrayStack is empty" << endl;
 			}
 			else {
 				submenu_stack.clear();
-				if (submenu_stack.isEmpty()) {
+				if (submenu_stack.empty()) {
 					cout << "Cleanup succeeded. The ArrayStack is now empty" << endl;
 				}
 				else {
@@ -89,12 +90,13 @@ void menu(string invoer) {
 		{
 			// First: char in array_stack
 			int j = 0;
-			ArrayStack<char> array_stack;
+			ArrayStack<char> stack;
 			if (invoer[0] != 0) {
 				bool input = true;
 				while (input) {
 					if (invoer[j] != 0 && invoer[j] != ' ') {
-						array_stack.push(invoer[j]);
+					//TODO waarom deze if niet als voorwaarde van de while statment?
+						stack.push(invoer[j]);
 						j = j + 1;
 					}
 					else {
@@ -102,7 +104,28 @@ void menu(string invoer) {
 					}
 				}
 			}
-			submenu<ArrayStack<char>>(array_stack);
+			submenu<ArrayStack<char> >(stack);
+			break;
+		}
+		case 'B':
+		{
+			// First: char in array_stack
+			int j = 0;
+			PointerStack<char> stack;
+			if (invoer[0] != 0) {
+				bool input = true;
+				while (input) {
+					if (invoer[j] != 0 && invoer[j] != ' ') {
+					//TODO waarom deze if niet als voorwaarde van de while statment?
+						stack.push(invoer[j]);
+						j = j + 1;
+					}
+					else {
+						input = false;
+					}
+				}
+			}
+			submenu<PointerStack<char> >(stack);
 			break;
 		}
 		case 'E':
