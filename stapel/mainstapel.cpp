@@ -102,8 +102,15 @@ void menu(string invoer) {
 				while (input) {
 					if (invoer[j] != 0 && invoer[j] != ' ') {
 					//TODO waarom deze if niet als voorwaarde van de while statment?
-						stack.push(invoer[j]);
-						j = j + 1;
+						if (stack.push(invoer[j])) {
+							j = j + 1;
+						}
+						else // Teveel input
+						{
+							cout << "To much input. Error!" << endl;
+							stack.clear();
+							input = false;
+						}
 					}
 					else {
 						input = false;

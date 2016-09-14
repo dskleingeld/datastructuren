@@ -21,6 +21,7 @@ public:
     bool pop();
     bool top(T & topItem);
 	void read();
+	void size();
 private:
     // Array of certain size
     T array[MaxSize];
@@ -42,7 +43,7 @@ ArrayStack<T>::ArrayStack() {
 		array[m] = 0;
 	}
 }
-
+	
 /**
 * @function empty()
 * @abstract Check if object ArrayStack is empty
@@ -70,11 +71,8 @@ bool ArrayStack<T>::empty() {
 **/
 template <class T>
 void ArrayStack<T>::clear() {
-    int i = 0;
-    while(empty() ) {
+    while(!empty() ) {
 		pop();
-        //array[i] = 0;
-        i = i + 1;
     }
 }
 
@@ -90,23 +88,15 @@ template <class T>
 bool ArrayStack<T>::push(T newItem) {
 
     // TODO: Check if number of items in array will not exceed maximum (which is -40-), if it does, return false
-    
-    int i = 0;
-	bool loop = true;
-    // Find top item
-	if (array[i] == 0) {
-		array[i] = newItem;
+	if (empty()) {
+		array[0] = newItem;
 	}
 	else {
-		while (loop) {
-			if (array[i + 1] == 0) {
-				array[i + 1] = newItem;
-				loop = false;
-			}
-			else {
-				i = i + 1;
-			}
+		size(); // Find top_number
+		if (top_number + 1 != MaxSize) {
+			array[top_number + 1] = newItem;	
 		}
+		else return false;
 	}
 	return true;
 }
@@ -122,7 +112,8 @@ bool ArrayStack<T>::push(T newItem) {
 template <class T>
 bool ArrayStack<T>::pop() {
 	if (!empty()) // Find top item
-	{
+	{	
+		size();
 		array[top_number] = 0; // Pop 
 		return true;
 	}
@@ -142,27 +133,35 @@ bool ArrayStack<T>::pop() {
 **/
 template <class T>//TODO maybe a var that keeps the top element?
 bool ArrayStack<T>::top(T & topItem) {
-    int i = 0;
-    // Find top item
-    if( array[i] == 0 ) {
-        // Array is empty, nothing to see here
-        return false;
-    }
-    else {
-		bool loop = true;
-		// Array is not empty
-		while (loop) {
-			if (array[i + 1] == 0) {
-				top_number = i; // Remember this for later use
-				topItem = array[i];
-				loop = false;
-			}
-			else {
-				i = i + 1;
-			}
-		}
+	if (!empty()) {
+		size();
+		topItem = array[top_number];
+	    return true;
 	}
-    return true;
+	else {
+		return false;
+	}
+}
+
+/**
+* @function size()
+* @abstract Find size of the array and store the index of the top element in a variable
+* @param 
+* @return index of top item
+* @pre
+* @post
+**/
+template <class T>
+void ArrayStack<T>::size() {
+	int i = 0;
+    // Find top item
+    if( !empty() ) { 
+		// Array is not empty
+		while (array[i + 1] != 0) {		
+			i = i + 1;
+		}
+		top_number = i; // Remember this for later use
+	}
 }
 
 /**
@@ -173,7 +172,6 @@ bool ArrayStack<T>::top(T & topItem) {
 * @pre input
 * @post output
 **/
-
 template <class T>
 void ArrayStack<T>::read() {
 	for (int k = 0; k < 40; k++) {
