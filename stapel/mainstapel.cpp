@@ -28,6 +28,7 @@ void submenu(T submenu_stack) {
 	cout << "[S] Display stack" << endl;
 	cout << "[T] Display item on top" << endl;
 	cout << "[C] Clear stack" << endl;
+	cout << "[P] Pop" << endl;
 	cout << "[E] Exit to main menu" << endl;
 	char submenu_choice;
 	bool switch_on = true;
@@ -68,6 +69,11 @@ void submenu(T submenu_stack) {
 		case 'E':
 		{
 			switch_on = false;
+			break;
+		}
+		case 'p':
+		{
+			submenu_stack.pop();
 			break;
 		}
 		default:

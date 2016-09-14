@@ -24,6 +24,8 @@ public:
 private:
     // Array of certain size
     T array[MaxSize];
+	// Variable to keep track of the top of the array
+	int top_number;
 };
 
 /**
@@ -119,25 +121,15 @@ bool ArrayStack<T>::push(T newItem) {
 **/
 template <class T>
 bool ArrayStack<T>::pop() {
-    int i = 0;
-    // Find top item
-    if( array[i] == 0 ) {
-        // Array is already empty, nothing to do here
-        return false;
-    }
-	else {
-		bool loop = true;
-		while (loop) {
-			if (array[i + 1] == 0) {
-				array[i] = 0; // pop
-				loop = false;
-			}
-			else {
-				i = i + 1;
-			}
-		}
+	if (!empty()) // Find top item
+	{
+		array[top_number] = 0; // Pop 
+		return true;
 	}
-    return true;
+	else // Array is empty
+	{
+		return false;
+	}
 }
 
 /**
@@ -161,6 +153,7 @@ bool ArrayStack<T>::top(T & topItem) {
 		// Array is not empty
 		while (loop) {
 			if (array[i + 1] == 0) {
+				top_number = i; // Remember this for later use
 				topItem = array[i];
 				loop = false;
 			}
