@@ -3,6 +3,7 @@
 #include <string>
 #include "PointerStack.h"
 #include "ArrayStack.h"
+#include "StlStack.h"
 
 using namespace std;
 
@@ -24,9 +25,9 @@ void backspace(string input)
 		    j = j + 1;
 		}
 	}
-	cout << "Stack reads: ";
+/*	cout << "Stack reads: ";
     invoerstack.read();
-    cout << "\n";
+    cout << "\n";*/
     
     // Display top item
     invoerstack.top(topItem);
@@ -35,6 +36,7 @@ void backspace(string input)
     invoerstack.pop();
     cout << "Pop" << endl;
 	
+	// Display the content of the stack, in the case of STL stack this clears the stack (so, only do this at the end).
 	cout << "Stack reads: ";
     invoerstack.read();
     cout << "\n";
@@ -60,7 +62,7 @@ int main()
 	menu(invoer);
 	*/
 	string input = "helll*oww*orld";
-	cout << "Input is: " << input << endl;
+	cout << "Initial input is: " << input << "\n\n";
 
 	// Voer vier keer dezelfde test uit, op verschillende implementaties.
 	// Voor je datastructuur ArrayStack, bijvoorbeeld:
@@ -71,6 +73,9 @@ int main()
 	PointerStack<char> pointerStack;
 	cout << "PointerStack:\n";
 	backspace<PointerStack<char> >(input);
+	cout << "STL Stack:\n";	
+	StlStack<char> stlstack;	
+	backspace<StlStack<char> >(input);
 	
 	return 0;
 }
