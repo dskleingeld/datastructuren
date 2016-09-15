@@ -17,7 +17,7 @@ public:
     ArrayStack();//TODO shouldnt we pass the MaxSize to the constructor?
     bool empty();//as an agument
     void clear();
-    bool push(T newItem);
+    void push(T newItem);
     bool pop();
     bool top(T & topItem);
 	void read();
@@ -85,9 +85,7 @@ void ArrayStack<T>::clear() {
 * @post Stack of type array, with new item at top
 **/
 template <class T>
-bool ArrayStack<T>::push(T newItem) {
-
-    // TODO: Check if number of items in array will not exceed maximum (which is -40-), if it does, return false
+void ArrayStack<T>::push(T newItem) {
 	if (empty()) {
 		array[0] = newItem;
 	}
@@ -97,10 +95,9 @@ bool ArrayStack<T>::push(T newItem) {
 			array[top_number + 1] = newItem;	
 		}
 		else {
-		    return false;
+		    std::cout << "Too much input\n";
 	    }
 	}
-	return true;
 }
 
 /**

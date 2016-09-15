@@ -7,25 +7,51 @@
 using namespace std;
 
 template<class T>
-void backspace(string invoer)
+void backspace(string input)
 {
 	T invoerstack;
 
-	// Nog te implementeren: "backspace simulatie"
-	invoerstack.push(invoer[0]);
-	invoerstack.push('b');
-	invoerstack.pop();
-
-	// Nog te implementeren: Resultaat uitvoeren
-	char topItem = 0;
-	cout << invoerstack.top(topItem);
-	cout << topItem;
-	cout << endl;
+	char topItem = 0;  
+    int j = 0;
+    // Backspace simulation: When an * is encountered, the previous character will be deleted.
+    while (input[j] != 0 && input[j] != ' ') {
+        if (input[j] == '*') {
+            invoerstack.pop(); // Delete char
+            j = j + 1;
+        }
+        else {
+		    invoerstack.push(input[j]);
+		    j = j + 1;
+		}
+	}
+	cout << "Stack reads: ";
+    invoerstack.read();
+    cout << "\n";
+    
+    // Display top item
+    invoerstack.top(topItem);
+    cout << "Top item: " << topItem << "\n";
+    // Pop top item
+    invoerstack.pop();
+    cout << "Pop" << endl;
+	
+	cout << "Stack reads: ";
+    invoerstack.read();
+    cout << "\n";
+    
+    // Check if stack is empty
+	invoerstack.clear();
+	if (invoerstack.empty()) {
+		cout << "Cleanup succeeded.\n" << endl;
+	}
+	else {
+		cout << "Unable to clear ArrayStack.\n" << endl;
+	}	
 }
 
 int main()
 {	
-	cout << "Datastructures" << endl << "Assignment 1: Stacks" << endl << "***" << endl;
+	cout << "\nDatastructures" << endl << "Assignment 1: Stacks" << "\n\n";
 	// Lees een "woord" in, tot de eerste spatie
 	/*
 	cout << "Give me input to stack: ";
@@ -33,42 +59,18 @@ int main()
 	getline(cin, invoer);
 	menu(invoer);
 	*/
-	string input = "helloworld";
+	string input = "helll*oww*orld";
 	cout << "Input is: " << input << endl;
-	char item;
-	 
-    ArrayStack<char> arrayStack;
-    int j = 0;
-    while (input[j] != 0 && input[j] != ' ') {
-		if (arrayStack.push(input[j])) {
-			j = j + 1;
-		}
-		else // Teveel input
-		{
-			cout << "Too much input. Error!" << endl;
-		}
-	}
-	
-    arrayStack.top(item);
-    cout << "Top item: " << item << "\n\n";
-    arrayStack.pop();
-    cout << "Pop" << endl;
-	
-	cout << "Array stack reads: ";
-    arrayStack.read();
-    cout << "\n\n";
-    
-    // Check if ArrayStack is empty
-	arrayStack.clear();
-	if (arrayStack.empty()) {
-		cout << "Cleanup succeeded." << endl;
-	}
-	else {
-		cout << "Unable to clear ArrayStack." << endl;
-	}
-		
+
 	// Voer vier keer dezelfde test uit, op verschillende implementaties.
 	// Voor je datastructuur ArrayStack, bijvoorbeeld:
-	// backspace<ArrayStack<char> >(invoer);
+
+	ArrayStack<char> arrayStack;
+	cout << "ArrayStack:\n";
+	backspace<ArrayStack<char> >(input);
+	PointerStack<char> pointerStack;
+	cout << "PointerStack:\n";
+	backspace<PointerStack<char> >(input);
+	
 	return 0;
 }
