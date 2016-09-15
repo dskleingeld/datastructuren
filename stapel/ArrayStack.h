@@ -38,7 +38,7 @@ private:
 * @post empty ArrayStack object
 **/
 template <class T>
-ArrayStack<T>::ArrayStack() {
+ArrayStack<T>::ArrayStack() { 
 	for (int m = 0; m < MaxSize; m++) {
 		array[m] = 0;
 	}
@@ -96,7 +96,9 @@ bool ArrayStack<T>::push(T newItem) {
 		if (top_number + 1 != MaxSize) {
 			array[top_number + 1] = newItem;	
 		}
-		else return false;
+		else {
+		    return false;
+	    }
 	}
 	return true;
 }
@@ -111,10 +113,11 @@ bool ArrayStack<T>::push(T newItem) {
 **/
 template <class T>
 bool ArrayStack<T>::pop() {
-	if (!empty()) // Find top item
+	if (!empty())
 	{	
 		size();
-		array[top_number] = 0; // Pop 
+		array[top_number] = 0; // Pop
+		top_number = top_number - 1; 
 		return true;
 	}
 	else // Array is empty
