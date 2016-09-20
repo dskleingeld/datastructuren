@@ -1,9 +1,9 @@
 /**
-* Class name: ArrayStack, classical array stack
+* Class name: PointerStack, stack implemented using a singly connected list
 * @author Lisa Pothoven (s1328263)
-* @author David Kleingeld ( )
-* @file arraystack.h
-* @date 08-09-2016
+* @author David Kleingeld (s1432982)
+* @file PointerStack.h
+* @date 20-09-2016
 **/
 
 #ifndef PointerStack_h

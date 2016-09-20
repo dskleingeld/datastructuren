@@ -1,9 +1,9 @@
 /**
-* Class name: ArrayStack, classical array stack
+* Class name: VectorStack, stack implemented using the standardliberary stack
 * @author Lisa Pothoven (s1328263)
-* @author David Kleingeld ( )
+* @author David Kleingeld (s1432982)
 * @file arraystack.h
-* @date 08-09-2016
+* @date 20-09-2016
 **/
 #include <vector>
 

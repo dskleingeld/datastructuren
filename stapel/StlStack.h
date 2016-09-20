@@ -1,3 +1,11 @@
+/**
+* Class name: StlStack, wrapper around the standard libery stack
+* @author Lisa Pothoven (s1328263)
+* @author David Kleingeld (s1432982)
+* @file arraystack.h
+* @date 16-09-2016
+**/
+
 #include <iostream>
 #include <stack>
 
