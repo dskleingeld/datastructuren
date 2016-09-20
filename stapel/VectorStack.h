@@ -5,26 +5,23 @@
 * @file arraystack.h
 * @date 08-09-2016
 **/
+#include <vector>
 
-#ifndef ArrayStack_h
-#define ArrayStack_h
-
-#define MAXSIZE 40
+#ifndef VectorStack_h
+#define VectorStack_h
 
 template <class T>
-class ArrayStack {
+class VectorStack {
 public:
-    ArrayStack();//TODO shouldnt we pass the MaxSize to the constructor?
-    bool empty();//as an agument
-    void clear();
-    void push(T newItem);
-    bool pop();
-    bool top(T & topItem);
+  VectorStack();//TODO shouldnt we pass the MaxSize to the constructor?
+  bool empty();//as an agument
+  void clear();
+  void push(T newItem);
+  bool pop();
+  bool top(T & topItem);
 	void read();
-	void size();
-private:
-    // Array of certain size
-    T array[MAXSIZE];
+private:   
+  std::vector<T> vect;
 	// Variable to keep track of the top of the array
 	int top_number;
 };
@@ -38,10 +35,7 @@ private:
 * @post empty ArrayStack object
 **/
 template <class T>
-ArrayStack<T>::ArrayStack() { 
-	for (int m = 0; m < MAXSIZE; m++) {
-		array[m] = 0;
-	}
+VectorStack<T>::VectorStack() { 
 }
 	
 /**
@@ -53,13 +47,9 @@ ArrayStack<T>::ArrayStack() {
 * @post 
 **/
 template <class T>
-bool ArrayStack<T>::empty() {
-    if (array[0] == 0) {
-        return true;
-    }
-    return false;
+bool VectorStack<T>::empty() {
+    return vect.empty();
 }
-
 
 /**
 * @function clear()
@@ -70,10 +60,8 @@ bool ArrayStack<T>::empty() {
 * @post Empty stack
 **/
 template <class T>
-void ArrayStack<T>::clear() {
-    while(!empty() ) {
-		pop();
-    }
+void VectorStack<T>::clear() {
+  vect.clear();
 }
 
 /**
@@ -85,19 +73,8 @@ void ArrayStack<T>::clear() {
 * @post Stack of type array, with new item at top
 **/
 template <class T>
-void ArrayStack<T>::push(T newItem) {
-	if (empty()) {
-		array[0] = newItem;
-	}
-	else {
-		size(); // Find top_number
-		if (top_number + 1 != MAXSIZE) {
-			array[top_number + 1] = newItem;	
-		}
-		else {
-		    std::cout << "Too much input\n";
-	    }
-	}
+void VectorStack<T>::push(T newItem) {
+  vect.push_back(newItem);
 }
 
 /**
@@ -109,15 +86,13 @@ void ArrayStack<T>::push(T newItem) {
 * @post Stack of type array, with top item removed
 **/
 template <class T>
-bool ArrayStack<T>::pop() {
+bool VectorStack<T>::pop() {
 	if (!empty())
 	{	
-		size();
-		array[top_number] = 0; // Pop
-		top_number = top_number - 1; 
+    vect.pop_back();
 		return true;
 	}
-	else // Array is empty
+	else // vect must be empty
 	{
 		return false;
 	}
@@ -131,38 +106,17 @@ bool ArrayStack<T>::pop() {
 * @pre Stack of type array
 * @post Stack of type array
 **/
-template <class T>//TODO maybe a var that keeps the top element?
-bool ArrayStack<T>::top(T & topItem) {
+template <class T>
+bool VectorStack<T>::top(T & topItem) {
 	if (!empty()) {
-		size();
-		topItem = array[top_number];
-	    return true;
+    topItem = vect.back();
+    return true;
 	}
 	else {
 		return false;
 	}
 }
 
-/**
-* @function size()
-* @abstract Find size of the array and store the index of the top element in a variable
-* @param 
-* @return index of top item
-* @pre
-* @post
-**/
-template <class T>
-void ArrayStack<T>::size() {
-	int i = 0;
-    // Find top item
-    if( !empty() ) { 
-		// Array is not empty
-		while (array[i + 1] != 0) {		
-			i = i + 1;
-		}
-		top_number = i; // Remember this for later use
-	}
-}
 
 /**
 * @function output(ostream & out) //TODO ask how output and ostream works and if is nesessairy?
@@ -173,11 +127,10 @@ void ArrayStack<T>::size() {
 * @post output
 **/
 template <class T>
-void ArrayStack<T>::read() {
-	for (int k = top_number; k > 0 ; k--) {
-		std::cout << array[k];
-	}
-	std::cout << array[0];
+void VectorStack<T>::read() {
+  for (unsigned int i=vect.size()-1; i>0; i--)
+    std::cout << vect[i];
+  std::cout << vect[0];//do last element
 }
 
 #endif

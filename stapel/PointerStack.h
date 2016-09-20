@@ -157,7 +157,7 @@ void PointerStack<T>::read() {//TODO not in assaignment should we keep?
         while (current->next != NULL){
             topItem = current->value;
             current = current->next;
-            std::cout << topItem << " ";
+            std::cout << topItem;
         }
     } 
 }

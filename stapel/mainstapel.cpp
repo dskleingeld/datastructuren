@@ -4,6 +4,7 @@
 #include "PointerStack.h"
 #include "ArrayStack.h"
 #include "StlStack.h"
+#include "VectorStack.h"
 
 using namespace std;
 
@@ -76,6 +77,8 @@ int main()
 	cout << "STL Stack:\n";	
 	StlStack<char> stlstack;	
 	backspace<StlStack<char> >(input);
-	
+	cout << "VectorStack:\n";	
+	VectorStack<char> vectorStack;	
+	backspace<VectorStack<char> >(input);	
 	return 0;
 }
