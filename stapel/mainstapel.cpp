@@ -26,10 +26,7 @@ void backspace(string input)
 		    j = j + 1;
 		}
 	}
-/*	cout << "Stack reads: ";
-    invoerstack.read();
-    cout << "\n";*/
-    
+
     // Display top item
     invoerstack.top(topItem);
     cout << "Top item: " << topItem << "\n";
@@ -55,19 +52,16 @@ void backspace(string input)
 int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 1: Stacks" << "\n\n";
-	// Lees een "woord" in, tot de eerste spatie
 	/*
+	// Read a "word", untill the first break.
 	cout << "Give me input to stack: ";
 	string invoer;
 	getline(cin, invoer);
-	menu(invoer);
 	*/
 	string input = "helll*oww*orld";
 	cout << "Initial input is: " << input << "\n\n";
 
-	// Voer vier keer dezelfde test uit, op verschillende implementaties.
-	// Voor je datastructuur ArrayStack, bijvoorbeeld:
-
+	// Run the same test for each of the four implementations.
 	ArrayStack<char> arrayStack;
 	cout << "ArrayStack:\n";
 	backspace<ArrayStack<char> >(input);

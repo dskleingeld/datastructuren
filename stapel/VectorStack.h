@@ -13,26 +13,26 @@
 template <class T>
 class VectorStack {
 public:
-  VectorStack();//TODO shouldnt we pass the MaxSize to the constructor?
-  bool empty();//as an agument
-  void clear();
-  void push(T newItem);
-  bool pop();
-  bool top(T & topItem);
+  	VectorStack();
+  	bool empty();//as an argument
+  	void clear();
+  	void push(T newItem);
+  	bool pop();
+  	bool top(T & topItem);
 	void read();
 private:   
-  std::vector<T> vect;
+  	std::vector<T> vect;
 	// Variable to keep track of the top of the array
 	int top_number;
 };
 
 /**
-* @function ArrayStack()
-* @abstract Constructor: Create object ArrayStack, filled with 0s
-* @param MaxSize: the size of the array
-* @return 
+* @function VectorStack()
+* @abstract Constructor: Create object VectorStack
+* @param
+* @return VectorStack object
 * @pre
-* @post empty ArrayStack object
+* @post
 **/
 template <class T>
 VectorStack<T>::VectorStack() { 
@@ -40,8 +40,8 @@ VectorStack<T>::VectorStack() {
 	
 /**
 * @function empty()
-* @abstract Check if object ArrayStack is empty
-* @param none
+* @abstract Check if object VectorStack is empty
+* @param 
 * @return true (is empty) or false (is not empty)
 * @pre 
 * @post 
@@ -53,11 +53,11 @@ bool VectorStack<T>::empty() {
 
 /**
 * @function clear()
-* @abstract Clear content of array stack, delete array
-* @param none
+* @abstract Clear content of VectorStack
+* @param 
 * @return true (succes) or false (something did not work)
-* @pre Filled stack of type array
-* @post Empty stack
+* @pre Stack of n elements
+* @post Stack of 0 elements
 **/
 template <class T>
 void VectorStack<T>::clear() {
@@ -65,12 +65,12 @@ void VectorStack<T>::clear() {
 }
 
 /**
-* @function push(newItem)
+* @function push(T newItem)
 * @abstract Add newItem to top of the stack
 * @param newItem: new item to be added to the stack
 * @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array, with new item at top
+* @pre VectorStack of n elements, newItem
+* @post VectorStack of n+1 elements
 **/
 template <class T>
 void VectorStack<T>::push(T newItem) {
@@ -80,10 +80,10 @@ void VectorStack<T>::push(T newItem) {
 /**
 * @function pop()
 * @abstract Remove item from top of the stack
-* @param none
+* @param 
 * @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array, with top item removed
+* @pre VectorStack of n elements
+* @post VectorStack of n-1 elements
 **/
 template <class T>
 bool VectorStack<T>::pop() {
@@ -103,8 +103,8 @@ bool VectorStack<T>::pop() {
 * @abstract Return item at the top of the stack, give output to user
 * @param topItem: the item at the top of the stack
 * @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array
+* @pre VectorStack of n elements
+* @post VectorStack of n elements
 **/
 template <class T>
 bool VectorStack<T>::top(T & topItem) {
@@ -119,12 +119,12 @@ bool VectorStack<T>::top(T & topItem) {
 
 
 /**
-* @function output(ostream & out) //TODO ask how output and ostream works and if is nesessairy?
-* @abstract Use ostream to give output to user
-* @param out: the data to return
-* @return output
-* @pre input
-* @post output
+* @function read() //TODO ask how output and ostream works and if is nesessairy?
+* @abstract Read the data in VectorStack and give output to user
+* @param 
+* @return 
+* @pre
+* @post
 **/
 template <class T>
 void VectorStack<T>::read() {

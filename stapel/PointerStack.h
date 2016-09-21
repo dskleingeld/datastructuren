@@ -52,7 +52,7 @@ PointerStack<T>::PointerStack() {
 
 /**
 * @function empty()
-* @abstract Check if object ArrayStack is empty
+* @abstract Check if object PointerStack is empty
 * @param none
 * @return true (is empty) or false (is not empty)
 * @pre 
@@ -141,14 +141,13 @@ bool PointerStack<T>::top(T & topItem) {
 }
 
 /**
-* @function output(ostream & out)
-* @abstract Use ostream to give output to user
-* @param out: the data to return
-* @return output
-* @pre input
-* @post output
+* @function read()
+* @abstract Read the data in the pointer stack and give output to user
+* @param 
+* @return 
+* @pre 
+* @post 
 **/
-
 template <class T>
 void PointerStack<T>::read() {//TODO not in assaignment should we keep?
     T topItem;
