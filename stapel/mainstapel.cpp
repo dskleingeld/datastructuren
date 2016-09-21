@@ -52,12 +52,8 @@ void backspace(string input)
 int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 1: Stacks" << "\n\n";
-	/*
+
 	// Read a "word", untill the first break.
-	cout << "Give me input to stack: ";
-	string invoer;
-	getline(cin, invoer);
-	*/
 	string input = "helll*oww*orld";
 	cout << "Initial input is: " << input << "\n\n";
 

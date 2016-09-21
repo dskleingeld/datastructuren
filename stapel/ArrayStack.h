@@ -154,14 +154,10 @@ bool ArrayStack<T>::top(T & topItem) {
 template <class T>
 void ArrayStack<T>::size() {
 	int i = 0;
-    // Find top item
-    if( !empty() ) { 
-		// Array is not empty
-		while (array[i + 1] != 0) {		
-			i = i + 1;
-		}
-		top_number = i; // Remember this for later use
+	while (array[i + 1] != 0) {		
+		i = i + 1;
 	}
+	top_number = i; // Remember this for later use
 }
 
 /**
