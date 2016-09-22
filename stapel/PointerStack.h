@@ -16,29 +16,69 @@ public:
     T value;
 };
 
-
 template <class T>
 class PointerStack {
 public:
-    PointerStack();//constructor, cant be private
-    bool empty();//TODO named empty to conform to default c++ stack names
+    /**
+    * @function PointerStack()
+    * @abstract Constructor: Create new object node
+    * @param
+    * @return 
+    * @pre 
+    * @post 
+    **/
+    PointerStack();
+    /**
+    * @function empty()
+    * @abstract Check if object PointerStack is empty
+    * @param none
+    * @return true (is empty) or false (is not empty)
+    * @pre 
+    * @post 
+    **/
+    bool empty();
+    /**
+    * @function clear()
+    * @abstract Clear content of the pointer stack, delete every element
+    * @param none
+    * @return
+    * @pre pointer to filled stack
+    * @post Empty stack
+    **/
     void clear();
+    /**
+    * @function push(newItem)
+    * @abstract Add newItem to top of the stack
+    * @param newItem: new item to be added to the stack
+    * @return
+    * @pre stack of n elements
+    * @post stack of n+1 elements
+    **/
     void push(T newItem);
+    /**
+    * @function pop()
+    * @abstract Remove item from top of the pointer stack
+    * @param none
+    * @return false if there is no element to pop else true
+    * @pre pointer to first element
+    * @post pointer to second element and first element deleted
+    **/
     bool pop();
+    /**
+    * @function top(topItem)
+    * @abstract Return item at the top of the stack, give output to user
+    * @param topItem: the item at the top of the stack
+    * @return true (succes) or false (if there is no item)
+    * @pre stack of n elements
+    * @post stack of n elements
+    **/
     bool top(T & topItem);
+    // Remove:
 	void read();
 private:
     node<T>* topElement;//stores the highest element in the stack
 };
 
-/**
-* @function PointerStack()
-* @abstract Constructor: Create new object node
-* @param
-* @return 
-* @pre 
-* @post 
-**/
 template <class T>
 PointerStack<T>::PointerStack() {
     topElement = new node<T>;
@@ -50,14 +90,6 @@ PointerStack<T>::PointerStack() {
 //  a->b
 //  (*a).b  call member b that foo points to, (read right to left, [*a] = [value pointed to])
 
-/**
-* @function empty()
-* @abstract Check if object PointerStack is empty
-* @param none
-* @return true (is empty) or false (is not empty)
-* @pre 
-* @post 
-**/
 template <class T>
 bool PointerStack<T>::empty() {
     if (topElement == NULL) {
@@ -66,28 +98,12 @@ bool PointerStack<T>::empty() {
     return false;
 }
 
-/**
-* @function clear()
-* @abstract Clear content of the pointer stack, delete every element
-* @param none
-* @return
-* @pre pointer to filled stack
-* @post Empty stack
-**/
 template <class T>
 void PointerStack<T>::clear() {
    while (topElement != NULL){pop(); }
    //delete topElement;//TODO make deconstructor do this?
 }
 
-/**
-* @function push(newItem)
-* @abstract Add newItem to top of the stack
-* @param newItem: new item to be added to the stack
-* @return
-* @pre stack of n elements
-* @post stack of n+1 elements
-**/
 template <class T>
 void PointerStack<T>::push(T newItem) {
     node<T>* old_top;
@@ -99,14 +115,6 @@ void PointerStack<T>::push(T newItem) {
     topElement->value = newItem;
 }
 
-/**
-* @function pop()
-* @abstract Remove item from top of the pointer stack
-* @param none
-* @return false if there is no element to pop else true
-* @pre pointer to first element
-* @post pointer to second element and first element deleted
-**/
 template <class T>
 bool PointerStack<T>::pop() {
     node<T>* old_top;
@@ -122,14 +130,6 @@ bool PointerStack<T>::pop() {
     }  
 }
 
-/**
-* @function top(topItem)
-* @abstract Return item at the top of the stack, give output to user
-* @param topItem: the item at the top of the stack
-* @return true (succes) or false (if there is no item)
-* @pre stack of n elements
-* @post stack of n elements
-**/
 template <class T>
 bool PointerStack<T>::top(T & topItem) {
     
@@ -140,14 +140,7 @@ bool PointerStack<T>::top(T & topItem) {
     }
 }
 
-/**
-* @function read()
-* @abstract Read the data in the pointer stack and give output to user
-* @param 
-* @return 
-* @pre 
-* @post 
-**/
+// Remove:
 template <class T>
 void PointerStack<T>::read() {//TODO not in assaignment should we keep?
     T topItem;

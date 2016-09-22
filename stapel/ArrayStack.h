@@ -9,19 +9,76 @@
 #ifndef ArrayStack_h
 #define ArrayStack_h
 
-#define MAXSIZE 40
+#define MAXSIZE 10000
 
 template <class T>
 class ArrayStack {
 public:
-    ArrayStack();//TODO shouldnt we pass the MaxSize to the constructor?
-    bool empty();//as an agument
+    /**
+    * @function ArrayStack()
+    * @abstract Constructor: Create object ArrayStack, filled with 0s
+    * @param MaxSize: the size of the array
+    * @return 
+    * @pre
+    * @post empty ArrayStack object
+    **/
+    ArrayStack();
+    /**
+    * @function empty()
+    * @abstract Check if object ArrayStack is empty
+    * @param none
+    * @return true (is empty) or false (is not empty)
+    * @pre 
+    * @post 
+    **/
+    bool empty();
+    /**
+    * @function clear()
+    * @abstract Clear content of array stack, delete array
+    * @param none
+    * @return true (succes) or false (something did not work)
+    * @pre Filled stack of type array
+    * @post Empty stack
+    **/
     void clear();
+    /**
+    * @function push(newItem)
+    * @abstract Add newItem to top of the stack
+    * @param newItem: new item to be added to the stack
+    * @return true (succes) or false (something did not work)
+    * @pre Stack of type array
+    * @post Stack of type array, with new item at top
+    **/
     void push(T newItem);
+    /**
+    * @function pop()
+    * @abstract Remove item from top of the stack
+    * @param none
+    * @return true (succes) or false (something did not work)
+    * @pre Stack of type array
+    * @post Stack of type array, with top item removed
+    **/
     bool pop();
+    /**
+    * @function top(topItem)
+    * @abstract Return item at the top of the stack, give output to user
+    * @param topItem: the item at the top of the stack
+    * @return true (succes) or false (something did not work)
+    * @pre Stack of type array
+    * @post Stack of type array
+    **/
     bool top(T & topItem);
-	void read();
+    /**
+    * @function size()
+    * @abstract Find size of the array and store the index of the top element in a variable
+    * @param 
+    * @return index of top item
+    * @pre
+    * @post
+    **/
 	void size();
+    // To be removed:
+	void read();
 private:
     // Array of certain size
     T array[MAXSIZE];
@@ -29,14 +86,6 @@ private:
 	int top_number;
 };
 
-/**
-* @function ArrayStack()
-* @abstract Constructor: Create object ArrayStack, filled with 0s
-* @param MaxSize: the size of the array
-* @return 
-* @pre
-* @post empty ArrayStack object
-**/
 template <class T>
 ArrayStack<T>::ArrayStack() { 
 	for (int m = 0; m < MAXSIZE; m++) {
@@ -44,14 +93,6 @@ ArrayStack<T>::ArrayStack() {
 	}
 }
 	
-/**
-* @function empty()
-* @abstract Check if object ArrayStack is empty
-* @param none
-* @return true (is empty) or false (is not empty)
-* @pre 
-* @post 
-**/
 template <class T>
 bool ArrayStack<T>::empty() {
     if (array[0] == 0) {
@@ -60,15 +101,6 @@ bool ArrayStack<T>::empty() {
     return false;
 }
 
-
-/**
-* @function clear()
-* @abstract Clear content of array stack, delete array
-* @param none
-* @return true (succes) or false (something did not work)
-* @pre Filled stack of type array
-* @post Empty stack
-**/
 template <class T>
 void ArrayStack<T>::clear() {
     while(!empty() ) {
@@ -76,14 +108,6 @@ void ArrayStack<T>::clear() {
     }
 }
 
-/**
-* @function push(newItem)
-* @abstract Add newItem to top of the stack
-* @param newItem: new item to be added to the stack
-* @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array, with new item at top
-**/
 template <class T>
 void ArrayStack<T>::push(T newItem) {
 	if (empty()) {
@@ -100,14 +124,6 @@ void ArrayStack<T>::push(T newItem) {
 	}
 }
 
-/**
-* @function pop()
-* @abstract Remove item from top of the stack
-* @param none
-* @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array, with top item removed
-**/
 template <class T>
 bool ArrayStack<T>::pop() {
 	if (!empty())
@@ -123,14 +139,6 @@ bool ArrayStack<T>::pop() {
 	}
 }
 
-/**
-* @function top(topItem)
-* @abstract Return item at the top of the stack, give output to user
-* @param topItem: the item at the top of the stack
-* @return true (succes) or false (something did not work)
-* @pre Stack of type array
-* @post Stack of type array
-**/
 template <class T>//TODO maybe a var that keeps the top element?
 bool ArrayStack<T>::top(T & topItem) {
 	if (!empty()) {
@@ -143,14 +151,6 @@ bool ArrayStack<T>::top(T & topItem) {
 	}
 }
 
-/**
-* @function size()
-* @abstract Find size of the array and store the index of the top element in a variable
-* @param 
-* @return index of top item
-* @pre
-* @post
-**/
 template <class T>
 void ArrayStack<T>::size() {
 	int i = 0;
@@ -160,14 +160,7 @@ void ArrayStack<T>::size() {
 	top_number = i; // Remember this for later use
 }
 
-/**
-* @function output(ostream & out) //TODO ask how output and ostream works and if is nesessairy?
-* @abstract Use ostream to give output to user
-* @param out: the data to return
-* @return output
-* @pre input
-* @post output
-**/
+// Remove this function:
 template <class T>
 void ArrayStack<T>::read() {
 	for (int k = top_number; k > 0 ; k--) {
