@@ -67,12 +67,8 @@ public:
     * @post VectorStack of n elements
     **/
   	bool top(T & topItem);
-  	// Remove:
-	void read();
 private:   
   	std::vector<T> vect;
-	// Variable to keep track of the top of the array
-	int top_number;
 };
 
 template <class T>
@@ -101,7 +97,7 @@ bool VectorStack<T>::pop() {
     vect.pop_back();
 		return true;
 	}
-	else // vect must be empty
+	else
 	{
 		return false;
 	}
@@ -116,13 +112,6 @@ bool VectorStack<T>::top(T & topItem) {
 	else {
 		return false;
 	}
-}
-
-template <class T>
-void VectorStack<T>::read() {
-  for (unsigned int i=vect.size()-1; i>0; i--)
-    std::cout << vect[i];
-  std::cout << vect[0];//do last element
 }
 
 #endif

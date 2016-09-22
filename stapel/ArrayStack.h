@@ -77,8 +77,6 @@ public:
     * @post
     **/
 	void size();
-    // To be removed:
-	void read();
 private:
     // Array of certain size
     T array[MAXSIZE];
@@ -158,15 +156,6 @@ void ArrayStack<T>::size() {
 		i = i + 1;
 	}
 	top_number = i; // Remember this for later use
-}
-
-// Remove this function:
-template <class T>
-void ArrayStack<T>::read() {
-	for (int k = top_number; k > 0 ; k--) {
-		std::cout << array[k];
-	}
-	std::cout << array[0];
 }
 
 #endif

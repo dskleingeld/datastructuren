@@ -73,8 +73,6 @@ public:
     * @post stack of n elements
     **/
     bool top(T & topItem);
-    // Remove:
-	void read();
 private:
     node<T>* topElement;//stores the highest element in the stack
 };
@@ -100,8 +98,9 @@ bool PointerStack<T>::empty() {
 
 template <class T>
 void PointerStack<T>::clear() {
-   while (topElement != NULL){pop(); }
-   //delete topElement;//TODO make deconstructor do this?
+   while (topElement != NULL) {
+       pop(); 
+   }
 }
 
 template <class T>
@@ -132,26 +131,11 @@ bool PointerStack<T>::pop() {
 
 template <class T>
 bool PointerStack<T>::top(T & topItem) {
-    
     if (empty() ) { return false;}
     else{
         topItem = topElement->value;
         return true;
     }
-}
-
-// Remove:
-template <class T>
-void PointerStack<T>::read() {//TODO not in assaignment should we keep?
-    T topItem;
-    node<T>* current = topElement;
-    if (!empty() ){
-        while (current->next != NULL){
-            topItem = current->value;
-            current = current->next;
-            std::cout << topItem;
-        }
-    } 
 }
 
 #endif

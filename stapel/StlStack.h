@@ -69,8 +69,6 @@ public:
     * @post stack of n elements
     **/
     bool top(T & topItem);
-    // Remove:
-	void read();
 private:
     std::stack<T> Stack;
 };
@@ -117,14 +115,6 @@ bool StlStack<T>::top(T & topItem) {
     }
     topItem = Stack.top();
     return true;
-}
-
-template <class T>
-void StlStack<T>::read() {//TODO not in assaignment should we keep?
-    while (!empty()) {
-        std::cout << Stack.top();
-        Stack.pop();
-    }
 }
 
 #endif
