@@ -1,0 +1,23 @@
+DaStr Programmeeropdracht 2: Expressie
+DEEL 1
+Inlezen en weergeven van een expressie.
+- Expressiebomen inplementeren
+    - Inlezen
+    Pre-orde notatie van expressies: Poolse notatie
+    Spaties om tekens te scheiden
+    unaire operator: -35
+    binaire operator: * -1 ^ x 3
+    
+    Lezen van een input stream: std::stringstream of std::istream, naar std::string
+    std::atoi of std::atof om als string ingelezen getallen om te zetten
+    
+    - Weergeven
+    Twee methoden om 'af te drukken':
+        Inorde expressie
+            Unaire operatoren: pre-orde
+            Binaire operatoren: inorde
+        Grafische representatie (weggeschreven naar een file, in DOT-notatie)
+        De boom is vervolgens te bekijken met een online viewer ('Dotty')
+        
+- Optellen, aftrekken, vermenigvuldigen, delen, sinus, cosinus, machtsverheffen (getal), variabelen (kleine letters), pi
+- Een expressieboom is geen template klasse
