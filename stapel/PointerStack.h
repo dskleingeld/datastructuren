@@ -23,7 +23,7 @@ public:
     * @function PointerStack()
     * @abstract Constructor: Create new object node
     * @param
-    * @return 
+    * @return object of class node
     * @pre 
     * @post 
     **/
@@ -31,7 +31,7 @@ public:
     /**
     * @function empty()
     * @abstract Check if object PointerStack is empty
-    * @param none
+    * @param
     * @return true (is empty) or false (is not empty)
     * @pre 
     * @post 
@@ -40,19 +40,19 @@ public:
     /**
     * @function clear()
     * @abstract Clear content of the pointer stack, delete every element
-    * @param none
+    * @param
     * @return
     * @pre pointer to filled stack
     * @post Empty stack
     **/
     void clear();
     /**
-    * @function push(newItem)
-    * @abstract Add newItem to top of the stack
-    * @param newItem: new item to be added to the stack
-    * @return
-    * @pre stack of n elements
-    * @post stack of n+1 elements
+	* @function push(newItem)
+	* @abstract Add new item to top of the stack
+	* @param newItem: new item to be added to the stack
+	* @return true (succes) or false (could not add new item)
+	* @pre Stack of n elements
+	* @post Stack of n+1 elements
     **/
     void push(T newItem);
     /**
@@ -81,12 +81,7 @@ template <class T>
 PointerStack<T>::PointerStack() {
     topElement = new node<T>;
     topElement->next = NULL;
-//    topElement->value = -1;//TODO would it be more efficient to fill this value
-                             //in the top function?
 }
-//NOTE these are equivalent
-//  a->b
-//  (*a).b  call member b that foo points to, (read right to left, [*a] = [value pointed to])
 
 template <class T>
 bool PointerStack<T>::empty() {

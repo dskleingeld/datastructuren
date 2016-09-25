@@ -18,7 +18,7 @@ public:
     * @function ArrayStack()
     * @abstract Constructor: Create object ArrayStack, filled with 0s
     * @param MaxSize: the maximum size of the array
-    * @return 
+    * @return A stack of type array and size n
     * @pre
     * @post
     **/
@@ -26,7 +26,7 @@ public:
     /**
     * @function empty()
     * @abstract Check if object ArrayStack is empty
-    * @param none
+    * @param
     * @return true (if stack is empty) or false (if stack is not empty)
     * @pre 
     * @post 
@@ -73,12 +73,12 @@ public:
     * @abstract Find size of the array and store the index of the top element in a variable
     * @param 
     * @return index of top item
-    * @pre
+    * @pre Stack of size n
     * @post
     **/
 	void size();
 private:
-    // Array of certain size
+    // Array of certain size n = MAXSIZE
     T array[MAXSIZE];
 	// Variable to keep track of the top of the array
 	int top_number;

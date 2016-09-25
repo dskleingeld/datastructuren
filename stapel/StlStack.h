@@ -17,7 +17,7 @@ class StlStack {
 public:
     /**
     * @function StlStack()
-    * @abstract Constructor: Create new object node
+    * @abstract Constructor: Create new STL stack
     * @param
     * @return 
     * @pre 
@@ -27,19 +27,19 @@ public:
     /**
     * @function empty()
     * @abstract Check if container in stack is empty
-    * @param none
+    * @param
     * @return true (is empty) or false (is not empty)
     * @pre 
     * @post 
     **/
     bool empty();
     /**
-    * @function clear()
-    * @abstract Clear content of the stack, delete every element
-    * @param none
-    * @return
-    * @pre pointer to filled stack
-    * @post Empty stack
+	* @function clear()
+	* @abstract Clear content of stack
+	* @param
+	* @return true (succes) or false (unable to clear stack, or stack was already empty)
+	* @pre Stack of size n
+	* @post Empty stack
     **/
     void clear();
     /**
