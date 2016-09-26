@@ -76,8 +76,5 @@ int main()
 	cout << "VectorStack:\n";	
 	VectorStack<char> vectorStack;	
 	backspace<VectorStack<char> >(input);
-	
-	int temp = 0;
-	cin >> temp;
 	return 0;
 }
