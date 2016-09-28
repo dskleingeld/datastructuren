@@ -10,14 +10,7 @@
 #ifndef Boom_h
 #define Boom_h
 
-struct Leaf {
-  leaf* left right;
-  enum { PLUS, MINUS, NUMBER, VARIABLE } type;
-  union{
-    char variable;
-    double number;
-  };
-}
+
 
 class Boom {
 public:
@@ -47,8 +40,21 @@ public:
   * @pre 
   * @post 
   **/
+	void add(string substring);
 private:
-  root;//stores the highest element in the stack
+  Leaf* root;//stores the highest element in the stack
+
+	enum typeOfLeaf { PLUS, MINUS, TIMES, POWER, DEVIDE, NUMBER, VARIABLE };
+
+	struct Leaf {
+		Leaf* left = NULL;
+		Leaf* right = NULL;
+		union{
+		  char variable;
+		  double number;
+  	};
+	};
+	
 };
 
 
