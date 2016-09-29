@@ -5,11 +5,22 @@
 
 using namespace std;
 
-string testInvoer = "+ 2 4";
+string testInvoer = "+ 2 42";
 
 void process(string invoer){
 
 	Boom theBoom;
+	int i = 0; // Invoer counter
+	while (invoer[i] != 0) { // End of string
+		string substring;
+		while ((invoer[i] != ' ') && (invoer[i] != 0)) { // Empty space or end of string
+			substring += invoer[i];
+			i = i + 1;
+		}
+		cout << "substring: " << substring << endl;
+		theBoom.processInput(substring); // Create new node in Boom
+		i = i + 1;
+	}
 
 //	For string while not string end:
 //		add substring
@@ -20,6 +31,6 @@ void process(string invoer){
 int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
-
+	process(testInvoer);
 	return 0;
 }

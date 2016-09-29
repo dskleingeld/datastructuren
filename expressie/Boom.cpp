@@ -13,9 +13,11 @@ void Boom::processInput(std::string substring) {
 		switch(kar) {
 			case '+':
 				operand = PLUS;
+				std::cout << "PLUS" << std::endl;
 				break;
 			case '-':
 				operand = MINUS;
+				std::cout << "MINUS" << std::endl;
 				break;
 			case '*':
 				operand = TIMES;
@@ -29,6 +31,7 @@ void Boom::processInput(std::string substring) {
 			default:
 				if (kar > 47 && kar < 58){//if the car is a ascii number
 					operand = NUMBER;
+					std::cout << "NUMBER" << std::endl;
 					number = (double)(kar-48);//-48 to go to normal numbers from ascii
 				}
 				else{ operand = VARIABLE; }
@@ -38,8 +41,10 @@ void Boom::processInput(std::string substring) {
 	}
 	else if (stringIsNumber(substring)) {
 		number = std::stoi(substring);
+		std::cout << "DOUBLE NUMBER" << std::endl;
 	}
 	//test if sin, cos or pi
+	else {
 		switch (kar){
 			case 's':
 				operand = SIN;
@@ -54,6 +59,7 @@ void Boom::processInput(std::string substring) {
 			std::cout << "YOU SILLY PERSON THIS IS NOT POSSIBLE!!!!!" << std::endl;
 			break;
 		}
+	}
 	//really add a leaf with pointers and such
 }
 		
