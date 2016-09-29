@@ -13,7 +13,7 @@ Inlezen en weergeven van een expressie.
     
     - Weergeven
     Twee methoden om 'af te drukken':
-        Inorde expressie
+        Inorde expressie (als een 'normale' wiskundige expressie, met haakjes en +,-,*,/)
             Unaire operatoren: pre-orde
             Binaire operatoren: inorde
         Grafische representatie (weggeschreven naar een file, in DOT-notatie)
@@ -21,3 +21,13 @@ Inlezen en weergeven van een expressie.
         
 - Optellen, aftrekken, vermenigvuldigen, delen, sinus, cosinus, machtsverheffen (getal), variabelen (kleine letters), pi
 - Een expressieboom is geen template klasse
+
+Nodig:
+Class expressieboom
+Struct blad
+- Wortel
+- Ouder
+
+Functies:
+Input inlezen
+Boom uitezen

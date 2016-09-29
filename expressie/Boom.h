@@ -12,8 +12,6 @@
 #ifndef Boom_h
 #define Boom_h
 
-
-
 class Boom {
 public:
   /**
@@ -35,20 +33,19 @@ public:
 //  **/
 //  ~Boom();
   /**
-  * @function add()
-  * @abstract Check if object Boom is empty
+  * @function processInput()
+  * @abstract
   * @param
-  * @return true (is empty) or false (is not empty)
+  * @return
   * @pre 
   * @post 
   **/
 	void processInput(std::string substring);
 private:
-
-		
+	//Type of a leaf/node
 	enum typeOfLeaf { PLUS, MINUS, TIMES, POWER, DEVIDE, 
 									  NUMBER, VARIABLE, SIN, COS, PI };
-
+	//Struct for the leaves/nodes
 	struct Leaf {
 		Leaf();
 		Leaf* branchLeft;
@@ -61,19 +58,39 @@ private:
 		  double number;
   	};
 	};
-
+	//Stack of leaves
   std::stack<Leaf*> leafStack;
-	
+	//Root of the tree
   Leaf* root;//TODO if multiwalk not necessairy we can set currentleaf to this when done
+	//Current leaf/node
 	Leaf* currentLeaf;
-	
+  /**
+  * @function nextFreeBranch()
+  * @abstract 
+  * @param
+  * @return 
+  * @pre 
+  * @post 
+  **/
 	void nextFreeBranch();
-	
+  /**
+  * @function stringIsNumber()
+  * @abstract 
+  * @param
+  * @return 
+  * @pre 
+  * @post 
+  **/
 	bool stringIsNumber(std::string substring);
-	
+  /**
+  * @function addLeaf(typeOfLeaf operand, char variable, double number)
+  * @abstract 
+  * @param typeOfLeaf operand, char variable, double number
+  * @return 
+  * @pre 
+  * @post 
+  **/
 	void addLeaf(typeOfLeaf operand, char variable, double number);
 };
-
-
 
 #endif
