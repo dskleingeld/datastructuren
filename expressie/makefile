@@ -1,8 +1,8 @@
 CXX = g++
-CXXFLAGS=-g -std=c++11 -Wall -pedantic
+CXXFLAGS=-g -Wall -pedantic
 
 expressie: main.o Boom.o
-	$(CXX) $(CXXFLAGS) -o Boom.o main.o
+	$(CXX) $(CXXFLAGS) -o expressie Boom.o main.o #"-o expressie" needed
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 Boom.o: Boom.cpp

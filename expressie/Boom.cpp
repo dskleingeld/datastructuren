@@ -1,4 +1,5 @@
 #include <string>
+#include <cstdlib>
 #include <iostream>
 #include "Boom.h"
 
@@ -40,7 +41,7 @@ void Boom::processInput(std::string substring) {
 		}
 	}
 	else if (stringIsNumber(substring)) {
-		number = std::stoi(substring);
+		number = std::atof(substring.c_str() );
 		std::cout << "DOUBLE NUMBER" << std::endl;
 	}
 	//test if sin, cos or pi
@@ -81,6 +82,11 @@ void Boom::nextFreeBranch() {
 		leafStack.pop();
 	}
 	currentLeaf = leafStack.top()->branchRight;
+}
+
+Boom::Leaf::Leaf(){
+	branchLeft = NULL;
+	branchRight = NULL;
 }
 
 void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {

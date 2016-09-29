@@ -50,8 +50,9 @@ private:
 									  NUMBER, VARIABLE, SIN, COS, PI };
 
 	struct Leaf {
-		Leaf* branchLeft = NULL;
-		Leaf* branchRight = NULL;
+		Leaf();
+		Leaf* branchLeft;
+		Leaf* branchRight;
 
 		typeOfLeaf operand;
 		
