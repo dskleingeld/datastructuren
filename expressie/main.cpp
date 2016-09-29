@@ -6,10 +6,9 @@
 using namespace std;
 
 string testInvoer = "+ 2 42";
+Boom theBoom;
 
 void process(string invoer){
-
-	Boom theBoom;
 	int i = 0; // Invoer counter
 	while (invoer[i] != 0) { // End of string
 		string substring;
@@ -32,5 +31,6 @@ int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	process(testInvoer);
+	theBoom.walkInorder();
 	return 0;
 }

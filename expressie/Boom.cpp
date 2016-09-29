@@ -16,19 +16,17 @@ Boom::Leaf::Leaf(){
 
 void Boom::processInput(std::string substring) {
 	typeOfLeaf operand;
-	char variable;
+	char variable = -1;
 	double number;
 
 	char kar = substring[0];		
-	if (substring.length() == 1) { //TODO
+	if (substring.length() == 1) {
 		switch(kar) {
 			case '+':
 				operand = PLUS;
-				std::cout << "PLUS" << std::endl;
 				break;
 			case '-':
 				operand = MINUS;
-				std::cout << "MINUS" << std::endl;
 				break;
 			case '*':
 				operand = TIMES;
@@ -42,7 +40,6 @@ void Boom::processInput(std::string substring) {
 			default:
 				if (kar > 47 && kar < 58){//if the car is a ascii number
 					operand = NUMBER;
-					std::cout << "NUMBER" << std::endl;
 					number = (double)(kar-48);//-48 to go to normal numbers from ascii
 				}
 				else{ operand = VARIABLE; }
@@ -52,9 +49,7 @@ void Boom::processInput(std::string substring) {
 	}
 	else if (stringIsNumber(substring)) {
 		number = std::atof(substring.c_str() );
-		std::cout << "DOUBLE NUMBER" << std::endl;
 	}
-	//TODO: test if sin, cos or pi
 	else {
 		switch (kar){
 			case 's':
@@ -71,7 +66,8 @@ void Boom::processInput(std::string substring) {
 			break;
 		}
 	}
-	//TODO: really add a leaf with pointers and such
+	//Add a leaf with pointers and such
+	addLeaf(operand, variable, number);
 }
 		
 bool Boom::stringIsNumber(std::string substring) {
@@ -92,6 +88,7 @@ void Boom::nextFreeBranch() {
 	}
 	//Go to right child
 	currentLeaf = leafStack.top()->branchRight;
+	leafStack.pop();
 }
 
 void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
@@ -105,7 +102,7 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 		currentLeaf->variable = variable;
 	}
 	
-	//Determine how many children this node has (0, 1 or 2)
+	//Determine how many children this node needs (0, 1 or 2)
 	if (operand == NUMBER || operand ==  VARIABLE || operand == PI) {
 		//0 children 
 		nextFreeBranch();//sets current leaf to the next free branch
@@ -127,3 +124,63 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 	}	
 }
 
+void Boom::walkInorder() {
+	while (currentLeaf->branchLeft != NULL) { //there is a left child
+		std::cout << "Go to left" << std::endl;
+		display(currentLeaf->operand);
+		currentLeaf = currentLeaf->branchLeft; //go to left child
+		leafStack.push(currentLeaf);
+	}
+	while (leafStack.top()->branchRight == NULL) { //find next right child
+		std::cout << "Go up, looking for right child" << std::endl;
+		display(currentLeaf->operand);
+		leafStack.pop();	
+	}
+	currentLeaf = leafStack.top()->branchRight;
+	std::cout << "Go to right" << std::endl;
+	display(currentLeaf->operand);
+
+	if (!leafStack.empty()) {
+		leafStack.pop();	
+		walkInorder(); //recursion
+	}
+	std::cout << "Stack is empty" << std::endl;
+	return;
+}
+
+void Boom::display(typeOfLeaf operand) {
+	switch (operand) {
+			case PLUS:
+				std::cout << "  +";
+				break;
+			case MINUS:
+				std::cout << "  -";
+				break;
+			case TIMES:
+				std::cout << "  *";
+				break;			
+			case POWER:
+				std::cout << "  ^";
+				break;				
+			case DEVIDE:
+				std::cout << "  /";
+				break;
+			case SIN:
+				std::cout << "  sin";
+				break;
+			case COS:
+				std::cout << "  cos";
+				break;
+			case PI:
+				std::cout << "  pi";
+				break;
+			case NUMBER:
+				std::cout << " " << currentLeaf->number;
+				break;
+			case VARIABLE:
+				std::cout << " " << currentLeaf->variable;
+				break;
+			default:
+				break;
+	}
+}

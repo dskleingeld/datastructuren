@@ -41,6 +41,7 @@ public:
   * @post 
   **/
 	void processInput(std::string substring);
+	void walkInorder();
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf { PLUS, MINUS, TIMES, POWER, DEVIDE, 
@@ -91,6 +92,10 @@ private:
   * @post 
   **/
 	void addLeaf(typeOfLeaf operand, char variable, double number);
+	//TODO: Display tree: Expression 
+	void display(typeOfLeaf operand);
+	//TODO: Display tree: Graphic
+	//TODO: Destructor
 };
 
 #endif
