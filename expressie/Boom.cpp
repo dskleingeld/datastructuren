@@ -86,12 +86,15 @@ bool Boom::stringIsNumber(std::string substring) {
 }
 
 void Boom::nextFreeBranch() {
-	while (leafStack.top()->branchRight == NULL) {
+	//Important: check if leafStack is not empty
+	while (!leafStack.empty() && (leafStack.top()->branchRight == NULL)) {
 		leafStack.pop();
 	}
 	//Go to right child
-	currentLeaf = leafStack.top()->branchRight;
-	leafStack.pop();
+	if (!leafStack.empty()) {
+		currentLeaf = leafStack.top()->branchRight;
+		leafStack.pop();
+	}
 }
 
 void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
@@ -128,7 +131,6 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 }
 
 void Boom::traverseTree() {
-	//TODO: many if-statements -> improve?
 	std::cout << "(";
 	inOrder(currentLeaf);
 	std::cout << ")";

@@ -6,7 +6,6 @@
 using namespace std;
 
 string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
-//TODO: Fails if string consists of 1 character (example: testInvoer = "x" gives errors)
 Boom theBoom;
 
 void process(string invoer){
@@ -18,10 +17,6 @@ void process(string invoer){
 		}
 		theBoom.processInput(substring); // Create new node in Boom
 	}
-
-//	For string while not string end:
-//		add substring
-//		theBoom.add(std::string substring)
 }
 
 
@@ -33,10 +28,10 @@ int main()
 	cout << "Current expression: " << endl;
 	theBoom.cleanStack();
 	theBoom.traverseTree();
-/*
-Because windows is being annoying
+
+//Because windows is being annoying
 	string temp;
 	cin >> temp;
-*/
+
 	return 0;
 }
