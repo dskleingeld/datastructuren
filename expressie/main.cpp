@@ -5,20 +5,17 @@
 
 using namespace std;
 
-string testInvoer = "+ 2 42";
+string testInvoer = "+ * 2 x cos 42";
 Boom theBoom;
 
 void process(string invoer){
-	int i = 0; // Invoer counter
-	while (invoer[i] != 0) { // End of string
+	for (int i = 0; i < invoer.size(); i++) { //Make sure subscript does not go out of range
 		string substring;
 		while ((invoer[i] != ' ') && (invoer[i] != 0)) { // Empty space or end of string
 			substring += invoer[i];
 			i = i + 1;
 		}
-		cout << "substring: " << substring << endl;
 		theBoom.processInput(substring); // Create new node in Boom
-		i = i + 1;
 	}
 
 //	For string while not string end:
@@ -31,6 +28,10 @@ int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	process(testInvoer);
-	theBoom.walkInorder();
+
+	cout << "PreOrder: " << endl;
+	theBoom.cleanStack();
+	theBoom.traverseTree();
+
 	return 0;
 }
