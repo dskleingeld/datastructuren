@@ -115,7 +115,17 @@ private:
 	void display(typeOfLeaf operand, Leaf* Temp);
 	//TODO: Display tree: Graphic
 	//TODO: Destructor
+	//TODO: Is 'node' a better name than leaf?
+	/**
+	* @function preOrder(Leaf* Temp)
+	* @abstract traverse the tree in pre-order direction
+	* @param Temp: a temporary Leaf object
+	* @return
+	* @pre
+	* @post
+	**/
 	void preOrder(Leaf* Temp);
+	void inOrder(Leaf* Temp);
 };
 
 #endif

@@ -40,7 +40,6 @@ void Boom::processInput(std::string substring) {
 			default:
 				if (kar > 47 && kar < 58){//if the car is a ascii number
 					operand = NUMBER;
-					//number = (double)(kar-48);//-48 to go to normal numbers from ascii
 					number = std::atof(substring.c_str());
 				}
 				else {
@@ -129,14 +128,53 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 }
 
 void Boom::traverseTree() {
-	preOrder(currentLeaf);
+	//TODO: many if-statements -> improve?
+	std::cout << "(";
+	inOrder(currentLeaf);
+	std::cout << ")";
 }
 
 void Boom::preOrder(Leaf* Temp) {
 	if (Temp) {
-		display(Temp->operand, Temp);
-		preOrder(Temp->branchLeft);
-		preOrder(Temp->branchRight);
+		//TODO: many if-statements -> improve?
+		if ((currentLeaf->operand == PLUS) ||
+			(currentLeaf->operand == MINUS)) {
+			inOrder(Temp->branchLeft);
+			display(Temp->operand, Temp);
+			inOrder(Temp->branchRight);
+		}
+		else if	
+			((currentLeaf->operand == TIMES) ||
+			(currentLeaf->operand == DEVIDE) ||
+			(currentLeaf->operand == POWER)) {
+			//Binary operator, needs in-order traversion
+			std::cout << "(";
+			inOrder(Temp->branchLeft);
+			display(Temp->operand, Temp);
+			inOrder(Temp->branchRight);
+			std::cout << ")";
+		}
+		else {
+			display(Temp->operand, Temp);
+			preOrder(Temp->branchLeft);
+			preOrder(Temp->branchRight);
+		}
+	}
+}
+
+void Boom::inOrder(Leaf* Temp) {
+	if (Temp) {
+		if ((Temp->operand == COS) || (Temp->operand == SIN)) {
+			//Unary operator, needs pre-order traversion
+			display(Temp->operand, Temp);
+			preOrder(Temp->branchLeft);
+			preOrder(Temp->branchRight);
+		}
+		else {
+			inOrder(Temp->branchLeft);
+			display(Temp->operand, Temp);
+			inOrder(Temp->branchRight);
+		}
 	}
 }
 
@@ -152,34 +190,34 @@ void Boom::cleanStack() {
 void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 	switch (operand) {
 			case PLUS:
-				std::cout << "+ ";
+				std::cout << " + ";
 				break;
 			case MINUS:
-				std::cout << "- ";
+				std::cout << " - ";
 				break;
 			case TIMES:
-				std::cout << "* ";
+				std::cout << "";
 				break;			
 			case POWER:
-				std::cout << "^ ";
+				std::cout << "^";
 				break;				
 			case DEVIDE:
-				std::cout << "/ ";
+				std::cout << ") / (";
 				break;
 			case SIN:
-				std::cout << "sin ";
+				std::cout << "sin";
 				break;
 			case COS:
-				std::cout << "cos ";
+				std::cout << "cos";
 				break;
 			case PI:
-				std::cout << "pi ";
+				std::cout << "pi";
 				break;
 			case NUMBER:
-				std::cout << Temp->number << " ";
+				std::cout << Temp->number;
 				break;
 			case VARIABLE:
-				std::cout << Temp->variable << " ";
+				std::cout << Temp->variable;
 				break;
 			default:
 				break;

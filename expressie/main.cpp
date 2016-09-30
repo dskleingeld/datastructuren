@@ -5,7 +5,8 @@
 
 using namespace std;
 
-string testInvoer = "+ * 2 x cos 42";
+string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
+//TODO: Fails if string consists of 1 character (example: testInvoer = "x" gives errors)
 Boom theBoom;
 
 void process(string invoer){
@@ -29,9 +30,13 @@ int main()
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	process(testInvoer);
 
-	cout << "PreOrder: " << endl;
+	cout << "Current expression: " << endl;
 	theBoom.cleanStack();
 	theBoom.traverseTree();
-
+/*
+Because windows is being annoying
+	string temp;
+	cin >> temp;
+*/
 	return 0;
 }
