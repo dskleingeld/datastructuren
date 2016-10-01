@@ -111,9 +111,7 @@ private:
 	* @post
 	**/
 	void addLeaf(typeOfLeaf operand, char variable, double number);
-	//TODO: Display tree: Expression 
 	void display(typeOfLeaf operand, Leaf* Temp);
-	//TODO: Display tree: Graphic
 	//TODO: Destructor
 	//TODO: Is 'node' a better name than leaf?
 	/**
@@ -125,7 +123,20 @@ private:
 	* @post
 	**/
 	void preOrder(Leaf* Temp);
+	/**
+	* @function inOrder(Leaf* Temp)
+	* @abstract traverse the tree in in-order direction
+	* @param Temp: a temporary Leaf object
+	* @return
+	* @pre
+	* @post
+	**/
 	void inOrder(Leaf* Temp);
+	//TODO: Display tree: Graphic
+	void writeGraph(typeOfLeaf operand, Leaf* Temp, int counter, std::ofstream & myfile);
+	void preOrderGraph(Leaf* Temp, int & k, int & counter, std::ofstream & myfile);
+	void displayGraph();
+	void writeConnection(int & k, int counter, std::ofstream & myfile);
 };
 
 #endif

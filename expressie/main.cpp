@@ -5,11 +5,12 @@
 
 using namespace std;
 
-string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
+//string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
+string testInvoer = "+ * 2 x cos 42";
 Boom theBoom;
 
 void process(string invoer){
-	for (int i = 0; i < invoer.size(); i++) { //Make sure subscript does not go out of range
+	for (unsigned int i = 0; i < invoer.size(); i++) { //Make sure subscript does not go out of range
 		string substring;
 		while ((invoer[i] != ' ') && (invoer[i] != 0)) { // Empty space or end of string
 			substring += invoer[i];
@@ -28,10 +29,11 @@ int main()
 	cout << "Current expression: " << endl;
 	theBoom.cleanStack();
 	theBoom.traverseTree();
-
+	cout << endl;
+/*
 //Because windows is being annoying
 	string temp;
 	cin >> temp;
-
+*/
 	return 0;
 }
