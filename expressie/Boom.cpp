@@ -135,6 +135,7 @@ void Boom::traverseTree() {
 	std::cout << "(";
 	inOrder(currentLeaf);
 	std::cout << ")";
+	cleanStack();
 	displayGraph();
 }
 
@@ -229,73 +230,103 @@ void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 }
 
 void Boom::writeGraph(typeOfLeaf operand, Leaf* Temp, int counter, std::ofstream & myfile) {
-	myfile << counter << " ";
+	myfile << "  " << counter << " ";
 	switch (operand) {
 			case PLUS:
-				myfile << "[label='+']" << std::endl;
+				myfile << "[label=\"+\"]" << std::endl;
 				break;
 			case MINUS:
-				myfile << "[label='-']" << std::endl;
+				myfile << "[label=\"-\"]" << std::endl;
 				break;
 			case TIMES:
-				myfile << "[label='*']" << std::endl;
+				myfile << "[label=\"*\"]" << std::endl;
 				break;			
 			case POWER:
-				myfile << "[label='^']" << std::endl;
+				myfile << "[label=\"^\"]" << std::endl;
 				break;				
 			case DEVIDE:
-				myfile << "[label='/']" << std::endl;
+				myfile << "[label=\"/\"]" << std::endl;
 				break;
 			case SIN:
-				myfile << "[label='sin']" << std::endl;
+				myfile << "[label=\"sin\"]" << std::endl;
 				break;
 			case COS:
-				myfile << "[label='cos']" << std::endl;
+				myfile << "[label=\"cos\"]" << std::endl;
 				break;
 			case PI:
-				myfile << "[label='pi']" << std::endl;
+				myfile << "[label=\"pi\"]" << std::endl;
 				break;
 			case NUMBER:
-				myfile << "[label='" << Temp->number << "']" << std::endl;
+				myfile << "[label=\"" << Temp->number << "\"]" << std::endl;
 				break;
 			case VARIABLE:
-				myfile << "[label='" << Temp->variable << "']" << std::endl;
+				myfile << "[label=\"" << Temp->variable << "\"]" << std::endl;
 				break;
 			default:
 				break;
 	}
-	myfile << "  ";
 }
 
-void Boom::writeConnection(int & k, int counter, std::ofstream & myfile) {
-	while (k < (counter-1)) {
-		myfile << k << " -> ";
-		k++;
-		if (k > (counter-2)) {
-				myfile << counter-1 << std::endl << "  " ;
+void Boom::writeConnection(int counter, std::ofstream & myfile, std::stack<int> myStack) {
+	std::stack<int> anotherStack;
+	while (!myStack.empty()) {
+		anotherStack.push(myStack.top());
+		myStack.pop();
+	}
+	myfile << "  ";
+	if (Rcounter == 0) {
+		while (!anotherStack.empty() && (k <= counter - 1)) {
+			myfile << anotherStack.top() << " -> "; //no endl
+			k++;
+			anotherStack.pop();
+			if (!anotherStack.empty() && (k == (counter - 1))) { //does not happen
+				myfile << anotherStack.top();
+				anotherStack.pop();
+			}
 		}
 	}
+	else {
+		int p = 0;
+		while (!anotherStack.empty() && (p <= Rcounter)) {
+			myfile << anotherStack.top() << " -> "; //no endl
+			anotherStack.pop();
+			p++;
+			if (!anotherStack.empty() && (p > Rcounter)) {
+				myfile << anotherStack.top();
+			}
+		}
+	}
+	myfile << std::endl;
 }
 
-void Boom::preOrderGraph(Leaf* Temp, int & k, int & counter, std::ofstream & myfile) {
+void Boom::preOrderGraph(Leaf* Temp, int & counter, std::ofstream & myfile) {
 	if (Temp) {
 		writeGraph(Temp->operand, Temp, counter, myfile);
+		kStack.push(counter);
 		counter += 1;
-		preOrderGraph(Temp->branchLeft, k, counter, myfile);
-		preOrderGraph(Temp->branchRight, k, counter, myfile);
-		writeConnection(k, counter, myfile);
+		preOrderGraph(Temp->branchLeft, counter, myfile);
+		//if has no children: 
+		if (Temp->branchLeft == NULL) {
+			writeConnection(counter, myfile, kStack);
+		}
+		Rcounter++;
+		preOrderGraph(Temp->branchRight, counter, myfile);
+		if (!kStack.empty()) {
+			kStack.pop();
+		}
+		Rcounter--;
 	}
 }
 
 void Boom::displayGraph() {
 	std::ofstream myfile;
-  myfile.open ("graph.txt");
-  myfile << "digraph G {\n  ";
+	myfile.open ("graph.txt");
+	myfile << "digraph G {\n";
 
 	int counter = 1;
-	int k = 1;
+	k = 1;
 	//in-order traversion
-	preOrderGraph(currentLeaf, k, counter, myfile);
+	preOrderGraph(currentLeaf, counter, myfile);
 	myfile << "}";
   myfile.close();
 }

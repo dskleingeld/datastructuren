@@ -30,10 +30,10 @@ int main()
 	theBoom.cleanStack();
 	theBoom.traverseTree();
 	cout << endl;
-/*
+
 //Because windows is being annoying
 	string temp;
 	cin >> temp;
-*/
+
 	return 0;
 }
