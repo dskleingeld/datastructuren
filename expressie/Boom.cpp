@@ -229,7 +229,7 @@ void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 	}
 }
 
-void Boom::writeGraph(typeOfLeaf operand, Leaf* Temp, int counter, std::ofstream & myfile) {
+void Boom::writeLabel(typeOfLeaf operand, Leaf* Temp, std::ofstream & myfile) {
 	myfile << "  " << counter << " ";
 	switch (operand) {
 			case PLUS:
@@ -267,67 +267,47 @@ void Boom::writeGraph(typeOfLeaf operand, Leaf* Temp, int counter, std::ofstream
 	}
 }
 
-void Boom::writeConnection(int counter, std::ofstream & myfile, std::stack<int> myStack) {
+void Boom::writeConnection(std::ofstream & myfile, std::stack<int> myStack) {
+	//Reverse the stack-order
 	std::stack<int> anotherStack;
-	while (!myStack.empty()) {
+	if (!myStack.empty()) {
 		anotherStack.push(myStack.top());
 		myStack.pop();
 	}
-	myfile << "  ";
-	if (Rcounter == 0) {
-		while (!anotherStack.empty() && (k <= counter - 1)) {
-			myfile << anotherStack.top() << " -> "; //no endl
-			k++;
-			anotherStack.pop();
-			if (!anotherStack.empty() && (k == (counter - 1))) { //does not happen
-				myfile << anotherStack.top();
-				anotherStack.pop();
-			}
+	if (!myStack.empty()) { 
+		//Only do this when stack contains 2 items or more
+		myfile << "  ";
+		anotherStack.push(myStack.top());
+		myfile << anotherStack.top() << " -> ";
+		anotherStack.pop();
+		if (!anotherStack.empty()) {
+			myfile << anotherStack.top() << std::endl;
 		}
 	}
-	else {
-		int p = 0;
-		while (!anotherStack.empty() && (p <= Rcounter)) {
-			myfile << anotherStack.top() << " -> "; //no endl
-			anotherStack.pop();
-			p++;
-			if (!anotherStack.empty() && (p > Rcounter)) {
-				myfile << anotherStack.top();
-			}
-		}
-	}
-	myfile << std::endl;
 }
 
-void Boom::preOrderGraph(Leaf* Temp, int & counter, std::ofstream & myfile) {
+void Boom::preOrderGraph(Leaf* Temp, std::ofstream & myfile) {
 	if (Temp) {
-		writeGraph(Temp->operand, Temp, counter, myfile);
+		writeLabel(Temp->operand, Temp, myfile);
 		kStack.push(counter);
 		counter += 1;
-		preOrderGraph(Temp->branchLeft, counter, myfile);
-		//if has no children: 
-		if (Temp->branchLeft == NULL) {
-			writeConnection(counter, myfile, kStack);
-		}
-		Rcounter++;
-		preOrderGraph(Temp->branchRight, counter, myfile);
+		writeConnection(myfile, kStack);
+		preOrderGraph(Temp->branchLeft, myfile);
+		preOrderGraph(Temp->branchRight, myfile);
 		if (!kStack.empty()) {
 			kStack.pop();
 		}
-		Rcounter--;
 	}
 }
 
 void Boom::displayGraph() {
+	counter = 1;
 	std::ofstream myfile;
 	myfile.open ("graph.txt");
 	myfile << "digraph G {\n";
-
-	int counter = 1;
-	k = 1;
 	//in-order traversion
-	preOrderGraph(currentLeaf, counter, myfile);
+	preOrderGraph(currentLeaf, myfile);
 	myfile << "}";
-  myfile.close();
+	myfile.close();
 }
 

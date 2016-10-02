@@ -85,8 +85,7 @@ private:
 	Leaf* root;//TODO if multiwalk not necessairy we can set currentleaf to this when done
 	  //Current leaf/node
 	Leaf* currentLeaf;
-	int Rcounter = 0;
-	int k;
+	int counter;
 	/**
 	* @function nextFreeBranch()
 	* @abstract
@@ -136,10 +135,10 @@ private:
 	**/
 	void inOrder(Leaf* Temp);
 	//TODO: Display tree: Graphic
-	void writeGraph(typeOfLeaf operand, Leaf* Temp, int counter, std::ofstream & myfile);
-	void preOrderGraph(Leaf* Temp, int & counter, std::ofstream & myfile);
+	void writeLabel(typeOfLeaf operand, Leaf* Temp, std::ofstream & myfile);
+	void preOrderGraph(Leaf* Temp, std::ofstream & myfile);
 	void displayGraph();
-	void writeConnection(int counter, std::ofstream & myfile, std::stack<int> myStack);
+	void writeConnection(std::ofstream & myfile, std::stack<int> myStack);
 };
 
 #endif

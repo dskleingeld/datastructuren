@@ -5,8 +5,8 @@
 
 using namespace std;
 
-//string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
-string testInvoer = "+ * 2 x cos 42";
+string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
+//string testInvoer = "+ * 2 x cos 42";
 Boom theBoom;
 
 void process(string invoer){
