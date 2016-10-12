@@ -104,19 +104,12 @@ private:
 	**/
 	void display(typeOfLeaf operand, Leaf* Temp);
 	/**
-	* @function preOrder
-	* @abstract traverse the tree in pre-order direction
-	* @param Leaf* Temp: a temporary Leaf object
-	* @pre a non-empty node of the tree
-	**/
-	void preOrder(Leaf* Temp);
-	/**
 	* @function inOrder
 	* @abstract traverse the tree in in-order direction
 	* @param Leaf* Temp: a temporary Leaf object
 	* @pre a non-empty node of the tree
 	**/
-	void inOrder(Leaf* Temp, bool visit1, bool visit3);
+	void inOrder(Leaf* Temp);
 	/**
 	* @function writeLabel
 	* @abstract write the label of the node to graph.txt
@@ -149,8 +142,20 @@ private:
 	* @pre a non-empty node of the tree
 	**/
 	void writeConnection(std::ofstream & myfile, std::stack<int> myStack);
-	//TODO: comments
-	bool isNotOperator(Leaf* Temp);
+	/**
+	* @function isOperator
+	* @abstract check if operand is plus or minus
+	* @param Leaf* Temp
+	* @return True (is operator) or false
+	**/
+	bool isOperator(Leaf* Temp);
+	/**
+	* @function isUnaryOperator
+	* @abstract check if operand is cos, sin or power
+	* @param Leaf* Temp
+	* @return True (is unary operator) or false
+	**/
+	bool isUnaryOperator(Leaf* Temp);
 };
 
 #endif

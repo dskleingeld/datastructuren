@@ -145,69 +145,54 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 }
 
 void Boom::view() {
-	bool visit1 = false;
-	bool visit3 = false;
 	//Display the tree as a mathematical expression
-	inOrder(root, visit1, visit3);
+	inOrder(root);
 	//Display the tree graphically
 	Graph_display();
 }
-/*
-void Boom::preOrder(Leaf* Temp) {
-	if (Temp) {
-		if ((currentLeaf->operand == PLUS) ||
-			(currentLeaf->operand == MINUS)) {
-			inOrder(Temp->branchLeft);
-			display(Temp->operand, Temp);
-			inOrder(Temp->branchRight);
-		}
-		else if	
-			((currentLeaf->operand == TIMES) ||
-			(currentLeaf->operand == DEVIDE) ||
-			(currentLeaf->operand == POWER)) {
-			//Binary operator, needs in-order traversion
-			std::cout << "(";
-			inOrder(Temp->branchLeft);
-			display(Temp->operand, Temp);
-			inOrder(Temp->branchRight);
-			std::cout << ")";
-		}
-		else {
-			display(Temp->operand, Temp);
-			preOrder(Temp->branchLeft);
-			preOrder(Temp->branchRight);
-		}
-	}
-}
-*/
 
-bool Boom::isNotOperator(Leaf* Temp) {
+bool Boom::isOperator(Leaf* Temp) {
 	if ((Temp->operand != PLUS) && 
-			(Temp->operand != MINUS) &&
-			(Temp->operand != POWER)) {
-		return true;
+			(Temp->operand != MINUS)) {
+		return false;
 	}
-	return false;
+	return true;
 }
 
-void Boom::inOrder(Leaf* Temp, bool visit1, bool visit3) {
+bool Boom::isUnaryOperator(Leaf* Temp) {
+	if ((Temp->operand != COS) && 
+			(Temp->operand != SIN) &&
+			(Temp->operand != POWER)) {
+		return false;
+	}
+	return true;
+}
+
+void Boom::inOrder(Leaf* Temp) {
+	//When you enter inOrder, you are always at the first visit
 	if (Temp) {
 		if ((Temp->operand == COS)||(Temp->operand == SIN)) {
 			display(Temp->operand, Temp);
-			inOrder(Temp->branchLeft, visit1, visit3);
-			inOrder(Temp->branchRight, visit1, visit3);
+			if(isUnaryOperator(Temp)) {			
+				std::cout << "("; 
+			}
+			inOrder(Temp->branchLeft);
+			inOrder(Temp->branchRight);
+			if(isUnaryOperator(Temp)) {			
+				std::cout << ")"; 
+			}
 		}
 		else {	
-			if(!isNotOperator(Temp)) {			
-				std::cout << "(";
+			if(isOperator(Temp)) {			
+				std::cout << "("; 
 			}
-			inOrder(Temp->branchLeft, visit1, visit3);
-			display(Temp->operand, Temp);
-			inOrder(Temp->branchRight, visit1, visit3);
-			if(!isNotOperator(Temp)) {			
+			inOrder(Temp->branchLeft); 
+			display(Temp->operand, Temp);//Entering second visit
+			inOrder(Temp->branchRight);
+			//At the end of inOrder, you are always at the third visit
+			if(isOperator(Temp)) {			
 				std::cout << ")";
 			}
-
 		}
 	}
 }

@@ -5,14 +5,15 @@
 
 using namespace std;
 
-string testInvoer = "/ + * 2 x cos ^ x y + a b";
-//string testInvoer = "/ * 5 + 6 a cos ^ x y";
+string testInvoer = "/ + * 2 x cos + 8 ^ x + 3 y + a / + / pi 5 871 0";
 Boom theBoom;
 
 void process(string invoer){
-	for (unsigned int i = 0; i < invoer.size(); i++) { //Make sure subscript does not go out of range
+	for (unsigned int i = 0; i < invoer.size(); i++) { 
+		//Make sure subscript does not go out of range
 		string substring;
-		while ((invoer[i] != ' ') && (invoer[i] != 0)) { // Empty space or end of string
+		while ((invoer[i] != ' ') && (invoer[i] != 0)) { 
+			// Empty space or end of string
 			substring += invoer[i];
 			i = i + 1;
 		}
@@ -25,7 +26,7 @@ int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	cout << "Input mathematical expression: ";
-//	getline(cin, testInvoer);
+	getline(cin, testInvoer);
 	process(testInvoer);
 
 	cout << "Current expression: " << endl;
