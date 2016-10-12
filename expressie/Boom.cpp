@@ -108,7 +108,6 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 	else {
 		currentLeaf->variable = variable;
 	}
-	
 	//Determine how many children this node needs (0, 1 or 2)
 	if (operand == NUMBER || operand ==  VARIABLE || operand == PI) {
 		//0 children
@@ -136,7 +135,7 @@ void Boom::traverseTree() {
 	inOrder(currentLeaf);
 	std::cout << ")";
 	cleanStack();
-	displayGraph();
+	Graph_display();
 }
 
 void Boom::preOrder(Leaf* Temp) {
@@ -286,27 +285,26 @@ void Boom::writeConnection(std::ofstream & myfile, std::stack<int> myStack) {
 	}
 }
 
-void Boom::preOrderGraph(Leaf* Temp, std::ofstream & myfile) {
+void Boom::Graph_preOrder(Leaf* Temp, std::ofstream & myfile) {
 	if (Temp) {
 		writeLabel(Temp->operand, Temp, myfile);
 		kStack.push(counter);
 		counter += 1;
 		writeConnection(myfile, kStack);
-		preOrderGraph(Temp->branchLeft, myfile);
-		preOrderGraph(Temp->branchRight, myfile);
+		Graph_preOrder(Temp->branchLeft, myfile);
+		Graph_preOrder(Temp->branchRight, myfile);
 		if (!kStack.empty()) {
 			kStack.pop();
 		}
 	}
 }
 
-void Boom::displayGraph() {
+void Boom::Graph_display() {
 	counter = 1;
 	std::ofstream myfile;
 	myfile.open ("graph.txt");
 	myfile << "digraph G {\n";
-	//in-order traversion
-	preOrderGraph(currentLeaf, myfile);
+	Graph_preOrder(currentLeaf, myfile);
 	myfile << "}";
 	myfile.close();
 }
