@@ -5,8 +5,8 @@
 
 using namespace std;
 
-string testInvoer = "/ + * 2 x cos ^ x 42 + a b";
-//string testInvoer = "+ * 2 x cos 42";
+string testInvoer = "/ + * 2 x cos ^ x y + a b";
+//string testInvoer = "/ * 5 + 6 a cos ^ x y";
 Boom theBoom;
 
 void process(string invoer){
@@ -24,16 +24,12 @@ void process(string invoer){
 int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
+	cout << "Input mathematical expression: ";
+//	getline(cin, testInvoer);
 	process(testInvoer);
 
 	cout << "Current expression: " << endl;
-	theBoom.cleanStack();
-	theBoom.traverseTree();
+	theBoom.view();
 	cout << endl;
-
-//Because windows is being annoying
-	string temp;
-	cin >> temp;
-
 	return 0;
 }

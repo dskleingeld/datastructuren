@@ -15,6 +15,20 @@ Boom::Leaf::Leaf(){
 	branchRight = NULL;
 }
 
+Boom::~Boom(){
+	Clear(root);
+}
+
+void Boom::Clear(Leaf* Temp)
+{
+    if (Temp->branchLeft != NULL)
+        Clear(Temp->branchLeft);
+    if (Temp->branchRight != NULL)
+        Clear(Temp->branchRight);
+    delete Temp;
+    Temp = NULL;
+}
+
 void Boom::processInput(std::string substring) {
 	typeOfLeaf operand = PLUS; // Need to initialize this enum
 	char variable = -1;
@@ -130,17 +144,17 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 	}	
 }
 
-void Boom::traverseTree() {
-	std::cout << "(";
-	inOrder(currentLeaf);
-	std::cout << ")";
-	cleanStack();
+void Boom::view() {
+	bool visit1 = false;
+	bool visit3 = false;
+	//Display the tree as a mathematical expression
+	inOrder(root, visit1, visit3);
+	//Display the tree graphically
 	Graph_display();
 }
-
+/*
 void Boom::preOrder(Leaf* Temp) {
 	if (Temp) {
-		//TODO: many if-statements -> improve?
 		if ((currentLeaf->operand == PLUS) ||
 			(currentLeaf->operand == MINUS)) {
 			inOrder(Temp->branchLeft);
@@ -165,30 +179,37 @@ void Boom::preOrder(Leaf* Temp) {
 		}
 	}
 }
+*/
 
-void Boom::inOrder(Leaf* Temp) {
-	if (Temp) {
-		if ((Temp->operand == COS) || (Temp->operand == SIN)) {
-			//Unary operator, needs pre-order traversion
-			display(Temp->operand, Temp);
-			preOrder(Temp->branchLeft);
-			preOrder(Temp->branchRight);
-		}
-		else {
-			inOrder(Temp->branchLeft);
-			display(Temp->operand, Temp);
-			inOrder(Temp->branchRight);
-		}
+bool Boom::isNotOperator(Leaf* Temp) {
+	if ((Temp->operand != PLUS) && 
+			(Temp->operand != MINUS) &&
+			(Temp->operand != POWER)) {
+		return true;
 	}
+	return false;
 }
 
-void Boom::cleanStack() {
-	while (!leafStack.empty()) {
-		leafStack.pop();
+void Boom::inOrder(Leaf* Temp, bool visit1, bool visit3) {
+	if (Temp) {
+		if ((Temp->operand == COS)||(Temp->operand == SIN)) {
+			display(Temp->operand, Temp);
+			inOrder(Temp->branchLeft, visit1, visit3);
+			inOrder(Temp->branchRight, visit1, visit3);
+		}
+		else {	
+			if(!isNotOperator(Temp)) {			
+				std::cout << "(";
+			}
+			inOrder(Temp->branchLeft, visit1, visit3);
+			display(Temp->operand, Temp);
+			inOrder(Temp->branchRight, visit1, visit3);
+			if(!isNotOperator(Temp)) {			
+				std::cout << ")";
+			}
+
+		}
 	}
-	//Restore root node to top of the empty stack
-	leafStack.push(root);
-	currentLeaf = root;
 }
 
 void Boom::display(typeOfLeaf operand, Leaf* Temp) {
@@ -200,13 +221,13 @@ void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 				std::cout << " - ";
 				break;
 			case TIMES:
-				std::cout << "";
+				std::cout << "*";
 				break;			
 			case POWER:
 				std::cout << "^";
 				break;				
 			case DEVIDE:
-				std::cout << ") / (";
+				std::cout << " / ";
 				break;
 			case SIN:
 				std::cout << "sin";
@@ -288,13 +309,13 @@ void Boom::writeConnection(std::ofstream & myfile, std::stack<int> myStack) {
 void Boom::Graph_preOrder(Leaf* Temp, std::ofstream & myfile) {
 	if (Temp) {
 		writeLabel(Temp->operand, Temp, myfile);
-		kStack.push(counter);
+		Graph_Stack.push(counter);
 		counter += 1;
-		writeConnection(myfile, kStack);
+		writeConnection(myfile, Graph_Stack);
 		Graph_preOrder(Temp->branchLeft, myfile);
 		Graph_preOrder(Temp->branchRight, myfile);
-		if (!kStack.empty()) {
-			kStack.pop();
+		if (!Graph_Stack.empty()) {
+			Graph_Stack.pop();
 		}
 	}
 }
@@ -304,7 +325,7 @@ void Boom::Graph_display() {
 	std::ofstream myfile;
 	myfile.open ("graph.txt");
 	myfile << "digraph G {\n";
-	Graph_preOrder(currentLeaf, myfile);
+	Graph_preOrder(root, myfile);
 	myfile << "}";
 	myfile.close();
 }

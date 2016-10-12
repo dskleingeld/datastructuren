@@ -17,48 +17,25 @@ public:
 	/**
 	* @function Boom()
 	* @abstract Constructor: Create new object node
-	* @param
 	* @return object of class node
-	* @pre
-	* @post
 	**/
 	Boom();
  	/**
   * @function ~Boom()
-  * @abstract Deconstructor: Deletes tree
-  * @param
-  * @return object of class node
-  * @pre 
-  * @post 
+  * @abstract Deconstructor
   **/
 	~Boom();
 	/**
-	* @function processInput()
-	* @abstract
-	* @param
-	* @return
-	* @pre
-	* @post
+	* @function processInput
+	* @abstract process the input given by the user
+	* @param std::string substring: a small part of the input
 	**/
 	void processInput(std::string substring);
 	/**
-	* @function goLeft()
-	* @abstract Traverse tree in direction 1 (POSTORDER)
-	* @param
-	* @return
-	* @pre
-	* @post
+	* @function view
+	* @abstract calls the functions that display the tree in 2 different ways
 	**/
-	void traverseTree();
-	/**
-	* @function cleanStack()
-	* @abstract clean the stack that keeps track of passed nodes, restore top value to root node
-	* @param
-	* @return
-	* @pre
-	* @post
-	**/
-	void cleanStack();
+	void view();
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
@@ -81,12 +58,20 @@ private:
 	//Stack of leaves
 	std::stack<Leaf*> leafStack;
 	//An extra stack for the Graphical_display function
-	std::stack<int> kStack;
+	std::stack<int> Graph_Stack;
 	//Root of the tree
 	Leaf* root;
 	//Current leaf/node
 	Leaf* currentLeaf;
 	int counter;
+ 	/**
+  * @function Clear
+  * @abstract Deletes the nodes of the tree, recursively
+  * @param Leaf* Temp
+  * @pre Tree of size n
+  * @post No tree
+  **/
+	void Clear(Leaf* Temp);
 	/**
 	* @function nextFreeBranch
 	* @abstract searches for the next free branch on the right side, up from the 
@@ -131,7 +116,7 @@ private:
 	* @param Leaf* Temp: a temporary Leaf object
 	* @pre a non-empty node of the tree
 	**/
-	void inOrder(Leaf* Temp);
+	void inOrder(Leaf* Temp, bool visit1, bool visit3);
 	/**
 	* @function writeLabel
 	* @abstract write the label of the node to graph.txt
@@ -164,6 +149,8 @@ private:
 	* @pre a non-empty node of the tree
 	**/
 	void writeConnection(std::ofstream & myfile, std::stack<int> myStack);
+	//TODO: comments
+	bool isNotOperator(Leaf* Temp);
 };
 
 #endif
