@@ -3,7 +3,7 @@
 * @author Lisa Pothoven (s1328263)
 * @author David Kleingeld (s1432982)
 * @file Boom.h
-* @date 20-09-2016
+* @date 12-10-2016
 **/
 
 #include <string>

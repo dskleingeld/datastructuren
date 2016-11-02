@@ -26,7 +26,7 @@ int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	cout << "Input mathematical expression: ";
-	getline(cin, testInvoer);
+	//getline(cin, testInvoer);
 	process(testInvoer);
 
 	cout << "Current expression: " << endl;
