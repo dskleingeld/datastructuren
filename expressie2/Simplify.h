@@ -6,29 +6,24 @@
 * @date 2-11-2016
 **/
 
-/**
-TODO remove this later
-* @function functienaam
-* @abstract beschrijving wat de functie doet,
-inclusief hulpfuncties. Noem hulpfuncties niet!
-* @param parameternaam beschrijving rol parameter
-* @return beschrijving van het resultaat
-* @pre exacte beschrijving preconditie
-* @post exacte beschrijving postconditie
-wat is er veranderd na het uitvoeren van de functie?
-**/
-
-#include <Boom.h>
+#include "Boom.h"
 
 #ifndef Simplify_h
 #define Simplify_h
 
-class Evaluate : public Boom {
+class Simplify :public Boom {
 public:
 	/**
 	* @function CallSimplify
 	* @abstract Public function to initiate the Simplify funcion
 	**/	
+	
+	/**
+	* @function Simplify
+	* @abstract Constructor
+	**/	
+	Simplify();
+	
 private:
 	// Number on 'left side' of calculation
 	double left;
@@ -62,23 +57,23 @@ private:
 	* @abstract What operand is in the current node?
 	* @param operand
 	**/
-	void Operate(typeOfLeaf operand);
+	void Operate(Leaf* thisLeaf);
 	/**
 	* @function FindElement
 	* @abstract What element is in the leaf?
 	* @param
 	**/
-	void FindElement(Leaf* currentLeaf, double num, char var);
+	void FindElement(Leaf* thisLeaf, double num, char var);
 
 	void Plus();
 
-	void Minus();
+	bool Minus(Leaf* thisLeaf);
 
 	void Times();
 
 	void Power();
 
-	void Devide();
+	void Devide(Leaf* thisLeaf);
 
 	void Sin();
 

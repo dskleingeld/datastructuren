@@ -3,7 +3,19 @@
 * @author Lisa Pothoven (s1328263)
 * @author David Kleingeld (s1432982)
 * @file Boom.h
-* @date 12-10-2016
+* @date 03-11-2016
+**/
+
+/**
+TODO remove this later
+* @function functienaam
+* @abstract beschrijving wat de functie doet,
+inclusief hulpfuncties. Noem hulpfuncties niet!
+* @param parameternaam beschrijving rol parameter
+* @return beschrijving van het resultaat
+* @pre exacte beschrijving preconditie
+* @post exacte beschrijving postconditie
+wat is er veranderd na het uitvoeren van de functie?
 **/
 
 #include <string>
@@ -36,7 +48,7 @@ public:
 	* @abstract calls the functions that display the tree in 2 different ways
 	**/
 	void view();
-protected:
+private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
 		PLUS, MINUS, TIMES, POWER, DEVIDE,
@@ -63,7 +75,7 @@ protected:
 	Leaf* root;
 	//Current leaf/node
 	Leaf* currentLeaf;
-private:
+	
 	int counter;
  	/**
   * @function Clear
@@ -157,6 +169,54 @@ private:
 	* @return True (is unary operator) or false
 	**/
 	bool isUnaryOperator(Leaf* Temp);
+	
+	
+// ---- SIMPLIFY ----	
+	// Number on 'left side' of calculation
+	double left;
+	// Number on 'right side' of calculation
+	double right;
+	// Variable used in calculation
+	char var_left;
+	char var_right;
+
+	/**
+	* @function Simp_InOrder
+	* @abstract Walk through the tree with in-order traversion,
+	* search for simplify-able expressions
+	* @param Leaf* Temp is inherited from parent class Boom.h
+	* When you start this function, Temp should be root (you start at 
+	* the root of your tree).
+	* @pre Non-empty tree of class Boom
+	**/
+	void Simp_inOrder(Leaf* Temp);
+
+	/**
+	* @function FindOperand
+	* @abstract What operand is in the current node?
+	* @param operand
+	**/
+	void Operate(Leaf* thisLeaf);
+	/**
+	* @function FindElement
+	* @abstract What element is in the leaf?
+	* @param
+	**/
+	void FindElement(Leaf* thisLeaf, double num, char var);
+
+	void Plus();
+
+	bool Minus(Leaf* thisLeaf);
+
+	void Times();
+
+	void Power();
+
+	bool Devide(Leaf* thisLeaf);
+
+	void Sin();
+
+	void Cos();
 };
 
 #endif

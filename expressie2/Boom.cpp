@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include "Boom.h"
 
 Boom::Boom(){
@@ -323,3 +324,196 @@ void Boom::Graph_display() {
 	myfile.close();
 }
 
+void Boom::Simp_inOrder(Leaf* Temp) {
+	// When you enter inOrder, you are always at the first visit
+	if (Temp) {
+		Simp_inOrder(Temp->branchLeft); 
+		//Entering second visit
+		Simp_inOrder(Temp->branchRight);
+		//At the end of inOrder, you are always at the third visit
+		Operate(Temp);
+	}
+	/**
+	* Notes:
+	* Mogelijke situaties (met a en b = getal):
+	* pi = 3.14
+	* cos(a)
+	* sin(a)
+	* a+b a+0, a-b, a*b a*0 a*1, a/b a/0
+	* a^b, a^1, a^0
+	**/
+}
+
+void Boom::Operate(Leaf* Temp) {
+	left = 0;
+	var_left = 0;
+	right = 0;
+	var_right = 0;
+	switch (Temp->operand) {
+			case PLUS:
+				FindElement(Temp->branchLeft, left, var_left); // Find the number on the left, TODO what happens if not a number?
+				FindElement(Temp->branchRight, right, var_right); // Find the number on the right
+				if ((var_left != 0) || (var_right != 0)) { // one of them is a variable
+				    break;
+			    }
+				Plus(); // Calculate summation
+				break;
+			case MINUS:
+				FindElement(Temp->branchLeft, left, var_left);
+				FindElement(Temp->branchRight, right, var_right);
+				if (Minus(Temp)) {
+				    Temp->branchLeft = NULL;
+				    Temp->branchRight = NULL;
+				    //TODO is this the right way to delete children?
+				}
+				break;
+			case TIMES:
+				FindElement(Temp->branchLeft, left, var_left);
+				FindElement(Temp->branchRight, right, var_right);
+				Times();
+				break;			
+			case POWER:
+				FindElement(Temp->branchLeft, left, var_left);
+				FindElement(Temp->branchRight, right, var_right);
+				Power();
+				break;				
+			case DEVIDE:
+				FindElement(Temp->branchLeft, left, var_left);
+				FindElement(Temp->branchRight, right, var_right);
+				if (Devide(Temp)) {
+				    Temp->branchLeft = NULL;
+				    Temp->branchRight = NULL;
+				    //TODO is this the right way to delete children?				
+				}
+				break;
+			case SIN:
+				FindElement(Temp->branchLeft, left, var_left);
+				Sin();
+				break;
+			case COS:
+				FindElement(Temp->branchLeft, left, var_left);
+				Cos();
+				break;
+			default:
+				break;
+	}
+}
+
+
+void Boom::FindElement(Leaf* currentLeaf, double num, char var) {
+	switch (currentLeaf->operand) {
+		case PI:
+			num = 3.14159265359;
+			break;
+		case VARIABLE:
+			var = currentLeaf->variable;
+			break;
+		case NUMBER:
+			num = currentLeaf->number;
+			break;
+		default:
+			break;
+	}
+}
+
+void Boom::Plus() {
+
+}
+
+bool Boom::Minus(Leaf* Temp) {
+    if ((var_left != 0) && (var_right !=0)) { // both are variables
+		if (var_right == var_left) {
+			Temp->number = 0;
+			Temp->variable = 0;
+			Temp->operand = NUMBER;
+		}
+		else {
+			return false; // we can't simplify this expression
+		}		
+	}
+	else if (var_left != 0) { // this is a variable
+		if (right == 0) {
+		    Temp->number = 0;
+			Temp->variable = var_left;
+			Temp->operand = VARIABLE;		
+		}
+		else {
+            return false; // we can't simplify this expression
+		}
+	}
+	else if (var_right != 0) { // this is a variable
+		if (left == 0) {
+            Temp->number = 0;
+			Temp->variable = var_right;
+			Temp->operand = VARIABLE;	
+		}
+		else {
+            return false; // we can't simplify this expression
+		}
+	}
+	
+	else { // they are numbers			
+		Temp->number = left - right;
+		Temp->operand = NUMBER;
+	}
+	return true;
+}
+
+void Boom::Times() {
+
+}
+
+void Boom::Power() {
+
+}
+
+bool Boom::Devide(Leaf* Temp) {
+	if ((var_left != 0) && (var_right !=0)) { // both are variables
+		if (var_right == var_left) {
+			Temp->number = 1;
+			Temp->variable = 0;
+			Temp->operand = NUMBER;				
+		}
+		else {
+            return false; // we can't simplify this expression
+		}		
+	}
+	else if (var_left != 0) { // this is a variable
+		if (right == 0) {
+		    //TODO can't devide by zero
+		    return false;				
+		}
+		if (right == 1) {
+		    Temp->number = 0;
+			Temp->variable = var_left;
+			Temp->operand = VARIABLE;								
+		}
+		else {
+		    return false;
+		}
+	}
+	else if (var_right != 0) { // this is a variable
+		if (left == 0) {
+		    Temp->number = 0;
+			Temp->variable = 0;
+			Temp->operand = NUMBER;						
+		}
+		else {
+		    return false; // we can't simplify this expression
+		}
+	}
+	
+	else { // they are numbers			
+		Temp->number = left / right;
+		Temp->operand = NUMBER;
+	}
+	return true;
+}
+
+void Boom::Sin() {
+
+}
+
+void Boom::Cos() {
+
+}
