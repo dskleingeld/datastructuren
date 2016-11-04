@@ -53,7 +53,11 @@ public:
 	* @abstract initiates the simplifying sequence
 	**/
 	void Simplify();
-
+	/**
+	* @function Evaluate
+	* @abstract initiates the evaluation sequence
+	**/
+	void Evaluate(std::string variable, double value);
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
@@ -177,7 +181,7 @@ private:
 	bool isUnaryOperator(Leaf* Temp);
 	
 	
-// ---- SIMPLIFY ----	
+//	---- SIMPLIFY ----	
 	// Number on 'left side' of calculation
 	double left;
 	// Number on 'right side' of calculation
@@ -223,6 +227,26 @@ private:
 	bool Sin(Leaf* thisLeaf);
 
 	bool Cos(Leaf* thisLeaf);
+
+	/**
+	* @function isNearlyEqual
+	* @abstract function to check whether two doubles are equal
+	* @param double x, double y: the doubles to compare
+	* @return true (are equal), false (are not equal)
+	**/
+	bool isNearlyEqual(double x, double y);
+
+//	---- Evaluate ----
+	/**
+	* @function Evaluate
+	* @abstract Go through the tree and replace every instance of x with the given number and simplify afterwards
+	* @param double value: the value to fill in for x
+	* @pre An expression tree with variable x in one or more of the nodes/leaves
+	* @post An expression tree with a value for each variable x
+	**/
+	void Eval_inOrder(Leaf* Temp, char variable, double value);
+
+
 };
 
 #endif

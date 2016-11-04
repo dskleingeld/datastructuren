@@ -166,8 +166,11 @@ void Boom::view() {
 
 void Boom::Simplify() {
 	Simp_inOrder(root);
-	// Display the tree as a mathematical expression
-	inOrder(root);
+}
+
+void Boom::Evaluate(std::string variable, double value) {
+	Eval_inOrder(root, variable[0], value); // Input value in x
+	Simp_inOrder(root); // Simplify the expression
 }
 
 bool Boom::isOperator(Leaf* Temp) {
@@ -243,6 +246,10 @@ void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 				std::cout << "pi";
 				break;
 			case NUMBER:
+				if (isNearlyEqual(Temp->number, 0)) { 
+					// Number is actually zero, but there is still a floating point difference
+					Temp->number = 0;
+				}
 				std::cout << Temp->number;
 				break;
 			case VARIABLE:
@@ -409,7 +416,6 @@ void Boom::Operate(Leaf* Temp) {
 				break;
 			}
 			if (Devide(Temp)) {
-				std::cout << "devide" << std::endl;
 				Temp->branchLeft = NULL;
 				Temp->branchRight = NULL;
 				//TODO is this the right way to delete children?				
@@ -473,7 +479,7 @@ bool Boom::Plus(Leaf* thisLeaf) {
 		return false;
 	}
 	else if (var_left != 0) {
-		if (right == 0) { // x + 0 = x
+		if (isNearlyEqual(right, 0)) { // x + 0 = x
 			thisLeaf->number = 0;
 			thisLeaf->variable = var_left;
 			thisLeaf->operand = VARIABLE;
@@ -483,7 +489,7 @@ bool Boom::Plus(Leaf* thisLeaf) {
 		}
 	}
 	else if (var_right != 0) {
-		if (left == 0) { // 0 + x = x
+		if (isNearlyEqual(left, 0)) { // 0 + x = x
 			thisLeaf->number = 0;
 			thisLeaf->variable = var_right;
 			thisLeaf->operand = VARIABLE;
@@ -511,7 +517,7 @@ bool Boom::Minus(Leaf* thisLeaf) {
 		}		
 	}
 	else if (var_left != 0) { // this is a variable
-		if (right == 0) { // x - 0 = x
+		if (isNearlyEqual(right, 0)) { // x - 0 = x
 		    thisLeaf->number = 0;
 			thisLeaf->variable = var_left;
 			thisLeaf->operand = VARIABLE;		
@@ -537,12 +543,12 @@ bool Boom::Times(Leaf* thisLeaf) {
 		return false;
 	}
 	else if (var_left != 0) {
-		if (right == 0) { // x * 0 = 0
+		if (isNearlyEqual(right, 0)) { // x * 0 = 0
 			thisLeaf->number = 0;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
 		}
-		else if (right == 1) { // x * 1 = x
+		else if (isNearlyEqual(right, 1)) { // x * 1 = x
 			thisLeaf->number = 0;
 			thisLeaf->variable = var_left;
 			thisLeaf->operand = VARIABLE;
@@ -552,12 +558,12 @@ bool Boom::Times(Leaf* thisLeaf) {
 		}
 	}
 	else if (var_right != 0) {
-		if (left == 0) { // 0 * x = 0
+		if (isNearlyEqual(left, 0)) { // 0 * x = 0
 			thisLeaf->number = 0;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
 		}
-		else if (left == 1) { // 1 * x = x
+		else if (isNearlyEqual(left, 1)) { // 1 * x = x
 			thisLeaf->number = 0;
 			thisLeaf->variable = var_right;
 			thisLeaf->operand = VARIABLE;
@@ -578,12 +584,12 @@ bool Boom::Power(Leaf* thisLeaf) {
 		return false;
 	}
 	else if (var_left != 0) { // left is a variable
-		if (right == 1) { // x ^ 1 = x
+		if (isNearlyEqual(right, 1)) { // x ^ 1 = x
 			thisLeaf->number = 0;
 			thisLeaf->variable = var_left;
 			thisLeaf->operand = VARIABLE;
 		}
-		else if (right == 0) { // x ^ 0 = 1
+		else if (isNearlyEqual(right, 0)) { // x ^ 0 = 1
 			thisLeaf->number = 1;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
@@ -593,12 +599,12 @@ bool Boom::Power(Leaf* thisLeaf) {
 		}
 	}
 	else if (var_right != 0) { // right is a variable
-		if (left == 1) { // 1 ^ x = 1
+		if (isNearlyEqual(left, 1)) { // 1 ^ x = 1
 			thisLeaf->number = 1;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
 		}
-		else if (left == 0) { // 0 ^ x = 0
+		else if (isNearlyEqual(left, 0)) { // 0 ^ x = 0
 			thisLeaf->number = 0;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
@@ -615,7 +621,7 @@ bool Boom::Power(Leaf* thisLeaf) {
 }
 
 bool Boom::Devide(Leaf* thisLeaf) {
-	if (right == 0) {
+	if ((var_right == 0) && (isNearlyEqual(right, 0))) {
 		std::cout << "Error. You are not allowed to devide by zero." << std::endl;
 		return false;
 	}
@@ -630,7 +636,7 @@ bool Boom::Devide(Leaf* thisLeaf) {
 		}		
 	}
 	else if (var_left != 0) { // left is a variable
-		if (right == 1) { // x / 1
+		if (isNearlyEqual(right, 1)) { // x / 1
 		    thisLeaf->number = 0;
 			thisLeaf->variable = var_left;
 			thisLeaf->operand = VARIABLE;								
@@ -640,7 +646,7 @@ bool Boom::Devide(Leaf* thisLeaf) {
 		}
 	}
 	else if (var_right != 0) { // this is a variable
-		if (left == 0) { // 0 / x
+		if (isNearlyEqual(left, 0)) { // 0 / x
 		    thisLeaf->number = 0;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;						
@@ -673,4 +679,25 @@ bool Boom::Cos(Leaf* thisLeaf) {
 	thisLeaf->number = cos(left);
 	thisLeaf->operand = NUMBER;
 	return true;
+}
+
+bool Boom::isNearlyEqual(double x, double y) {
+	const double difference = 1e-5; // A small number
+	return std::abs(x - y) <= difference;
+}
+
+// ---- Evaluate ----
+void Boom::Eval_inOrder(Leaf* Temp, char variable, double value) {
+	// When you enter inOrder, you are always at the first visit
+	if (Temp) {
+		if (Temp->variable == variable) {
+			Temp->number = value;
+			Temp->variable = 0;
+			Temp->operand = NUMBER;
+		}
+		Eval_inOrder(Temp->branchLeft, variable, value);
+		//Entering second visit
+		Eval_inOrder(Temp->branchRight, variable, value);
+		//At the end of inOrder, you are always at the third visit
+	}
 }
