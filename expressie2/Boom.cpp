@@ -6,6 +6,10 @@
 * @date 12-10-2016
 **/
 
+// TODO: Nu kijken we of iets gelijk is aan nul door te vergelijken met = 0
+// maar een double kan ook net-niet-helemaal 0 zijn,
+// dus we moeten eigenlijk vergelijken met < 0.0001 ofzo...
+
 #include <string>
 #include <cstdlib>
 #include <iostream>
@@ -158,6 +162,12 @@ void Boom::view() {
 	inOrder(root);
 	//Display the tree graphically
 	Graph_display();
+}
+
+void Boom::Simplify() {
+	Simp_inOrder(root);
+	// Display the tree as a mathematical expression
+	inOrder(root);
 }
 
 bool Boom::isOperator(Leaf* Temp) {
@@ -345,62 +355,102 @@ void Boom::Simp_inOrder(Leaf* Temp) {
 }
 
 void Boom::Operate(Leaf* Temp) {
-	left = 0;
-	var_left = 0;
-	right = 0;
-	var_right = 0;
-	switch (Temp->operand) {
-			case PLUS:
-				FindElement(Temp->branchLeft, left, var_left); // Find the number on the left, TODO what happens if not a number?
-				FindElement(Temp->branchRight, right, var_right); // Find the number on the right
-				if ((var_left != 0) || (var_right != 0)) { // one of them is a variable
-				    break;
-			    }
-				Plus(); // Calculate summation
+	if ((Temp->branchLeft != NULL) && (Temp->branchRight != NULL)) {
+		left = 0;
+		var_left = 0;
+		right = 0;
+		var_right = 0;
+		switch (Temp->operand) {
+		case PLUS:
+			if (!FindElement(Temp->branchLeft, left, var_left) ||
+				!FindElement(Temp->branchRight, right, var_right)) {
+				// One of the children contains an operator
 				break;
-			case MINUS:
-				FindElement(Temp->branchLeft, left, var_left);
-				FindElement(Temp->branchRight, right, var_right);
-				if (Minus(Temp)) {
-				    Temp->branchLeft = NULL;
-				    Temp->branchRight = NULL;
-				    //TODO is this the right way to delete children?
-				}
+			}
+			if (Plus(Temp)) { // Calculate summation
+				Temp->branchLeft = NULL;
+				Temp->branchRight = NULL;
+			}
+			break;
+		case MINUS:
+			if (!FindElement(Temp->branchLeft, left, var_left) ||
+				!FindElement(Temp->branchRight, right, var_right)) {
 				break;
-			case TIMES:
-				FindElement(Temp->branchLeft, left, var_left);
-				FindElement(Temp->branchRight, right, var_right);
-				Times();
-				break;			
-			case POWER:
-				FindElement(Temp->branchLeft, left, var_left);
-				FindElement(Temp->branchRight, right, var_right);
-				Power();
-				break;				
-			case DEVIDE:
-				FindElement(Temp->branchLeft, left, var_left);
-				FindElement(Temp->branchRight, right, var_right);
-				if (Devide(Temp)) {
-				    Temp->branchLeft = NULL;
-				    Temp->branchRight = NULL;
-				    //TODO is this the right way to delete children?				
-				}
+			}
+			if (Minus(Temp)) {
+				Temp->branchLeft = NULL;
+				Temp->branchRight = NULL;
+				//TODO is this the right way to delete children?
+			}
+			break;
+		case TIMES:
+			if (!FindElement(Temp->branchLeft, left, var_left) ||
+				!FindElement(Temp->branchRight, right, var_right)) {
 				break;
+			}
+			if (Times(Temp)) {
+				Temp->branchLeft = NULL;
+				Temp->branchRight = NULL;
+			}
+			break;
+		case POWER:
+			if (!FindElement(Temp->branchLeft, left, var_left) ||
+				!FindElement(Temp->branchRight, right, var_right)) {
+				break;
+			}
+			if (Power(Temp)) {
+				Temp->branchLeft = NULL;
+				Temp->branchRight = NULL;
+			}
+			break;
+		case DEVIDE:
+			if (!FindElement(Temp->branchLeft, left, var_left) ||
+				!FindElement(Temp->branchRight, right, var_right)) {
+				break;
+			}
+			if (Devide(Temp)) {
+				std::cout << "devide" << std::endl;
+				Temp->branchLeft = NULL;
+				Temp->branchRight = NULL;
+				//TODO is this the right way to delete children?				
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	else if (Temp->branchLeft != NULL) {
+		left = 0;
+		var_left = 0;
+		right = 0;
+		var_right = 0;
+		switch (Temp->operand) {
 			case SIN:
-				FindElement(Temp->branchLeft, left, var_left);
-				Sin();
+				if (!FindElement(Temp->branchLeft, left, var_left)) {
+					break;
+				}
+				if (Sin(Temp)) {
+					Temp->branchLeft = NULL;
+					Temp->branchRight = NULL;
+				}
 				break;
 			case COS:
-				FindElement(Temp->branchLeft, left, var_left);
-				Cos();
+				if (!FindElement(Temp->branchLeft, left, var_left)) {
+					break;
+				}
+				if (Cos(Temp)) {
+					Temp->branchLeft = NULL;
+					Temp->branchRight = NULL;
+				}
 				break;
 			default:
 				break;
+		}
 	}
 }
 
 
-void Boom::FindElement(Leaf* currentLeaf, double num, char var) {
+bool Boom::FindElement(Leaf* currentLeaf, double &num, char &var) {
 	switch (currentLeaf->operand) {
 		case PI:
 			num = 3.14159265359;
@@ -412,108 +462,215 @@ void Boom::FindElement(Leaf* currentLeaf, double num, char var) {
 			num = currentLeaf->number;
 			break;
 		default:
-			break;
-	}
-}
-
-void Boom::Plus() {
-
-}
-
-bool Boom::Minus(Leaf* Temp) {
-    if ((var_left != 0) && (var_right !=0)) { // both are variables
-		if (var_right == var_left) {
-			Temp->number = 0;
-			Temp->variable = 0;
-			Temp->operand = NUMBER;
-		}
-		else {
-			return false; // we can't simplify this expression
-		}		
-	}
-	else if (var_left != 0) { // this is a variable
-		if (right == 0) {
-		    Temp->number = 0;
-			Temp->variable = var_left;
-			Temp->operand = VARIABLE;		
-		}
-		else {
-            return false; // we can't simplify this expression
-		}
-	}
-	else if (var_right != 0) { // this is a variable
-		if (left == 0) {
-            Temp->number = 0;
-			Temp->variable = var_right;
-			Temp->operand = VARIABLE;	
-		}
-		else {
-            return false; // we can't simplify this expression
-		}
-	}
-	
-	else { // they are numbers			
-		Temp->number = left - right;
-		Temp->operand = NUMBER;
+			return false;
+			// TODO break;  ?
 	}
 	return true;
 }
 
-void Boom::Times() {
-
-}
-
-void Boom::Power() {
-
-}
-
-bool Boom::Devide(Leaf* Temp) {
-	if ((var_left != 0) && (var_right !=0)) { // both are variables
-		if (var_right == var_left) {
-			Temp->number = 1;
-			Temp->variable = 0;
-			Temp->operand = NUMBER;				
+bool Boom::Plus(Leaf* thisLeaf) {
+	if ((var_left != 0) && (var_right != 0)) { // x + y
+		return false;
+	}
+	else if (var_left != 0) {
+		if (right == 0) { // x + 0 = x
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;
 		}
 		else {
-            return false; // we can't simplify this expression
+			return false;
+		}
+	}
+	else if (var_right != 0) {
+		if (left == 0) { // 0 + x = x
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_right;
+			thisLeaf->operand = VARIABLE;
+		}
+		else {
+			return false;
+		}
+	}
+	else { // a + b
+		thisLeaf->number = left + right;
+		thisLeaf->operand = NUMBER;
+	}
+	return true;
+}
+
+bool Boom::Minus(Leaf* thisLeaf) {
+    if ((var_left != 0) && (var_right !=0)) { // both are variables
+		if (var_right == var_left) { // x - x = 0
+			thisLeaf->number = 0;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else { // x - y
+			return false; // we can't simplify this expression
 		}		
 	}
 	else if (var_left != 0) { // this is a variable
-		if (right == 0) {
-		    //TODO can't devide by zero
-		    return false;				
+		if (right == 0) { // x - 0 = x
+		    thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;		
 		}
-		if (right == 1) {
-		    Temp->number = 0;
-			Temp->variable = var_left;
-			Temp->operand = VARIABLE;								
+		else { // x - a 
+            return false; // we can't simplify this expression
 		}
-		else {
+	}
+	else if (var_right != 0) { // this is a variable
+		// unable to simplify a - x further, since -x has to be written as: (-1) * x
+		return false;
+	}
+	
+	else { // they are numbers			
+		thisLeaf->number = left - right;
+		thisLeaf->operand = NUMBER;
+	}
+	return true;
+}
+
+bool Boom::Times(Leaf* thisLeaf) {
+	if ((var_left != 0) && (var_right != 0)) { // x * y
+		return false;
+	}
+	else if (var_left != 0) {
+		if (right == 0) { // x * 0 = 0
+			thisLeaf->number = 0;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else if (right == 1) { // x * 1 = x
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;
+		}
+		else { // x * a
+			return false;
+		}
+	}
+	else if (var_right != 0) {
+		if (left == 0) { // 0 * x = 0
+			thisLeaf->number = 0;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else if (left == 1) { // 1 * x = x
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_right;
+			thisLeaf->operand = VARIABLE;
+		}
+		else { // a * x
+			return false;
+		}
+	}
+	else { // a * b
+		thisLeaf->number = left * right;
+		thisLeaf->operand = NUMBER;
+	}
+	return true;
+}
+
+bool Boom::Power(Leaf* thisLeaf) {
+	if ((var_left != 0) && (var_right != 0)) { // both are variables
+		return false;
+	}
+	else if (var_left != 0) { // left is a variable
+		if (right == 1) { // x ^ 1 = x
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;
+		}
+		else if (right == 0) { // x ^ 0 = 1
+			thisLeaf->number = 1;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else { // x ^ a 
+			return false;
+		}
+	}
+	else if (var_right != 0) { // right is a variable
+		if (left == 1) { // 1 ^ x = 1
+			thisLeaf->number = 1;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else if (left == 0) { // 0 ^ x = 0
+			thisLeaf->number = 0;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;
+		}
+		else { // a ^ x
+			return false;
+		}
+	}
+	else { // a ^ b			
+		thisLeaf->number = pow(left, right);
+		thisLeaf->operand = NUMBER;
+	}
+	return true;
+}
+
+bool Boom::Devide(Leaf* thisLeaf) {
+	if (right == 0) {
+		std::cout << "Error. You are not allowed to devide by zero." << std::endl;
+		return false;
+	}
+	else if ((var_left != 0) && (var_right !=0)) { // both are variables
+		if (var_right == var_left) { // x / x
+			thisLeaf->number = 1;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;				
+		}
+		else { // x / y
+            return false; // we can't simplify this expression
+		}		
+	}
+	else if (var_left != 0) { // left is a variable
+		if (right == 1) { // x / 1
+		    thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;								
+		}
+		else { // x / a
 		    return false;
 		}
 	}
 	else if (var_right != 0) { // this is a variable
-		if (left == 0) {
-		    Temp->number = 0;
-			Temp->variable = 0;
-			Temp->operand = NUMBER;						
+		if (left == 0) { // 0 / x
+		    thisLeaf->number = 0;
+			thisLeaf->variable = 0;
+			thisLeaf->operand = NUMBER;						
 		}
-		else {
+		else { // a / x
 		    return false; // we can't simplify this expression
 		}
 	}
 	
 	else { // they are numbers			
-		Temp->number = left / right;
-		Temp->operand = NUMBER;
+		thisLeaf->number = left / right;
+		thisLeaf->operand = NUMBER;
 	}
 	return true;
 }
 
-void Boom::Sin() {
-
+bool Boom::Sin(Leaf* thisLeaf) {
+	if (var_left != 0) { // sin(x)
+		return false;
+	}
+	thisLeaf->number = sin(left);
+	thisLeaf->operand = NUMBER;
+	return true;
 }
 
-void Boom::Cos() {
-
+bool Boom::Cos(Leaf* thisLeaf) {
+	if (var_left != 0) { // sin(x)
+		return false;
+	}
+	thisLeaf->number = cos(left);
+	thisLeaf->operand = NUMBER;
+	return true;
 }

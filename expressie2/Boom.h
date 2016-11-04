@@ -48,6 +48,12 @@ public:
 	* @abstract calls the functions that display the tree in 2 different ways
 	**/
 	void view();
+	/**
+	* @function Simplify
+	* @abstract initiates the simplifying sequence
+	**/
+	void Simplify();
+
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
@@ -202,21 +208,21 @@ private:
 	* @abstract What element is in the leaf?
 	* @param
 	**/
-	void FindElement(Leaf* thisLeaf, double num, char var);
+	bool FindElement(Leaf* thisLeaf, double &num, char &var);
 
-	void Plus();
+	bool Plus(Leaf* thisLeaf);
 
 	bool Minus(Leaf* thisLeaf);
 
-	void Times();
+	bool Times(Leaf* thisLeaf);
 
-	void Power();
+	bool Power(Leaf* thisLeaf);
 
 	bool Devide(Leaf* thisLeaf);
 
-	void Sin();
+	bool Sin(Leaf* thisLeaf);
 
-	void Cos();
+	bool Cos(Leaf* thisLeaf);
 };
 
 #endif
