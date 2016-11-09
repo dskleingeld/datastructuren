@@ -56,13 +56,21 @@ public:
 	/**
 	* @function Evaluate
 	* @abstract initiates the evaluation sequence
+	* @param std::string variable: the variable which has value 'value'
 	**/
 	void Evaluate(std::string variable, double value);
+  /**
+	* @function Differentiate
+	* @abstract initiates the diffrentiation sequence
+	* @param std::string toDiffTo: the variable to diffrentiate to
+  **/
+	void diff(char toDiffTo);
+
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
 		PLUS, MINUS, TIMES, POWER, DEVIDE,
-		NUMBER, VARIABLE, SIN, COS, PI
+		NUMBER, VARIABLE, SIN, COS, PI, D //D is used as: d/d(var)
 	};
 	//Struct for the leaves/nodes
 	struct Leaf {

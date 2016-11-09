@@ -30,4 +30,4 @@ Struct blad
 
 Functies:
 Input inlezen
-Boom uitezen
+Boom uitezen?????????
