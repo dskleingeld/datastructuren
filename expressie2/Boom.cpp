@@ -374,11 +374,13 @@ void Boom::Operate(Leaf* Temp) {
 		var_right = 0;
 		FindElement(Temp->branchLeft, left, var_left);
 		FindElement(Temp->branchRight, right, var_right);
-		if (left == 0) {
+		if ((Temp->branchLeft->operand == NUMBER) && (left == 0)) {
 			if ((Temp->operand == TIMES) || (Temp->operand == DEVIDE)){
 				Temp->number = 0;
 				Temp->variable = 0;
 				Temp->operand = NUMBER;
+				Clear(Temp->branchLeft);
+				Clear(Temp->branchRight);
 			}
 			else if (Temp->operand == PLUS) {
 				Leaf* help;
@@ -387,11 +389,13 @@ void Boom::Operate(Leaf* Temp) {
 				delete help;
 			}
 		}
-		if (right == 0) {
+		if ((Temp->branchRight->operand == NUMBER) && (right == 0)) {
 			if (Temp->operand == TIMES) {
 				Temp->number = 0;
 				Temp->variable = 0;
 				Temp->operand = NUMBER;
+				Clear(Temp->branchLeft);
+				Clear(Temp->branchRight);
 			}
 			else if ((Temp->operand == PLUS) || (Temp->operand == MINUS)) {
 				Leaf* help;
@@ -406,9 +410,11 @@ void Boom::Operate(Leaf* Temp) {
 				Temp->number = 0;
 				Temp->variable = 0;
 				Temp->operand = NUMBER;
+				Clear(Temp->branchLeft);
+				Clear(Temp->branchRight);
 			}
 		}
-		if (right == 1) {
+		if ((Temp->branchRight->operand == NUMBER) && (right == 1)) {
 			if ((Temp->operand == TIMES) || (Temp->operand == DEVIDE) || (Temp->operand == POWER)){
 				Leaf* help;
 				help = Temp;
@@ -416,7 +422,7 @@ void Boom::Operate(Leaf* Temp) {
 				delete help;
 			}
 		}
-		if (left == 1) {
+		if ((Temp->branchLeft->operand == NUMBER) && (left == 1)) {
 			if (Temp->operand == TIMES) {
 				Leaf* help;
 				help = Temp;
