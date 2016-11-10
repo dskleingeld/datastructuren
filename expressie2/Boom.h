@@ -271,7 +271,7 @@ private:
 
 	void recDeepcopy(Leaf* x, Leaf* y);
 
-	void deepcopy(Leaf* x, Leaf* y);
+	Boom::Leaf* deepcopy(Leaf* x);
 
 };
 

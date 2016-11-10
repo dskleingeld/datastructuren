@@ -475,9 +475,6 @@ bool Boom::FindElement(Leaf* currentLeaf, double &num, char &var) {
 		case NUMBER:
 			num = currentLeaf->number;
 			break;
-		case TIMES:
-			var = -1;
-			break;
 		default:
 			return false;
 			// TODO break;  ?
@@ -560,15 +557,9 @@ bool Boom::Times(Leaf* thisLeaf) {
 			thisLeaf->operand = NUMBER;
 		}
 		else if (isNearlyEqual(right, 1)) { // x * 1 = x
-			if (var_left != -1) {
-				thisLeaf->number = 0;
-				thisLeaf->variable = var_left;
-				thisLeaf->operand = VARIABLE;
-			}
-			else {
-				thisLeaf->branchRight == NULL;
-				return false;
-			}
+			thisLeaf->number = 0;
+			thisLeaf->variable = var_left;
+			thisLeaf->operand = VARIABLE;
 		}
 		else { // x * a
 			return false;
@@ -857,9 +848,7 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   current->branchLeft->variable = toDiffTo; 
   dg = new Leaf;
   dg->operand = D;
-//  dg->branchLeft->deepcopy(g);
-  //deepcopy(g, dg->branchLeft);
-  dg->branchLeft = g;
+  dg->branchLeft = deepcopy(g);
   current->branchLeft->branchLeft = dg;
   current->branchLeft->branchRight = f;
   
@@ -870,9 +859,7 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   current->branchRight->variable = toDiffTo; 
   df = new Leaf;
   df->operand = D;
-  //df->branchLeft->deepcopy(f);
-  //deepcopy(df->branchLeft, f);
-  df->branchLeft = f;
+  df->branchLeft = deepcopy(f);
   current->branchRight->branchLeft = df;
   current->branchRight->branchRight = g; 
 }
@@ -931,7 +918,8 @@ void Boom::recDeepcopy(Leaf* x, Leaf* y){
 }
 
 //makes a new copy called y of subtree x
-void Boom::deepcopy(Leaf* x, Leaf* y){
+Boom::Leaf* Boom::deepcopy(Leaf* x){
+	Leaf* y = new Leaf;
 	recDeepcopy(x, y); //copy x to y
-  //return y;
+  return y;
 }
