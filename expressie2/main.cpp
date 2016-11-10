@@ -56,6 +56,7 @@ int main()
 				i = i + 1;
 			}
 			process(expression);
+			expression.clear();
 		}
 		else if (substring == "dot") {
 			// TODO
@@ -79,7 +80,7 @@ int main()
 			}
 		}
 		else if (substring == "diff") {
-			// TODO
+			theBoom.diff(variable[0]);
 		}
 		else if (substring == "simp") {
 			theBoom.Simplify();

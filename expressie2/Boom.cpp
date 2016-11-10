@@ -255,6 +255,9 @@ void Boom::display(typeOfLeaf operand, Leaf* Temp) {
 			case VARIABLE:
 				std::cout << Temp->variable;
 				break;
+			case D:
+				std::cout << "d/dx";
+				break;
 			default:
 				break;
 	}
@@ -293,6 +296,8 @@ void Boom::writeLabel(typeOfLeaf operand, Leaf* Temp, std::ofstream & myfile) {
 			case VARIABLE:
 				myfile << "[label=\"" << Temp->variable << "\"]" << std::endl;
 				break;
+			case D:
+				myfile << "[label=\"d/dx\"]" << std::endl;
 			default:
 				break;
 	}
@@ -346,9 +351,10 @@ void Boom::Simp_inOrder(Leaf* Temp) {
 	if (Temp) {
 		Simp_inOrder(Temp->branchLeft); 
 		//Entering second visit
+		Operate(Temp);
 		Simp_inOrder(Temp->branchRight);
 		//At the end of inOrder, you are always at the third visit
-		Operate(Temp);
+		std::cout << "Operand: " << Temp->operand << std::endl;
 	}
 	/**
 	* Notes:
@@ -393,6 +399,8 @@ void Boom::Operate(Leaf* Temp) {
 		case TIMES:
 			if (!FindElement(Temp->branchLeft, left, var_left) ||
 				!FindElement(Temp->branchRight, right, var_right)) {
+				// One of the children contains an operator
+				std::cout << "NAAA" << std::endl;
 				break;
 			}
 			if (Times(Temp)) {
@@ -466,6 +474,9 @@ bool Boom::FindElement(Leaf* currentLeaf, double &num, char &var) {
 			break;
 		case NUMBER:
 			num = currentLeaf->number;
+			break;
+		case TIMES:
+			var = -1;
 			break;
 		default:
 			return false;
@@ -542,16 +553,22 @@ bool Boom::Times(Leaf* thisLeaf) {
 	if ((var_left != 0) && (var_right != 0)) { // x * y
 		return false;
 	}
-	else if (var_left != 0) {
+	else if (var_left != 0){
 		if (isNearlyEqual(right, 0)) { // x * 0 = 0
 			thisLeaf->number = 0;
 			thisLeaf->variable = 0;
 			thisLeaf->operand = NUMBER;
 		}
 		else if (isNearlyEqual(right, 1)) { // x * 1 = x
-			thisLeaf->number = 0;
-			thisLeaf->variable = var_left;
-			thisLeaf->operand = VARIABLE;
+			if (var_left != -1) {
+				thisLeaf->number = 0;
+				thisLeaf->variable = var_left;
+				thisLeaf->operand = VARIABLE;
+			}
+			else {
+				thisLeaf->branchRight == NULL;
+				return false;
+			}
 		}
 		else { // x * a
 			return false;
@@ -702,38 +719,81 @@ void Boom::Eval_inOrder(Leaf* Temp, char variable, double value) {
 	}
 }
 
+// ---- Differentiate ----
+
 void Boom::diff(char toDiffTo){
-  //add a new d/dx leaf at the top
-  Leaf* newRoot;
-  newRoot = new Leaf;
+	//add a new d/dx leaf at the top
+	Leaf* newRoot;
+	newRoot = new Leaf;
   
-  newRoot->branchLeft = root;
-  newRoot->operand = D;
-  root = newRoot;
-  
-  //start a recursive differentiating function
-  //walk until you find D
-  typeOfLeaf op = current->operand;
-  switch(op){
-    case TIMES:
-      productRule(toDiffTo, current);
-      break;
-    case PLUS:
-      sumRule(toDiffTo, current);
-      break;
-    case MINUS:
-      sumRule(toDiffTo, current);
-      break;
-    case DEVIDE:
-      quotientRule(toDiffTo, current);
-    case POWER:    
-    //TODO imprlement remaining cases
-  //TODO start over from walk until you find D (recursie shit)
-  
-  }
+	newRoot->branchLeft = root;
+	newRoot->operand = D;
+	root = newRoot;
+	
+	diff_inOrder(toDiffTo, root);
+
+	root = root->branchLeft; // we don't need d/dx entrance anymore
 }
 
-void Boom::quotientRule(toDiffTo, current){
+void Boom::diff_inOrder(char toDiffTo, Leaf* current) {
+	//start a recursive differentiating function
+	//walk until you find D
+	if (current) {
+		if (current->operand == D) {
+
+			switch (current->branchLeft->operand) {
+			case TIMES:
+				productRule(toDiffTo, current->branchLeft);
+				break;
+			case PLUS:
+				sumRule(toDiffTo, current->branchLeft);
+				break;
+			case MINUS:
+				sumRule(toDiffTo, current->branchLeft);
+				break;
+			case DEVIDE:
+				quotientRule(toDiffTo, current->branchLeft);
+				break;
+			case POWER:
+				chainRule(toDiffTo, current->branchLeft);
+				//TODO imprlement remaining cases
+				//TODO start over from walk until you find D (recursie shit)
+				break;
+			case VARIABLE:
+				variable(toDiffTo, current);
+				break;
+			case NUMBER:
+				constant(toDiffTo, current);
+			case COS:
+				break;
+			case SIN:
+				break;
+			default:
+				break;
+			}
+			//current = current->branchLeft;
+		}
+		std::cout << "Operand is: " << current->operand << std::endl;
+		diff_inOrder(toDiffTo, current->branchLeft);
+		diff_inOrder(toDiffTo, current->branchRight);
+	}
+}
+
+void Boom::variable(char toDiffTo, Leaf* current) {
+	current->operand = NUMBER;
+	current->number = 1;
+	current->branchLeft = NULL;
+	current->branchRight = NULL;
+}
+
+void Boom::constant(char toDiffTo, Leaf* current) {
+	current->operand = NUMBER;
+	current->number = 0;
+	current->branchLeft = NULL;
+	current->branchRight = NULL;
+}
+
+void Boom::quotientRule(char toDiffTo, Leaf* current){
   Leaf* f = current->branchLeft;
   Leaf* g = current->branchRight;
   
@@ -742,7 +802,8 @@ void Boom::quotientRule(toDiffTo, current){
   denominator->operand = POWER;
   numerator->operand = MINUS;
 
-  denominator->branchLeft-> = deepcopy(g);
+//  deepcopy(g, denominator->branchLeft);
+  denominator->branchLeft = g;
   denominator->branchRight = new Leaf;
   denominator->branchRight->operand = NUMBER;
   denominator->branchRight->number = 2;
@@ -753,15 +814,19 @@ void Boom::quotientRule(toDiffTo, current){
   leftside->branchLeft = g;
   leftside->branchRight = new Leaf;
   leftside->branchRight->operand = D;
-  leftside->branchRight->branchLeft = deepcopy(f)
-  
+//  leftside->branchRight->branchLeft = deepcopy(f);
+//  deepcopy(f, leftside->branchRight->branchLeft);
+  leftside->branchRight->branchLeft = f;
+
   Leaf* rightside = new Leaf;
   numerator->branchRight = rightside;
   rightside->operand = TIMES;
   rightside->branchLeft = f;
   rightside->branchRight = new Leaf;
   rightside->branchRight->operand = D;
-  rightside->branchRight->branchLeft = deepcopy(g)
+  //rightside->branchRight->branchLeft = deepcopy(g)
+  //deepcopy(g, rightside->branchRight->branchLeft);
+  rightside->branchRight->branchLeft = g;
 }
 
 void Boom::sumRule(char toDiffTo, Leaf* current){
@@ -784,7 +849,6 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   Leaf* dg;
   Leaf* df;
   
-  
   current->operand = PLUS;
   
   //create left side of plus sign, (d/dx(g) * f
@@ -793,7 +857,9 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   current->branchLeft->variable = toDiffTo; 
   dg = new Leaf;
   dg->operand = D;
-  dg->branchLeft->deepcopy(g);
+//  dg->branchLeft->deepcopy(g);
+  //deepcopy(g, dg->branchLeft);
+  dg->branchLeft = g;
   current->branchLeft->branchLeft = dg;
   current->branchLeft->branchRight = f;
   
@@ -804,20 +870,55 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   current->branchRight->variable = toDiffTo; 
   df = new Leaf;
   df->operand = D;
-  df->branchLeft->deepcopy(f);
+  //df->branchLeft->deepcopy(f);
+  //deepcopy(df->branchLeft, f);
+  df->branchLeft = f;
   current->branchRight->branchLeft = df;
   current->branchRight->branchRight = g; 
 }
 
+void Boom::chainRule(char toDiffTo, Leaf* current) {
+	Leaf* f = current->branchLeft;
+	Leaf* g = current->branchRight;
+	Leaf* diff_f;
+	Leaf* df;
+	Leaf* dg;
+
+	current->operand = TIMES;
+
+	//create left side, d(f * g)
+	current->branchLeft = new Leaf;
+	current->branchLeft->operand = TIMES;
+	current->branchLeft->variable = toDiffTo;
+	diff_f = new Leaf;
+	diff_f->operand = POWER;
+	diff_f->branchLeft = f;
+	dg = new Leaf;
+	dg->operand = MINUS;
+	dg->branchLeft = g;
+	dg->branchRight = new Leaf;
+	dg->branchRight->operand = NUMBER;
+	dg->branchRight->number = 1;
+	diff_f->branchRight = dg;
+	current->branchLeft->branchLeft = diff_f;
+	current->branchLeft->branchRight = g;
+
+	//create right side, df
+	df = new Leaf;
+	df->operand = D;
+	df->branchLeft = f;
+	current->branchRight = df;
+}
+
 //copies an element leaf except the pointers
-Leaf* Boom::copyLeaf(Leaf* x, Leaf* y){
+void Boom::copyLeaf(Leaf* x, Leaf* y){
   y->operand = x->operand;
   if (x->operand == NUMBER){y->number = x->number;}
   if (x->operand == VARIABLE){y->variable = x->variable;}  
 }
 
 //recursively go through the tree
-Leaf* Boom::recDeepcopy(Leaf* x, Leaf* y){
+void Boom::recDeepcopy(Leaf* x, Leaf* y){
   if(x){ //check if not null pointer	
 	  copyLeaf(x, y);
 	  
@@ -830,8 +931,7 @@ Leaf* Boom::recDeepcopy(Leaf* x, Leaf* y){
 }
 
 //makes a new copy called y of subtree x
-Leaf* Boom::deepcopy(Leaf* x){
-  Leaf* y = new Leaf;
-	recDeepcopy(x, y); 
-  return y;
+void Boom::deepcopy(Leaf* x, Leaf* y){
+	recDeepcopy(x, y); //copy x to y
+  //return y;
 }

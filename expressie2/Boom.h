@@ -65,7 +65,6 @@ public:
 	* @param std::string toDiffTo: the variable to diffrentiate to
   **/
 	void diff(char toDiffTo);
-
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
@@ -254,6 +253,25 @@ private:
 	**/
 	void Eval_inOrder(Leaf* Temp, char variable, double value);
 
+	void diff_inOrder(char toDiffTo, Leaf* current);
+
+	void variable(char toDiffTo, Leaf* current);
+
+	void constant(char toDiffTo, Leaf* current);
+
+	void quotientRule(char toDiffTo, Leaf* current);
+
+	void sumRule(char toDiffTo, Leaf* current);
+
+	void productRule(char toDiffTo, Leaf* current);
+
+	void chainRule(char toDiffTo, Leaf* current);
+
+	void copyLeaf(Leaf* x, Leaf* y);
+
+	void recDeepcopy(Leaf* x, Leaf* y);
+
+	void deepcopy(Leaf* x, Leaf* y);
 
 };
 
