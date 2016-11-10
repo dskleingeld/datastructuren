@@ -729,40 +729,41 @@ void Boom::diff(char toDiffTo){
 void Boom::diff_inOrder(char toDiffTo, Leaf* current) {
 	//start a recursive differentiating function
 	//walk until you find D
+  std::cout<<"poepje";
 	if (current) {
 		if (current->operand == D) {
-
 			switch (current->branchLeft->operand) {
-			case TIMES:
-				productRule(toDiffTo, current->branchLeft);
-				break;
-			case PLUS:
-				sumRule(toDiffTo, current->branchLeft);
-				break;
-			case MINUS:
-				sumRule(toDiffTo, current->branchLeft);
-				break;
-			case DEVIDE:
-				quotientRule(toDiffTo, current->branchLeft);
-				break;
-			case POWER:
-				chainRule(toDiffTo, current->branchLeft);
-				//TODO imprlement remaining cases
-				//TODO start over from walk until you find D (recursie shit)
-				break;
-			case VARIABLE:
-				variable(toDiffTo, current);
-				break;
-			case NUMBER:
-				constant(toDiffTo, current);
-			case COS:
-				break;
-			case SIN:
-				break;
-			default:
-				break;
-			}
-			//current = current->branchLeft;
+			  case TIMES:
+				  productRule(toDiffTo, current);
+				  break;
+			  case PLUS:
+				  sumRule(toDiffTo, current);
+				  break;
+			  case MINUS:
+				  sumRule(toDiffTo, current);
+				  break;
+			  case DEVIDE:
+				  quotientRule(toDiffTo, current);
+				  break;
+			  case POWER:
+				  powerRule(toDiffTo, current);//FIXME
+				  break;
+			  case VARIABLE:
+				  powerRule(toDiffTo, current);//FIXME
+				  break;
+			  case NUMBER:
+				  constant(current);
+			  case COS:
+				  cosRule(toDiffTo, current);
+				  break;
+			  case SIN:
+			    sinRule(toDiffTo, current);
+				  break;
+			  default:
+			    std::cout << "HELLLUPP DIT KAN NIET WTF";
+				  break;
+			  }
+			  //current = current->branchLeft;
 		}
 		std::cout << "Operand is: " << current->operand << std::endl;
 		diff_inOrder(toDiffTo, current->branchLeft);
@@ -770,57 +771,48 @@ void Boom::diff_inOrder(char toDiffTo, Leaf* current) {
 	}
 }
 
-void Boom::variable(char toDiffTo, Leaf* current) {
-	current->operand = NUMBER;
-	current->number = 1;
-	current->branchLeft = NULL;
-	current->branchRight = NULL;
+void Boom::cosRule(char toDiffTo, Leaf* current){
+  Leaf* f = current->branchLeft->branchLeft; //func in the cos
+  
+
+  current->operand = TIMES;
+  
+  Leaf* right = new Leaf;
+  current->branchRight = right;
+  
+  right->operand = TIMES;
+  right->branchLeft = new Leaf;
+  right->branchLeft->operand = D; //chainrule part
+  right->branchLeft->branchLeft = deepcopy(f);
+
+  right->branchRight = new Leaf;
+  right->branchRight->operand = NUMBER;
+  right->branchRight->number = -1;
+  
+  current->branchLeft->operand = SIN;
 }
 
-void Boom::constant(char toDiffTo, Leaf* current) {
+void Boom::sinRule(char toDiffTo, Leaf* current){
+  Leaf* f = current->branchLeft->branchLeft;
+  
+  current->operand = TIMES;
+  current->branchRight = new Leaf;
+  current->branchRight->operand = D; //chainrule part
+  current->branchRight->branchLeft = deepcopy(f);
+  
+  current->branchLeft->operand = COS;
+}
+
+void Boom::constant(Leaf* current) {
+  deleteTopD(current);
+  
 	current->operand = NUMBER;
 	current->number = 0;
-	current->branchLeft = NULL;
-	current->branchRight = NULL;
-}
-
-void Boom::quotientRule(char toDiffTo, Leaf* current){
-  Leaf* f = current->branchLeft;
-  Leaf* g = current->branchRight;
-  
-  Leaf* denominator = new Leaf; //noemer = denominator
-  Leaf* numerator = new Leaf; //teller = numerator
-  denominator->operand = POWER;
-  numerator->operand = MINUS;
-
-//  deepcopy(g, denominator->branchLeft);
-  denominator->branchLeft = g;
-  denominator->branchRight = new Leaf;
-  denominator->branchRight->operand = NUMBER;
-  denominator->branchRight->number = 2;
-  
-  Leaf* leftside = new Leaf;
-  numerator->branchLeft = leftside;
-  leftside->operand = TIMES;  
-  leftside->branchLeft = g;
-  leftside->branchRight = new Leaf;
-  leftside->branchRight->operand = D;
-//  leftside->branchRight->branchLeft = deepcopy(f);
-//  deepcopy(f, leftside->branchRight->branchLeft);
-  leftside->branchRight->branchLeft = f;
-
-  Leaf* rightside = new Leaf;
-  numerator->branchRight = rightside;
-  rightside->operand = TIMES;
-  rightside->branchLeft = f;
-  rightside->branchRight = new Leaf;
-  rightside->branchRight->operand = D;
-  //rightside->branchRight->branchLeft = deepcopy(g)
-  //deepcopy(g, rightside->branchRight->branchLeft);
-  rightside->branchRight->branchLeft = g;
 }
 
 void Boom::sumRule(char toDiffTo, Leaf* current){
+  deleteTopD(current);
+
   Leaf* f = current->branchLeft;
   Leaf* g = current->branchRight;
   current->branchLeft = new Leaf;
@@ -832,9 +824,46 @@ void Boom::sumRule(char toDiffTo, Leaf* current){
   current->branchLeft->branchLeft= f;
   current->branchRight->branchLeft= g;  
 }
+
+void Boom::quotientRule(char toDiffTo, Leaf* current){
+  deleteTopD(current);
+  
+  Leaf* f = current->branchLeft;
+  Leaf* g = current->branchRight;
+  
+  Leaf* denominator = new Leaf; //noemer = denominator
+  Leaf* numerator = new Leaf; //teller = numerator
+  denominator->operand = POWER;
+  numerator->operand = MINUS;
+
+  denominator->branchLeft = deepcopy(g);
+  denominator->branchRight = new Leaf;
+  denominator->branchRight->operand = NUMBER;
+  denominator->branchRight->number = 2;
+  
+  Leaf* leftside = new Leaf;
+  numerator->branchLeft = leftside;
+  leftside->operand = TIMES;  
+  leftside->branchLeft = g;
+  leftside->branchRight = new Leaf;
+  leftside->branchRight->operand = D;
+  leftside->branchRight->branchLeft = deepcopy(f);
+  leftside->branchRight->branchLeft = f;
+
+  Leaf* rightside = new Leaf;
+  numerator->branchRight = rightside;
+  rightside->operand = TIMES;
+  rightside->branchLeft = f;
+  rightside->branchRight = new Leaf;
+  rightside->branchRight->operand = D;
+  rightside->branchRight->branchLeft = deepcopy(g);
+  rightside->branchRight->branchLeft = g;
+}
       
 //called when multiplication is found, currentleaf points to multiplication
 void Boom::productRule(char toDiffTo, Leaf* current){
+  deleteTopD(current);
+  
   Leaf* g = current->branchLeft;
   Leaf* f = current->branchRight;
   Leaf* dg;
@@ -864,7 +893,7 @@ void Boom::productRule(char toDiffTo, Leaf* current){
   current->branchRight->branchRight = g; 
 }
 
-void Boom::chainRule(char toDiffTo, Leaf* current) {
+void Boom::powerRule(char toDiffTo, Leaf* current) {
 	Leaf* f = current->branchLeft;
 	Leaf* g = current->branchRight;
 	Leaf* diff_f;
@@ -895,6 +924,16 @@ void Boom::chainRule(char toDiffTo, Leaf* current) {
 	df->operand = D;
 	df->branchLeft = f;
 	current->branchRight = df;
+}
+
+
+void Boom::deleteTopD(Leaf*& current){
+  Leaf* temp;
+
+  //remove the top D
+  temp = current;
+  current = current->branchLeft;
+  delete temp;
 }
 
 //copies an element leaf except the pointers
