@@ -779,6 +779,7 @@ void Boom::quotientRule(char toDiffTo, Leaf* current){
 //called when multiplication is found, currentleaf points to multiplication
 void Boom::productRule(char toDiffTo, Leaf* current){
   deleteTopD(current);
+  std::cout << "NEE" << current->operand;
   
   Leaf* g = current->branchLeft;
   Leaf* f = current->branchRight;
@@ -850,6 +851,7 @@ void Boom::deleteTopD(Leaf*& current){
   temp = current;
   current = current->branchLeft;
   delete temp;
+  std::cout << "JAA" << current->operand;
 }
 
 //copies an element leaf except the pointers
