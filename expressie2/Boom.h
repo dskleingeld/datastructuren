@@ -265,13 +265,21 @@ private:
 
 	void productRule(char toDiffTo, Leaf* current);
 
-	void chainRule(char toDiffTo, Leaf* current);
+	void powerRule(char toDiffTo, Leaf* current);
 
+	void constant(Leaf* current);
+	
+	void cosRule(char toDiffTo, Leaf* current);
+	
+	void sinRule(char toDiffTo, Leaf* current);
+	
 	void copyLeaf(Leaf* x, Leaf* y);
 
 	void recDeepcopy(Leaf* x, Leaf* y);
 
 	Boom::Leaf* deepcopy(Leaf* x);
+
+  void deleteTopD(Leaf*& current);
 
 };
 
