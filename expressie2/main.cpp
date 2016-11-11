@@ -56,6 +56,8 @@ int main()
 				i = i + 1;
 			}
 			process(expression);
+
+			input.clear();
 			expression.clear();
 		}
 		else if (substring == "dot") {

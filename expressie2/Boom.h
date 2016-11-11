@@ -206,20 +206,24 @@ private:
 	* the root of your tree).
 	* @pre Non-empty tree of class Boom
 	**/
-	void Simp_inOrder(Leaf* Temp);
+	void Simp_inOrder(Leaf* Temp, Leaf* previous, bool isLeft);
 
 	/**
 	* @function FindOperand
 	* @abstract What operand is in the current node?
 	* @param operand
 	**/
-	void Operate(Leaf* thisLeaf);
+	void Operate(Leaf* thisLeaf, Leaf* previous, bool isLeft);
 	/**
 	* @function FindElement
 	* @abstract What element is in the leaf?
 	* @param
 	**/
 	bool FindElement(Leaf* thisLeaf, double &num, char &var);
+
+	Leaf* Boom::SetToZero();
+
+	Leaf* Boom::SetToOne();
 
 	bool Plus(Leaf* thisLeaf);
 
@@ -251,27 +255,28 @@ private:
 	* @pre An expression tree with variable x in one or more of the nodes/leaves
 	* @post An expression tree with a value for each variable x
 	**/
+
 	void Eval_inOrder(Leaf* Temp, char variable, double value);
 
-	void diff_inOrder(char toDiffTo, Leaf* current);
+	void diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left);
 
-	void variable(char toDiffTo, Leaf* current);
+	Leaf* variable(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void constant(char toDiffTo, Leaf* current);
+	Leaf* constant(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void quotientRule(char toDiffTo, Leaf* current);
+	Leaf* quotientRule(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void sumRule(char toDiffTo, Leaf* current);
+	Leaf* sumRule(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void productRule(char toDiffTo, Leaf* current);
+	Leaf* productRule(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void powerRule(char toDiffTo, Leaf* current);
+	Leaf* powerRule(char toDiffTo, Leaf* current, Leaf* previous);
 
-	void constant(Leaf* current);
+	//Leaf* constant(Leaf* current);
 	
-	void cosRule(char toDiffTo, Leaf* current);
+	Leaf* cosRule(char toDiffTo, Leaf* current, Leaf* previous);
 	
-	void sinRule(char toDiffTo, Leaf* current);
+	Leaf* sinRule(char toDiffTo, Leaf* current, Leaf* previous);
 	
 	void copyLeaf(Leaf* x, Leaf* y);
 
@@ -279,7 +284,9 @@ private:
 
 	Boom::Leaf* deepcopy(Leaf* x);
 
-  void deleteTopD(Leaf*& current);
+	void deleteTopD(Leaf*& current);
+
+	void contains_var(Leaf* current, bool& found_var, char toDiffTo);
 
 };
 
