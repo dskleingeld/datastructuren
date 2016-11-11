@@ -29,17 +29,17 @@ Boom::Leaf::Leaf() {
 }
 
 Boom::~Boom() {
-	Clear(root);
+	clear(root);
 }
 
-void Boom::Clear(Leaf* Temp)
+void Boom::clear(Leaf* temp)
 {
-	if (Temp->branchLeft != NULL)
-		Clear(Temp->branchLeft);
-	if (Temp->branchRight != NULL)
-		Clear(Temp->branchRight);
-	delete Temp;
-	Temp = NULL;
+	if (temp->branchLeft != NULL)
+		clear(temp->branchLeft);
+	if (temp->branchRight != NULL)
+		clear(temp->branchRight);
+	delete temp;
+	temp = NULL;
 }
 
 void Boom::processInput(std::string substring) {
@@ -164,14 +164,6 @@ void Boom::view() {
 	Graph_display();
 }
 
-void Boom::Evaluate(std::string variable, double value) {
-	Leaf* newRoot;
-	newRoot = new Leaf;
-	newRoot->branchLeft = root;
-	Eval_inOrder(root, variable[0], value); // Input value in x
-	Simp_inOrder(root, newRoot, true); // Simplify the expression
-}
-
 bool Boom::isOperator(Leaf* Temp) {
 	if ((Temp->operand != PLUS) &&
 		(Temp->operand != MINUS)) {
@@ -183,7 +175,8 @@ bool Boom::isOperator(Leaf* Temp) {
 bool Boom::isUnaryOperator(Leaf* Temp) {
 	if ((Temp->operand != COS) &&
 		(Temp->operand != SIN) &&
-		(Temp->operand != POWER)) {
+		(Temp->operand != POWER) &&
+		(Temp->operand != D)) {
 		return false;
 	}
 	return true;
@@ -192,7 +185,7 @@ bool Boom::isUnaryOperator(Leaf* Temp) {
 void Boom::inOrder(Leaf* Temp) {
 	//When you enter inOrder, you are always at the first visit
 	if (Temp) {
-		if ((Temp->operand == COS) || (Temp->operand == SIN)) {
+		if ((Temp->operand == COS) || (Temp->operand == SIN) || (Temp->operand == D)) {
 			display(Temp->operand, Temp);
 			if (isUnaryOperator(Temp)) {
 				std::cout << "(";
@@ -346,36 +339,26 @@ void Boom::Graph_display() {
 }
 
 // ---- Simplifiy ----
-
-void Boom::Simplify() {
+void Boom::simplify() {
 	Leaf* previous = new Leaf;
 	previous->branchLeft = root;
 
-	Simp_inOrder(root, previous, true);
+	simp_inOrder(root, previous, true);
 	root = previous->branchLeft;
 }
 
-void Boom::Simp_inOrder(Leaf* Temp, Leaf* previous, bool isLeft) {
+void Boom::simp_inOrder(Leaf* Temp, Leaf* previous, bool isLeft) {
 	// When you enter inOrder, you are always at the first visit
 	if (Temp) {
-		Simp_inOrder(Temp->branchLeft, Temp, true);
+		simp_inOrder(Temp->branchLeft, Temp, true);
 		//Entering second visit
-		Simp_inOrder(Temp->branchRight, Temp, false);
+		simp_inOrder(Temp->branchRight, Temp, false);
 		//At the end of inOrder, you are always at the third visit
-		Operate(Temp, previous, isLeft);
+		operate(Temp, previous, isLeft);
 	}
-	/**
-	* Notes:
-	* Mogelijke situaties (met a en b = getal):
-	* pi = 3.14
-	* cos(a)
-	* sin(a)
-	* a+b a+0, a-b, a*b a*0 a*1, a/b a/0
-	* a^b, a^1, a^0
-	**/
 }
 
-void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
+void Boom::operate(Leaf* current, Leaf* previous, bool isLeft) {
 	if ((current->branchLeft != NULL) && (current->branchRight != NULL)) {
 		left = 0;
 		var_left = 0;
@@ -383,8 +366,8 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 		var_right = 0;
 		
 		/* Find values in left and right child of current operator */
-		FindElement(current->branchLeft, left, var_left);
-		FindElement(current->branchRight, right, var_right);
+		findElement(current->branchLeft, left, var_left);
+		findElement(current->branchRight, right, var_right);
 
 		/* The following if statements will check whether one of the children contains the number 0 or 1
 		   and will execute the appropriate action */
@@ -393,10 +376,10 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 			if ((current->operand == TIMES) || (current->operand == DEVIDE) || 
 				(current->operand == POWER)) {
 				if (isLeft) {
-					previous->branchLeft = SetToZero();
+					previous->branchLeft = setToZero();
 				}
 				else {
-					previous->branchRight = SetToZero();
+					previous->branchRight = setToZero();
 				}
 			}
 			else if (current->operand == PLUS) {
@@ -414,10 +397,10 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 		else if ((current->branchLeft->operand != NUMBER) && (current->branchRight->operand == NUMBER) && isNearlyEqual(right, 0)) {
 			if (current->operand == TIMES) {
 				if (isLeft) {
-					previous->branchLeft = SetToZero();
+					previous->branchLeft = setToZero();
 				}
 				else {
-					previous->branchRight = SetToZero();
+					previous->branchRight = setToZero();
 				}
 			}
 			else if ((current->operand == PLUS) || (current->operand == MINUS)) {
@@ -435,10 +418,10 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 			}
 			else if (current->operand == POWER) {
 				if (isLeft) {
-					previous->branchLeft = SetToOne();
+					previous->branchLeft = setToOne();
 				}
 				else {
-					previous->branchRight = SetToOne();
+					previous->branchRight = setToOne();
 				}
 			}
 		}
@@ -468,50 +451,67 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 				}
 			}
 			else if (current->operand == POWER) {
-				if (left) {
-					previous->branchLeft = SetToOne();
+				if (isLeft) {
+					previous->branchLeft = setToOne();
 				}
 				else {
-					previous->branchRight = SetToOne();
+					previous->branchRight = setToOne();
 				}
 			}
 		}
 		/* If no 1 or 0 was found, we will try to calculate the result as follows */
 		else {
-			switch (current->operand) {
-			case PLUS:
-				if (Plus(current)) {
-					current->branchLeft = NULL;
-					current->branchRight = NULL;
+			// Check for 'deep summations', for example: (2 + x) + 4 = 6 + x
+			bool success = false;
+			Leaf* temp = new Leaf;
+			temp = deepSummation(current, success);
+			if (success) {
+				if (isLeft) {
+					current = temp;
+					previous->branchLeft = current;
 				}
-				break;
-			case MINUS:
-				if (Minus(current)) {
-					current->branchLeft = NULL;
-					current->branchRight = NULL;
-					//TODO is this the right way to delete children?
+				else {
+					current = temp;
+					previous->branchRight = current;
 				}
-				break;
-			case TIMES:
-				if (Times(current)) {
-					current->branchLeft = NULL;
-					current->branchRight = NULL;
+			}
+			// if success is false, continue to the regular operations:
+			if (!success) {
+				switch (current->operand) {
+				case PLUS:
+					if (plus(current)) {
+						current->branchLeft = NULL;
+						current->branchRight = NULL;
+					}
+					break;
+				case MINUS:
+					if (minus(current)) {
+						current->branchLeft = NULL;
+						current->branchRight = NULL;
+						//TODO is this the right way to delete children?
+					}
+					break;
+				case TIMES:
+					if (times(current)) {
+						current->branchLeft = NULL;
+						current->branchRight = NULL;
+					}
+					break;
+				case POWER:
+					if (power(current)) {
+						current->branchLeft = NULL;
+						current->branchRight = NULL;
+					}
+					break;
+				case DEVIDE:
+					if (devide(current)) {
+						current->branchLeft = NULL;
+						current->branchRight = NULL;
+					}
+					break;
+				default:
+					break;
 				}
-				break;
-			case POWER:
-				if (Power(current)) {
-					current->branchLeft = NULL;
-					current->branchRight = NULL;
-				}
-				break;
-			case DEVIDE:
-				if (Devide(current)) {
-					current->branchLeft = NULL;
-					current->branchRight = NULL;			
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}
@@ -523,19 +523,19 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 		var_right = 0;
 		switch (current->operand) {
 		case SIN:
-			if (!FindElement(current->branchLeft, left, var_left)) {
+			if (!findElement(current->branchLeft, left, var_left)) {
 				break;
 			}
-			if (Sin(current)) {
+			if (sinus(current)) {
 				current->branchLeft = NULL;
 				current->branchRight = NULL;
 			}
 			break;
 		case COS:
-			if (!FindElement(current->branchLeft, left, var_left)) {
+			if (!findElement(current->branchLeft, left, var_left)) {
 				break;
 			}
-			if (Cos(current)) {
+			if (cosinus(current)) {
 				current->branchLeft = NULL;
 				current->branchRight = NULL;
 			}
@@ -546,40 +546,67 @@ void Boom::Operate(Leaf* current, Leaf* previous, bool isLeft) {
 	}
 }
 
-Boom::Leaf* Boom::SetToZero() {
-	Leaf* temp = new Leaf;
-	temp->number = 0;
-	temp->variable = 0;
-	temp->operand = NUMBER;
-	return temp;
-}
-
-Boom::Leaf* Boom::SetToOne() {
-	Leaf* temp = new Leaf;
-	temp->number = 1;
-	temp->variable = 0;
-	temp->operand = NUMBER;
-	return temp;
-}
-
-bool Boom::FindElement(Leaf* currentLeaf, double &num, char &var) {
-	switch (currentLeaf->operand) {
-	case PI:
-		num = 3.14159265359;
-		break;
-	case VARIABLE:
-		var = currentLeaf->variable;
-		break;
-	case NUMBER:
-		num = currentLeaf->number;
-		break;
-	default:
-		return false;
+int Boom::calc_sum(Leaf* a, typeOfLeaf a_operand, Leaf* b, typeOfLeaf b_operand) {
+	int c, d;
+	if (a_operand == MINUS) {
+		c = -1 * a->number;
 	}
-	return true;
+	else {
+		c = a->number;
+	}
+	if (b_operand == MINUS) {
+		d = -1 * b->number;
+	}
+	else {
+		d = b->number;
+	}
+	return c + d;
 }
 
-bool Boom::Plus(Leaf* thisLeaf) {
+Boom::Leaf* Boom::deepSummation(Leaf* current, bool& success) {
+	if ((current->branchLeft->operand == NUMBER) && ((current->branchRight->operand == PLUS) || (current->branchRight->operand == MINUS))) {
+		double total;
+		if (current->branchRight->branchLeft->operand == NUMBER) {
+			// number + (number + x)
+			total = calc_sum(current->branchRight->branchLeft, current->branchRight->operand, current->branchLeft, current->operand);
+			current = current->branchRight;
+			current->branchLeft->number = total;
+			success = true;
+			return current;
+		}
+		else if (current->branchRight->branchRight->operand == NUMBER) {
+			// number + ( x + number )
+			total = calc_sum(current->branchRight->branchRight, current->branchRight->operand, current->branchLeft, current->operand);
+			current = current->branchRight;
+			current->branchRight->number = total;
+			success = true;
+			return current;
+		}
+	}
+	else if ((current->branchRight->operand == NUMBER) && ((current->branchLeft->operand == PLUS) || (current->branchLeft->operand == MINUS))) {
+		double total;
+		if (current->branchLeft->branchLeft->operand == NUMBER) {
+			// (number + x) + number
+			total = calc_sum(current->branchLeft->branchLeft, current->branchLeft->operand, current->branchRight, current->operand);
+			current = current->branchLeft;
+			current->branchLeft->number = total;
+			success = true;
+			return current;
+		}
+		else if (current->branchLeft->branchRight->operand == NUMBER) {
+			// ( x + number ) + number
+			total = calc_sum(current->branchLeft->branchRight, current->branchLeft->operand, current->branchRight, current->operand);
+			current = current->branchLeft;
+			current->branchRight->number = total;
+			success = true;
+			return current;
+		}
+	}
+	success = false;
+	return current;
+}
+
+bool Boom::plus(Leaf* thisLeaf) {
 	if ((thisLeaf->branchLeft->operand == NUMBER) && (thisLeaf->branchRight->operand == NUMBER)) {
 		thisLeaf->number = left + right;
 		thisLeaf->operand = NUMBER;
@@ -588,7 +615,7 @@ bool Boom::Plus(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Minus(Leaf* thisLeaf) {
+bool Boom::minus(Leaf* thisLeaf) {
 	if ((var_left != 0) && (var_right != 0)) { // both are variables
 		if (var_right == var_left) { // x - x = 0
 			thisLeaf->number = 0;
@@ -605,7 +632,7 @@ bool Boom::Minus(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Times(Leaf* thisLeaf) {
+bool Boom::times(Leaf* thisLeaf) {
 	if ((thisLeaf->branchLeft->operand == NUMBER) && (thisLeaf->branchRight->operand == NUMBER)) {
 		thisLeaf->number = left * right;
 		thisLeaf->operand = NUMBER;
@@ -614,7 +641,7 @@ bool Boom::Times(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Power(Leaf* thisLeaf) {
+bool Boom::power(Leaf* thisLeaf) {
 	if ((thisLeaf->branchLeft->operand == NUMBER) && (thisLeaf->branchRight->operand == NUMBER)) {
 		thisLeaf->number = pow(left, right);
 		thisLeaf->operand = NUMBER;
@@ -623,9 +650,9 @@ bool Boom::Power(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Devide(Leaf* thisLeaf) {
+bool Boom::devide(Leaf* thisLeaf) {
 	if ((var_right == 0) && (isNearlyEqual(right, 0))) {
-		std::cout << "Error. You are not allowed to devide by zero." << std::endl;
+		std::cout << "Error: Unable to devide by zero." << std::endl;
 	}
 	if ((thisLeaf->branchLeft->operand == NUMBER) && (thisLeaf->branchRight->operand == NUMBER)) {
 		thisLeaf->number = left / right;
@@ -635,7 +662,7 @@ bool Boom::Devide(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Sin(Leaf* thisLeaf) {
+bool Boom::sinus(Leaf* thisLeaf) {
 	if (thisLeaf->branchLeft->operand == NUMBER) {
 		thisLeaf->number = sin(left);
 		thisLeaf->operand = NUMBER;
@@ -644,7 +671,7 @@ bool Boom::Sin(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::Cos(Leaf* thisLeaf) {
+bool Boom::cosinus(Leaf* thisLeaf) {
 	if (thisLeaf->branchLeft->operand == NUMBER) {
 		thisLeaf->number = cos(left);
 		thisLeaf->operand = NUMBER;
@@ -653,13 +680,16 @@ bool Boom::Cos(Leaf* thisLeaf) {
 	return false;
 }
 
-bool Boom::isNearlyEqual(double x, double y) {
-	const double difference = 1e-5; // A small number
-	return std::abs(x - y) <= difference;
+// ---- Evaluate ----
+void Boom::evaluate(std::string variable, double value) {
+	Leaf* newRoot;
+	newRoot = new Leaf;
+	newRoot->branchLeft = root;
+	eval_inOrder(root, variable[0], value); // Input value in x
+	simp_inOrder(root, newRoot, true); // Simplify the expression
 }
 
-// ---- Evaluate ----
-void Boom::Eval_inOrder(Leaf* temp, char variable, double value) {
+void Boom::eval_inOrder(Leaf* temp, char variable, double value) {
 	// When you enter inOrder, you are always at the first visit
 	if (temp) {
 		if (temp->variable == variable) {
@@ -667,16 +697,15 @@ void Boom::Eval_inOrder(Leaf* temp, char variable, double value) {
 			temp->variable = 0;
 			temp->operand = NUMBER;
 		}
-		Eval_inOrder(temp->branchLeft, variable, value);
+		eval_inOrder(temp->branchLeft, variable, value);
 		//Entering second visit
-		Eval_inOrder(temp->branchRight, variable, value);
+		eval_inOrder(temp->branchRight, variable, value);
 		//At the end of inOrder, you are always at the third visit
 	}
 }
 
 // ---- Differentiate ----
-
-void Boom::diff(char toDiffTo) {
+void Boom::differentiate(char toDiffTo) {
 	/* Add a new d/dx leaf at the top */
 	Leaf* newRoot;
 	newRoot = new Leaf;
@@ -736,7 +765,7 @@ void Boom::diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left)
 				}
 				break;
 			case POWER:
-				current = powerRule(toDiffTo, current, previous);//FIXME
+				current = powerRule(toDiffTo, current, previous);
 				if (left) {
 					previous->branchLeft = current;
 				}
@@ -745,7 +774,7 @@ void Boom::diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left)
 				}
 				break;
 			case VARIABLE:
-				current = variable(toDiffTo, current, previous);//FIXME
+				current = variable(toDiffTo, current, previous);
 				if (left) {
 					previous->branchLeft = current;
 				}
@@ -781,22 +810,12 @@ void Boom::diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left)
 				}
 				break;
 			default:
-				std::cout << "HELLLUPP DIT KAN NIET WTF";
+				std::cout << "Error: Something went quite wrong. Our sincere apologies";
 				break;
 			}
 		}
 		diff_inOrder(toDiffTo, current->branchLeft, current, true);
 		diff_inOrder(toDiffTo, current->branchRight, current, false);
-	}
-}
-
-void Boom::contains_var(Leaf* current, bool& found_var, char toDiffTo) {
-	if (current) {
-		contains_var(current->branchLeft, found_var, toDiffTo);
-		contains_var(current->branchRight, found_var, toDiffTo);
-		if (current->variable == toDiffTo) {
-			found_var = true;
-		}
 	}
 }
 
@@ -878,10 +897,10 @@ Boom::Leaf* Boom::sumRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	/* Check if we indeed have an x on one or both sides */
 	bool found_var_left = false;
 	bool found_var_right = false;
-	contains_var(current->branchLeft, found_var_left, toDiffTo);
-	contains_var(current->branchLeft, found_var_right, toDiffTo);
+	contains_var(current->branchLeft->branchLeft, found_var_left, toDiffTo);
+	contains_var(current->branchLeft->branchRight, found_var_right, toDiffTo);
 	if ((!found_var_left) && (!found_var_right)) {
-		temp = SetToZero();
+		temp = setToZero();
 		return temp;
 	}
 
@@ -907,10 +926,10 @@ Boom::Leaf* Boom::quotientRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	/* Check if we indeed have an x on one or both sides */
 	bool found_var_left = false;
 	bool found_var_right = false;
-	contains_var(current->branchLeft, found_var_left, toDiffTo);
-	contains_var(current->branchLeft, found_var_right, toDiffTo);
+	contains_var(current->branchLeft->branchLeft, found_var_left, toDiffTo);
+	contains_var(current->branchLeft->branchRight, found_var_right, toDiffTo);
 	if ((!found_var_left) && (!found_var_right)) {
-		temp = SetToZero();
+		temp = setToZero();
 		return temp;
 	}
 
@@ -959,10 +978,10 @@ Boom::Leaf* Boom::productRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	/* Check if we indeed have an x on one or both sides */
 	bool found_var_left = false;
 	bool found_var_right = false;
-	contains_var(current->branchLeft, found_var_left, toDiffTo);
-	contains_var(current->branchLeft, found_var_right, toDiffTo);
+	contains_var(current->branchLeft->branchLeft, found_var_left, toDiffTo);
+	contains_var(current->branchLeft->branchRight, found_var_right, toDiffTo);
 	if ((!found_var_left) && (!found_var_right)) {
-		temp = SetToZero();
+		temp = setToZero();
 		return temp;
 	}
 
@@ -983,7 +1002,6 @@ Boom::Leaf* Boom::productRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	temp->branchLeft->branchLeft = dg;
 	temp->branchLeft->branchRight = f;
 
-
 	//create right side of plus sign, (d/dx(f) * g  
 	temp->branchRight = new Leaf;
 	temp->branchRight->operand = TIMES;
@@ -1003,10 +1021,15 @@ Boom::Leaf* Boom::powerRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	/* Check if we indeed have an x on one or both sides */
 	bool found_var_left = false;
 	bool found_var_right = false;
-	contains_var(current->branchLeft, found_var_left, toDiffTo);
-	contains_var(current->branchLeft, found_var_right, toDiffTo);
+	contains_var(current->branchLeft->branchLeft, found_var_left, toDiffTo);
+	contains_var(current->branchLeft->branchRight, found_var_right, toDiffTo);
 	if ((!found_var_left) && (!found_var_right)) {
-		temp = SetToZero();
+		temp = setToZero();
+		return temp;
+	}
+	if (found_var_right) { // a ^ x
+		std::cout << "Error: Unable to differentiate equations of the form [a ^ f(x)]" << std::endl;
+		temp = current; // keep d/dx in the tree
 		return temp;
 	}
 
@@ -1040,7 +1063,7 @@ Boom::Leaf* Boom::powerRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	df->operand = D;
 	df->branchLeft = deepcopy(f);
 	temp->branchRight = df;
-	
+
 	return temp;
 }
 
@@ -1079,4 +1102,52 @@ Boom::Leaf* Boom::deepcopy(Leaf* x) {
 	Leaf* y = new Leaf;
 	recDeepcopy(x, y); //copy x to y
 	return y;
+}
+
+void Boom::contains_var(Leaf* current, bool& found_var, char toDiffTo) {
+	if (current) {
+		contains_var(current->branchLeft, found_var, toDiffTo);
+		contains_var(current->branchRight, found_var, toDiffTo);
+		if (current->variable == toDiffTo) {
+			found_var = true;
+		}
+	}
+}
+
+bool Boom::isNearlyEqual(double x, double y) {
+	const double difference = 1e-5; // A small number
+	return std::abs(x - y) <= difference;
+}
+
+Boom::Leaf* Boom::setToZero() {
+	Leaf* temp = new Leaf;
+	temp->number = 0;
+	temp->variable = 0;
+	temp->operand = NUMBER;
+	return temp;
+}
+
+Boom::Leaf* Boom::setToOne() {
+	Leaf* temp = new Leaf;
+	temp->number = 1;
+	temp->variable = 0;
+	temp->operand = NUMBER;
+	return temp;
+}
+
+bool Boom::findElement(Leaf* currentLeaf, double &num, char &var) {
+	switch (currentLeaf->operand) {
+	case PI:
+		num = 3.14159265359;
+		break;
+	case VARIABLE:
+		var = currentLeaf->variable;
+		break;
+	case NUMBER:
+		num = currentLeaf->number;
+		break;
+	default:
+		return false;
+	}
+	return true;
 }

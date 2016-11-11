@@ -78,14 +78,14 @@ int main()
 					i = i + 1;
 				}
 				value = std::atof(input_value.c_str()); // Convert to number
-				theBoom.Evaluate(variable, value);
+				theBoom.evaluate(variable, value);
 			}
 		}
 		else if (substring == "diff") {
-			theBoom.diff(variable[0]);
+			theBoom.differentiate(variable[0]);
 		}
 		else if (substring == "simp") {
-			theBoom.Simplify();
+			theBoom.simplify();
 		}
 		else if (substring == "end") {
 			done = true;
