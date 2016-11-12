@@ -90,7 +90,8 @@ void Boom::processInput(std::string substring) {
 			operand = PI;
 			break;
 		default:
-			std::cout << "YOU SILLY PERSON THIS IS NOT POSSIBLE!!!!!" << std::endl;
+			std::cout << "Error: Unknown character." << std::endl;
+			std::cout << kar << std::endl;
 			break;
 		}
 	}
@@ -326,7 +327,7 @@ void Boom::graph_preOrder(Leaf* Temp, std::ofstream & myfile) {
 void Boom::graph_dot(std::string filename) {
 	counter = 1;
 	std::ofstream myfile;
-	myfile.open(filename);
+	myfile.open(filename.c_str());
 	if (myfile.is_open()) {
 		myfile << "digraph G {\n";
 		graph_preOrder(root, myfile);
@@ -565,42 +566,84 @@ int Boom::calc_sum(Leaf* a, typeOfLeaf a_operand, Leaf* b, typeOfLeaf b_operand)
 }
 
 Boom::Leaf* Boom::deepSummation(Leaf* current, bool& success) {
-	if ((current->branchLeft->operand == NUMBER) && ((current->branchRight->operand == PLUS) || (current->branchRight->operand == MINUS))) {
-		double total;
-		if (current->branchRight->branchLeft->operand == NUMBER) {
-			// number + (number + x)
-			total = calc_sum(current->branchRight->branchLeft, current->operand, current->branchLeft, PLUS); //left side always +
-			current = current->branchRight;
-			current->branchLeft->number = total;
-			success = true;
-			return current;
+	if (current->operand == PLUS) {
+		if ((current->branchLeft->operand == NUMBER) && ((current->branchRight->operand == PLUS) || (current->branchRight->operand == MINUS))) {
+			double total;
+			if (current->branchRight->branchLeft->operand == NUMBER) {
+				// number + (number + x)
+				total = calc_sum(current->branchRight->branchLeft, current->operand, current->branchLeft, PLUS); //left side always +
+				current = current->branchRight;
+				current->branchLeft->number = total;
+				success = true;
+				return current;
+			}
+			else if (current->branchRight->branchRight->operand == NUMBER) {
+				// number + ( x + number )
+				total = calc_sum(current->branchRight->branchRight, current->branchRight->operand, current->branchLeft, PLUS);
+				current = current->branchRight;
+				current->branchRight->number = total;
+				success = true;
+				return current;
+			}
 		}
-		else if (current->branchRight->branchRight->operand == NUMBER) {
-			// number + ( x + number )
-			total = calc_sum(current->branchRight->branchRight, current->branchRight->operand, current->branchLeft, PLUS);
-			current = current->branchRight;
-			current->branchRight->number = total;
-			success = true;
-			return current;
+		else if ((current->branchRight->operand == NUMBER) && ((current->branchLeft->operand == PLUS) || (current->branchLeft->operand == MINUS))) {
+			double total;
+			if (current->branchLeft->branchLeft->operand == NUMBER) {
+				// (number + x) + number
+				total = calc_sum(current->branchLeft->branchLeft, PLUS, current->branchRight, current->operand);
+				current = current->branchLeft;
+				current->branchLeft->number = total;
+				success = true;
+				return current;
+			}
+			else if (current->branchLeft->branchRight->operand == NUMBER) {
+				// ( x + number ) + number
+				total = calc_sum(current->branchLeft->branchRight, current->branchLeft->operand, current->branchRight, current->operand);
+				current = current->branchLeft;
+				current->branchRight->number = total;
+				success = true;
+				return current;
+			}
 		}
 	}
-	else if ((current->branchRight->operand == NUMBER) && ((current->branchLeft->operand == PLUS) || (current->branchLeft->operand == MINUS))) {
-		double total;
-		if (current->branchLeft->branchLeft->operand == NUMBER) {
-			// (number + x) + number
-			total = calc_sum(current->branchLeft->branchLeft, PLUS, current->branchRight, current->operand);
-			current = current->branchLeft;
-			current->branchLeft->number = total;
-			success = true;
-			return current;
+	else if (current->operand == TIMES) {
+		if ((current->branchLeft->operand == NUMBER) && (current->branchRight->operand == TIMES)) {
+			double total;
+			if (current->branchRight->branchLeft->operand == NUMBER) {
+				// number + (number + x)
+				total = current->branchRight->branchLeft->number * current->branchLeft->number;
+				current = current->branchRight;
+				current->branchLeft->number = total;
+				success = true;
+				return current;
+			}
+			else if (current->branchRight->branchRight->operand == NUMBER) {
+				// number + ( x + number )
+				total = current->branchRight->branchRight->number * current->branchLeft->number;
+				current = current->branchRight;
+				current->branchRight->number = total;
+				success = true;
+				return current;
+			}
 		}
-		else if (current->branchLeft->branchRight->operand == NUMBER) {
-			// ( x + number ) + number
-			total = calc_sum(current->branchLeft->branchRight, current->branchLeft->operand, current->branchRight, current->operand);
-			current = current->branchLeft;
-			current->branchRight->number = total;
-			success = true;
-			return current;
+		else if ((current->branchRight->operand == NUMBER) && (current->branchLeft->operand == TIMES)) {
+			double total;
+			if (current->branchLeft->branchLeft->operand == NUMBER) {
+				// (number + x) + number
+				total = current->branchLeft->branchLeft->number * current->branchRight->number;
+				current = current->branchLeft;
+				current->branchLeft->number = total;
+				success = true;
+				return current;
+			}
+			else if (current->branchLeft->branchRight->operand == NUMBER) {
+				// ( x + number ) + number
+				total = current->branchLeft->branchRight->number * current->branchRight->number;
+				current = current->branchLeft;
+				current->branchRight->number = total;
+				success = true;
+				return current;
+			}
 		}
 	}
 	success = false;
@@ -617,7 +660,7 @@ bool Boom::plus(Leaf* thisLeaf) {
 }
 
 bool Boom::minus(Leaf* thisLeaf) {
-	if ((var_left != 0) && (var_right != 0)) { // both are variables
+	if ((thisLeaf->branchLeft->operand == VARIABLE) && (thisLeaf->branchRight->operand == VARIABLE)) { // both are variables
 		if (var_right == var_left) { // x - x = 0
 			thisLeaf->number = 0;
 			thisLeaf->variable = 0;
@@ -652,7 +695,7 @@ bool Boom::power(Leaf* thisLeaf) {
 }
 
 bool Boom::devide(Leaf* thisLeaf) {
-	if ((var_right == 0) && (isNearlyEqual(right, 0))) {
+	if ((thisLeaf->branchRight->operand == NUMBER) && (isNearlyEqual(right, 0))) {
 		std::cout << "Error: Unable to devide by zero." << std::endl;
 	}
 	if ((thisLeaf->branchLeft->operand == NUMBER) && (thisLeaf->branchRight->operand == NUMBER)) {

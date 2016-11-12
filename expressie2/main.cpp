@@ -1,7 +1,8 @@
 #include <iostream>
-// Visual Studio compiler does not directly import <string> 
 #include <string>
 #include "Boom.h"
+#include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -20,13 +21,84 @@ void process(string invoer){
 	}
 }
 
+void mainloop(string input, bool& done) {
+	string expression;
+	string variable = "x";
+	string input_value;
+	string filename;
+	string substring;
+	double value;
+	int i = 0;
+	while ((input[i] != ' ') && (input[i] != 0)) {
+		// Empty space or end of string
+		substring += input[i];
+		i = i + 1;
+	}
+	if (substring == "exp") {
+		delete theBoom;
+		theBoom = new Boom;
+		while (input[i] == ' ') { // Delete empty spaces in imput
+			i = i + 1;
+		}
+		while (input[i] != 0) { // End of string
+			expression += input[i];
+			i = i + 1;
+		}
+		process(expression);
+		input.clear();
+		expression.clear();
+	}
+	else if (substring == "dot") {
+		while (input[i] == ' ') { // Delete empty spaces in imput
+			i = i + 1;
+		}
+		while (input[i] != 0) { // End of string
+			filename += input[i];
+			i = i + 1;
+		}
+		theBoom->graph_dot(filename.c_str());
+		filename.clear();
+	}
+	else if (substring == "print") {
+		cout << "Current expression: " << endl;
+		theBoom->view();
+		cout << endl;
+	}
+	else if (substring == "eval") {
+		if (input[i] != 0) {
+			while (input[i] == ' ') { // Delete empty spaces in imput
+				i = i + 1;
+			}
+			while ((input[i] != ' ') && (input[i] != 0)) { // Empty space or end of string
+				input_value += input[i];
+				i = i + 1;
+			}
+			value = std::atof(input_value.c_str()); // Convert to number
+			theBoom->evaluate(variable, value);
+		}
+	}
+	else if (substring == "diff") {
+		theBoom->differentiate(variable[0]);
+	}
+	else if (substring == "simp") {
+		theBoom->simplify();
+	}
+	else if (substring == "end") {
+		done = true;
+		return;
+	}
+	else {
+		cout << "Invalid input" << endl;
+		input.clear();
+	}
+}
 
-int main()
-{	
+int main(int argc, char *argv[])
+{
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
 	cout << "         MENU          " << endl;
 	cout << " -------------------- " << endl;
-	cout << "[ exp <expression>   ] - (Use post order notation) Create an expression tree" << endl; 
+	cout << "[ exp <expression>   ] - (Use post order notation) Create an expression tree" << endl;
 	cout << "[ print              ] - Print tree" << endl;
 	cout << "[ dot <filename.dot> ] - Save graphical display of tree to file" << endl;
 	cout << "[ eval <value>       ] - Evaluate f(x) for  x = <value>" << endl;
@@ -35,83 +107,31 @@ int main()
 	cout << "[ end                ] - Exit" << endl;
 	cout << " -------------------- " << endl;
 
-	string testInvoer = "/ + * 2 x cos + 8 ^ x + 3 y + a / + / pi 5 871 0";
+	bool done = false;
 	string input;
-	string expression;
-	string variable = "x";
-	string input_value;
-	string filename;
-	double value;
 
-	// This is a user menu:
-	bool done = false; 
-
-	// A loop to go through the various input possibilities, TODO: switch statement?
-	while (!done) {
-		string substring;
-		getline(cin, input);
-		int i = 0;
-		while ((input[i] != ' ') && (input[i] != 0)) {
-			// Empty space or end of string
-			substring += input[i];
-			i = i + 1;
-		}
-		if (substring == "exp") {
-			delete theBoom;
-			theBoom = new Boom;
-			while (input[i] == ' ') { // Delete empty spaces in imput
-				i = i + 1;
-			}
-			while (input[i] != 0) { // End of string
-				expression += input[i];
-				i = i + 1;
-			}
-			process(expression);
-			input.clear();
-			expression.clear();
-		}
-		else if (substring == "dot") {
-			while (input[i] == ' ') { // Delete empty spaces in imput
-				i = i + 1;
-			}
-			while (input[i] != 0) { // End of string
-				filename += input[i];
-				i = i + 1;
-			}
-			theBoom->graph_dot(filename);
-			filename.clear();
-		}
-		else if (substring == "print") {
-			cout << "Current expression: " << endl;
-			theBoom->view();
-			cout << endl;
-		}
-		else if (substring == "eval") {
-			if (input[i] != 0) {
-				while (input[i] == ' ') { // Delete empty spaces in imput
-					i = i + 1;
-				}
-				while ((input[i] != ' ') && (input[i] != 0)) { // Empty space or end of string
-					input_value += input[i];
-					i = i + 1;
-				}
-				value = std::atof(input_value.c_str()); // Convert to number
-				theBoom->evaluate(variable, value);
-			}
-		}
-		else if (substring == "diff") {
-			theBoom->differentiate(variable[0]);
-		}
-		else if (substring == "simp") {
-			theBoom->simplify();
-		}
-		else if (substring == "end") {
-			done = true;
-		}
+	if (argc > 1) {
+		// We assume argv[1] is a filename to open
+		ifstream the_file(argv[1]);
+		// Always check to see if file opening succeeded
+		if (!the_file.is_open())
+			cout << "Could not open file\n";
 		else {
-			cout << "Invalid input" << endl;
-			input.clear();
+			// the_file.get ( x ) returns false if the end of the file
+			//  is reached or an error occurs
+			while (!the_file.eof()) {
+				getline(the_file, input);
+				mainloop(input, done);
+				if (done) { 
+					return 0;
+				}
+				input.clear();
+			}
 		}
+	}
+	while (!done) {
+		getline(cin, input);
+		mainloop(input, done);
 	}
 	
 	return 0;
