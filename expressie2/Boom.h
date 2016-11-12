@@ -3,19 +3,7 @@
 * @author Lisa Pothoven (s1328263)
 * @author David Kleingeld (s1432982)
 * @file Boom.h
-* @date 03-11-2016
-**/
-
-/**
-TODO remove this later
-* @function functienaam
-* @abstract beschrijving wat de functie doet,
-inclusief hulpfuncties. Noem hulpfuncties niet!
-* @param parameternaam beschrijving rol parameter
-* @return beschrijving van het resultaat
-* @pre exacte beschrijving preconditie
-* @post exacte beschrijving postconditie
-wat is er veranderd na het uitvoeren van de functie?
+* @date 12-11-2016
 **/
 
 #include <string>
@@ -65,11 +53,18 @@ public:
 	* @param std::string toDiffTo: the variable to diffrentiate to
   **/
 	void differentiate(char toDiffTo);
+	/**
+	* @function graph_dot
+	* @abstract create a textfile to save the structure and information of the
+	tree in order to display it graphically
+	* @pre non-empty tree
+	**/
+	void graph_dot(std::string filename);
 private:
 	//Type of a leaf/node
 	enum typeOfLeaf {
 		PLUS, MINUS, TIMES, POWER, DEVIDE,
-		NUMBER, VARIABLE, SIN, COS, PI, D //D is used as: d/d(var)
+		NUMBER, VARIABLE, SIN, COS, PI, D, EMPTY //D is used as: d/d(var)
 	};
 	//Struct for the leaves/nodes
 	struct Leaf {
@@ -148,20 +143,13 @@ private:
 	**/
 	void writeLabel(typeOfLeaf operand, Leaf* Temp, std::ofstream & myfile);
 	/**
-	* @function Graph_preOrder
+	* @function graph_preOrder
 	* @abstract traverse the tree in pre-order direction and write the 
 	information from nodes and connections to a file
 	* @param Leaf* Temp, std::ofstream & myfile: a textfile
 	* @pre a non-empty node of the tree
 	**/
-	void Graph_preOrder(Leaf* Temp, std::ofstream & myfile);
-	/**
-	* @function Graph_display
-	* @abstract create a textfile to save the structure and information of the 
-	tree in order to display it graphically
-	* @pre non-empty tree
-	**/
-	void Graph_display();
+	void graph_preOrder(Leaf* Temp, std::ofstream & myfile);
 	/**
 	* @function writeConnection
 	* @abstract write connections between nodes to graph.txt
@@ -216,19 +204,54 @@ private:
 	* @param
 	**/
 	bool findElement(Leaf* thisLeaf, double &num, char &var);
-
+	/**
+	* @function plus
+	* @abstract sums the values of this nodes' children
+	* @param thisLeaf (current node)
+	* @return true or false (if one or both children contain non-numerical value)
+	**/
 	bool plus(Leaf* thisLeaf);
-
+	/**
+	* @function minus
+	* @abstract subtracts the values of this nodes' children
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool minus(Leaf* thisLeaf);
-
+	/**
+	* @function times
+	* @abstract multiplies the values of this nodes' children
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool times(Leaf* thisLeaf);
-
+	/**
+	* @function power
+	* @abstract left child ^ right child
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool power(Leaf* thisLeaf);
-
+	/**
+	* @function devide
+	* @abstract devides the values of this nodes' children
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool devide(Leaf* thisLeaf);
-
+	/**
+	* @function sinus
+	* @abstract sin(value in left child)
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool sinus(Leaf* thisLeaf);
-
+	/**
+	* @function cos
+	* @abstract cos(value in left child)
+	* @param thisLeaf (current node)
+	* @return true or false
+	**/
 	bool cosinus(Leaf* thisLeaf);
 
 /*	---- Evaluate ---- */
@@ -242,23 +265,71 @@ private:
 	void eval_inOrder(Leaf* Temp, char variable, double value);
 
 /*	---- Differentiate ---- */
-
+	/**
+	* @function diff_inOrder
+	* @abstract Differentiate the tree in order
+	* @param toDiffTo: the variable that we will be differentiating to (usually x)
+	* current: current node
+	* previous: previous node, with pointer to current node
+	**/
 	void diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left);
-
+	/**
+	* @function variable
+	* @abstract Differentiate current subtree containing a variable
+	* @param toDiffTo: the variable that we will be differentiating to (usually x)
+	* current: current node
+	* previous: previous node, with pointer to current node
+	* @return: subtree that is part of the differentiation
+	**/
 	Leaf* variable(char toDiffTo, Leaf* current, Leaf* previous);
-
+	/**
+	* @function constant
+	* @abstract Differentiate current subtree containing a constant
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* constant(char toDiffTo, Leaf* current, Leaf* previous);
-
+	/**
+	* @function quotientRule
+	* @abstract Use quotient rule to differentiate current subtree
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* quotientRule(char toDiffTo, Leaf* current, Leaf* previous);
-
+	/**
+	* @function sumRule
+	* @abstract Use sum rule to differentiate current subtree
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* sumRule(char toDiffTo, Leaf* current, Leaf* previous);
-
+	/**
+	* @function productRule
+	* @abstract Use product rule to differentiate current subtree
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* productRule(char toDiffTo, Leaf* current, Leaf* previous);
-
+	/**
+	* @function powerRule
+	* @abstract Use product rule to differentiate current subtree
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* powerRule(char toDiffTo, Leaf* current, Leaf* previous);
-	
+	/**
+	* @function cosRule
+	* @abstract Differentiate current subtree containing a cosine
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* cosRule(char toDiffTo, Leaf* current, Leaf* previous);
-	
+	/**
+	* @function sinRule
+	* @abstract Differentiate current subtree containing a sinus
+	* @param toDiffTo, current, previous
+	* @return: subtree
+	**/
 	Leaf* sinRule(char toDiffTo, Leaf* current, Leaf* previous);
 
 /* ---- Additional functions  ---- */
@@ -277,11 +348,18 @@ private:
 	* @return the current node of type Leaf
 	**/
 	Leaf* deepSummation(Leaf* current, bool& success);
-
+	/**
+	* @function setToZero
+	* @abstract set number of current node to 0 and operand to NUMBER
+	* @return the current node of type Leaf
+	**/
 	Leaf* setToZero();
-
+	/**
+	* @function setToOne
+	* @abstract set number of current node to 1 and operand to NUMBER
+	* @return the current node of type Leaf
+	**/
 	Leaf* setToOne();
-
 	/**
 	* @function isNearlyEqual
 	* @abstract function to check whether two doubles are equal
@@ -289,15 +367,33 @@ private:
 	* @return true (are equal), false (are not equal)
 	**/
 	bool isNearlyEqual(double x, double y);
-
+	/**
+	* @function copyLeaf
+	* @abstract copy values of current leaf
+	* @param x and y of type Leaf
+	**/
 	void copyLeaf(Leaf* x, Leaf* y);
-
+	/**
+	* @function recDeepcopy
+	* @abstract recursively copy current node and all its children
+	* @param x and y of type Leaf
+	**/
 	void recDeepcopy(Leaf* x, Leaf* y);
-
+	/**
+	* @function deepcopy
+	* @abstract make deep copy of current node and all its children
+	* @param x of type Leaf
+	* @return the current node of type Leaf
+	**/
 	Boom::Leaf* deepcopy(Leaf* x);
-
-	void deleteTopD(Leaf*& current);
-
+	/**
+	* @function contains_var
+	* @abstract check if current leaf contains the given variable
+	* @param current: current leaf, found_var: boolean that is initially false, 
+	* toDiffTo: the character that we will be differentiating to
+	* @pre: found_var = false
+	* @post: found_var = true
+	**/
 	void contains_var(Leaf* current, bool& found_var, char toDiffTo);
 };
 

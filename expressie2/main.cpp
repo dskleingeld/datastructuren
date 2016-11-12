@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Boom theBoom;
+Boom* theBoom;
 
 void process(string invoer){
 	for (unsigned int i = 0; i < invoer.size(); i++) { 
@@ -16,7 +16,7 @@ void process(string invoer){
 			substring += invoer[i];
 			i = i + 1;
 		}
-		theBoom.processInput(substring); // Create new node in Boom
+		theBoom->processInput(substring); // Create new node in Boom
 	}
 }
 
@@ -24,14 +24,23 @@ void process(string invoer){
 int main()
 {	
 	cout << "\nDatastructures" << endl << "Assignment 2: Boom" << "\n\n";
-	cout << "Options:" << endl << "--------------" << endl << "exp <expression>" << endl << "print" << endl << "dot <filename.dot>" << endl;
-	cout << "eval <value>" << endl << "diff" << endl << "simp" << endl << "end" << endl << "--------------" << endl;
+	cout << "         MENU          " << endl;
+	cout << " -------------------- " << endl;
+	cout << "[ exp <expression>   ] - (Use post order notation) Create an expression tree" << endl; 
+	cout << "[ print              ] - Print tree" << endl;
+	cout << "[ dot <filename.dot> ] - Save graphical display of tree to file" << endl;
+	cout << "[ eval <value>       ] - Evaluate f(x) for  x = <value>" << endl;
+	cout << "[ diff               ] - Differentiate d(f(x)/dx" << endl;
+	cout << "[ simp               ] - Simplify tree" << endl;
+	cout << "[ end                ] - Exit" << endl;
+	cout << " -------------------- " << endl;
 
 	string testInvoer = "/ + * 2 x cos + 8 ^ x + 3 y + a / + / pi 5 871 0";
 	string input;
 	string expression;
 	string variable = "x";
 	string input_value;
+	string filename;
 	double value;
 
 	// This is a user menu:
@@ -48,6 +57,8 @@ int main()
 			i = i + 1;
 		}
 		if (substring == "exp") {
+			delete theBoom;
+			theBoom = new Boom;
 			while (input[i] == ' ') { // Delete empty spaces in imput
 				i = i + 1;
 			}
@@ -56,16 +67,23 @@ int main()
 				i = i + 1;
 			}
 			process(expression);
-
 			input.clear();
 			expression.clear();
 		}
 		else if (substring == "dot") {
-			// TODO
+			while (input[i] == ' ') { // Delete empty spaces in imput
+				i = i + 1;
+			}
+			while (input[i] != 0) { // End of string
+				filename += input[i];
+				i = i + 1;
+			}
+			theBoom->graph_dot(filename);
+			filename.clear();
 		}
 		else if (substring == "print") {
 			cout << "Current expression: " << endl;
-			theBoom.view();
+			theBoom->view();
 			cout << endl;
 		}
 		else if (substring == "eval") {
@@ -78,17 +96,21 @@ int main()
 					i = i + 1;
 				}
 				value = std::atof(input_value.c_str()); // Convert to number
-				theBoom.evaluate(variable, value);
+				theBoom->evaluate(variable, value);
 			}
 		}
 		else if (substring == "diff") {
-			theBoom.differentiate(variable[0]);
+			theBoom->differentiate(variable[0]);
 		}
 		else if (substring == "simp") {
-			theBoom.simplify();
+			theBoom->simplify();
 		}
 		else if (substring == "end") {
 			done = true;
+		}
+		else {
+			cout << "Invalid input" << endl;
+			input.clear();
 		}
 	}
 	

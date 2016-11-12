@@ -3,12 +3,8 @@
 * @author Lisa Pothoven (s1328263)
 * @author David Kleingeld (s1432982)
 * @file Boom.h
-* @date 12-10-2016
+* @date 12-11-2016
 **/
-
-// TODO: Nu kijken we of iets gelijk is aan nul door te vergelijken met = 0
-// maar een double kan ook net-niet-helemaal 0 zijn,
-// dus we moeten eigenlijk vergelijken met < 0.0001 ofzo...
 
 #include <string>
 #include <cstdlib>
@@ -26,6 +22,7 @@ Boom::Boom() {
 Boom::Leaf::Leaf() {
 	branchLeft = NULL;
 	branchRight = NULL;
+	operand = EMPTY;
 }
 
 Boom::~Boom() {
@@ -160,8 +157,6 @@ void Boom::addLeaf(typeOfLeaf operand, char variable, double number) {
 void Boom::view() {
 	//Display the tree as a mathematical expression
 	inOrder(root);
-	//Display the tree graphically
-	Graph_display();
 }
 
 bool Boom::isOperator(Leaf* Temp) {
@@ -314,28 +309,33 @@ void Boom::writeConnection(std::ofstream & myfile, std::stack<int> myStack) {
 	}
 }
 
-void Boom::Graph_preOrder(Leaf* Temp, std::ofstream & myfile) {
+void Boom::graph_preOrder(Leaf* Temp, std::ofstream & myfile) {
 	if (Temp) {
 		writeLabel(Temp->operand, Temp, myfile);
 		Graph_Stack.push(counter);
 		counter += 1;
 		writeConnection(myfile, Graph_Stack);
-		Graph_preOrder(Temp->branchLeft, myfile);
-		Graph_preOrder(Temp->branchRight, myfile);
+		graph_preOrder(Temp->branchLeft, myfile);
+		graph_preOrder(Temp->branchRight, myfile);
 		if (!Graph_Stack.empty()) {
 			Graph_Stack.pop();
 		}
 	}
 }
 
-void Boom::Graph_display() {
+void Boom::graph_dot(std::string filename) {
 	counter = 1;
 	std::ofstream myfile;
-	myfile.open("graph.txt");
-	myfile << "digraph G {\n";
-	Graph_preOrder(root, myfile);
-	myfile << "}";
-	myfile.close();
+	myfile.open(filename);
+	if (myfile.is_open()) {
+		myfile << "digraph G {\n";
+		graph_preOrder(root, myfile);
+		myfile << "}";
+		myfile.close();
+	}
+	else {
+		std::cout << "Error: Could not open " << filename << "." << std::endl;
+	}
 }
 
 // ---- Simplifiy ----
@@ -462,10 +462,10 @@ void Boom::operate(Leaf* current, Leaf* previous, bool isLeft) {
 		/* If no 1 or 0 was found, we will try to calculate the result as follows */
 		else {
 			// Check for 'deep summations', for example: (2 + x) + 4 = 6 + x
-			bool success = false;
+			bool deepsum_success = false;
 			Leaf* temp = new Leaf;
-			temp = deepSummation(current, success);
-			if (success) {
+			temp = deepSummation(current, deepsum_success);
+			if (deepsum_success) {
 				if (isLeft) {
 					current = temp;
 					previous->branchLeft = current;
@@ -475,8 +475,9 @@ void Boom::operate(Leaf* current, Leaf* previous, bool isLeft) {
 					previous->branchRight = current;
 				}
 			}
+			// TODO: do the same thing for 'deep multiplications' for example: 2*x * 3 = 6*x
 			// if success is false, continue to the regular operations:
-			if (!success) {
+			if (!deepsum_success) {
 				switch (current->operand) {
 				case PLUS:
 					if (plus(current)) {
@@ -568,7 +569,7 @@ Boom::Leaf* Boom::deepSummation(Leaf* current, bool& success) {
 		double total;
 		if (current->branchRight->branchLeft->operand == NUMBER) {
 			// number + (number + x)
-			total = calc_sum(current->branchRight->branchLeft, current->branchRight->operand, current->branchLeft, current->operand);
+			total = calc_sum(current->branchRight->branchLeft, current->operand, current->branchLeft, PLUS); //left side always +
 			current = current->branchRight;
 			current->branchLeft->number = total;
 			success = true;
@@ -576,7 +577,7 @@ Boom::Leaf* Boom::deepSummation(Leaf* current, bool& success) {
 		}
 		else if (current->branchRight->branchRight->operand == NUMBER) {
 			// number + ( x + number )
-			total = calc_sum(current->branchRight->branchRight, current->branchRight->operand, current->branchLeft, current->operand);
+			total = calc_sum(current->branchRight->branchRight, current->branchRight->operand, current->branchLeft, PLUS);
 			current = current->branchRight;
 			current->branchRight->number = total;
 			success = true;
@@ -587,7 +588,7 @@ Boom::Leaf* Boom::deepSummation(Leaf* current, bool& success) {
 		double total;
 		if (current->branchLeft->branchLeft->operand == NUMBER) {
 			// (number + x) + number
-			total = calc_sum(current->branchLeft->branchLeft, current->branchLeft->operand, current->branchRight, current->operand);
+			total = calc_sum(current->branchLeft->branchLeft, PLUS, current->branchRight, current->operand);
 			current = current->branchLeft;
 			current->branchLeft->number = total;
 			success = true;
@@ -720,6 +721,12 @@ void Boom::differentiate(char toDiffTo) {
 
 	/* Set root to the appropriate leaf */
 	root = previous;
+	while (root->operand == EMPTY) {
+		/* Delete root if it is empty */
+		Leaf* temp = root;
+		root = root->branchLeft;
+		delete temp;
+	}
 }
 
 void Boom::diff_inOrder(char toDiffTo, Leaf* current, Leaf* previous, bool left) {
@@ -1067,16 +1074,6 @@ Boom::Leaf* Boom::powerRule(char toDiffTo, Leaf* current, Leaf* previous) {
 	return temp;
 }
 
-
-void Boom::deleteTopD(Leaf*& current) {
-	Leaf* temp;
-
-	//remove the top D
-	temp = current;
-	current = current->branchLeft;
-	delete temp;
-}
-
 //copies an element leaf except the pointers
 void Boom::copyLeaf(Leaf* x, Leaf* y) {
 	y->operand = x->operand;
@@ -1139,6 +1136,8 @@ bool Boom::findElement(Leaf* currentLeaf, double &num, char &var) {
 	switch (currentLeaf->operand) {
 	case PI:
 		num = 3.14159265359;
+		currentLeaf->number = num;
+		currentLeaf->operand = NUMBER;
 		break;
 	case VARIABLE:
 		var = currentLeaf->variable;
