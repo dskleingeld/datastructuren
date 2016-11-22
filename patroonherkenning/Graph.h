@@ -18,7 +18,7 @@ struct GraphNode{
 };
 
 class Graph{
-    private:
+    protected:
         GraphNode list[maxNodes];
         int numNodes;
     public:
