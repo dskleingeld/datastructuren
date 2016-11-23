@@ -28,28 +28,40 @@ void Graph<T>::addEdge(int source, int destination, T edgeVal){
 }
 
 template <typename T>
-bool Graph<T>::removeEdge(int source, int destination, T& edgeVal){
+AdjListNode<T>* Graph<T>::findEdge(int source, int destination, AdjListNode<T>*& prevNode){
     if(list[source].firstAdjNode){
-        AdjListNode<T>* toRemove = list[source].firstAdjNode;
-        AdjListNode<T>* prevNode = nullptr;
-        while(toRemove->next && toRemove->destination != destination){ //there is a next adjnode and we are not there yet
-            prevNode = toRemove; //points at the previously seen adjnode
-            toRemove = toRemove->next;
+        AdjListNode<T>* toFind = list[source].firstAdjNode;
+        prevNode = nullptr;
+        while(toFind->next && toFind->destination != destination){ //there is a next adjnode and we are not there yet
+            prevNode = toFind; //points at the previously seen adjnode
+            toFind = toFind->next;
         }
-        if(toRemove->destination == destination){ //we have found our edge to remove
-            if(prevNode){ //this is not the first adjnode
-                prevNode->next = toRemove->next;
-            }else{
-                list[source].firstAdjNode = toRemove->next;
-            }
-            edgeVal = toRemove->edgeVal;
-            delete toRemove;
-            return true; //success
+        if(toFind->destination == destination){ //we have found our edge
+            return toFind;
         }
     }
     //edge was not found
-    std::cerr << "Removing edge failed: ("<<source<<","<<destination<<") not found\n";
-    return false;
+    std::cout << "Edge not found: ("<<source<<","<<destination<<")\n";
+    return nullptr;
+}
+
+template <typename T>
+bool Graph<T>::removeEdge(int source, int destination, T& edgeVal){
+    AdjListNode<T>* prevNode;
+    AdjListNode<T>* toRemove = findEdge(source, destination, prevNode);
+    if(toRemove){ //the edge exists
+        if(prevNode){ //it is not the first adjnode
+            //std::cout << prevNode << " " << prevNode->next << "\n";
+            prevNode->next = toRemove->next;
+        } else {
+            list[source].firstAdjNode = toRemove->next;
+        }
+        edgeVal = toRemove->edgeVal;
+        delete toRemove;
+        return true;
+    }else{
+        return false;
+    }
 }
 
 template <typename T>
@@ -65,4 +77,20 @@ void Graph<T>::printGraph(){
         }
         std::cout << "\n";
     }
+}
+
+int main(){
+    Graph<char> graafje(5);
+    graafje.addEdge(1, 2, 'a');
+    graafje.addEdge(1, 3, 'b');
+    graafje.addEdge(1, 4, 'c');
+    graafje.addEdge(3, 4, 'd');
+    graafje.printGraph();
+    
+    char removed;
+    bool success = graafje.removeEdge(1, 4, removed);
+    graafje.printGraph();
+    
+    success = graafje.removeEdge(3, 4, removed);
+    graafje.printGraph();
 }

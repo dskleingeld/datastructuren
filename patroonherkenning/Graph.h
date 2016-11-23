@@ -28,6 +28,7 @@ class Graph{
         Graph(int numNodes); //constructor
         
         void addEdge(int source, int destination, T edgeVal);
+        AdjListNode<T>* findEdge(int source, int destination, AdjListNode<T>*& prevNode);
         bool removeEdge(int source, int destination, T& edgeVal); //removes an edge and returns the edge value
         
         void printGraph();
