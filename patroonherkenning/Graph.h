@@ -7,24 +7,29 @@
 
 const int maxNodes = 100;
 
+template <typename T>
 struct AdjListNode{
-    char edgeVal;
+    T edgeVal;
     int destination;
-    AdjListNode* next = nullptr;
+    AdjListNode<T>* next = nullptr;
 };
 
+template <typename T>
 struct GraphNode{
-    AdjListNode* firstAdjNode = nullptr;
+    AdjListNode<T>* firstAdjNode = nullptr;
 };
 
+template <typename T>
 class Graph{
     protected:
-        GraphNode list[maxNodes];
+        GraphNode<T> list[maxNodes];
         int numNodes;
     public:
         Graph(int numNodes); //constructor
         
-        void addEdge(int source, int destination, char edgeVal);
+        void addEdge(int source, int destination, T edgeVal);
+        bool removeEdge(int source, int destination, T& edgeVal); //removes an edge and returns the edge value
+        
         void printGraph();
 };
 
