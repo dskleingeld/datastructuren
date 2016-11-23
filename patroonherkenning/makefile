@@ -1,6 +1,11 @@
 CXX = g++
-CXXFLAGS= -Wall -pedantic -std=c++14 -g -DDEBUG
-#add the flag '-DDEBUG' to enable debug statements
+CXXFLAGS= -Wall -pedantic -std=c++14 -g
+#add the flag '-DDEBUG' to enable debug prints
+
+#these 3 lines allow 'make debug' to have debug prints and 'make' not
+all: regex
+debug: CXXFLAGS += -DDEBUG
+debug: regex
 
 objects = main.o Boom.o
 

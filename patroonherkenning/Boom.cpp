@@ -12,6 +12,7 @@ Boom::Boom(std::string expression) {
   root = new Leaf;
 
   Tree_building(expression, root);
+  db("done with building initial tree")
 }
 
 void Boom::Tree_building(std::string str, Leaf* ingang) {
@@ -23,12 +24,12 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   std::cout << "str: " <<str<<std::endl;
 
   if (enclosed(str)) {
-    str_left = str.substr(1, str.size() - 1);
+    str_left = str.substr(1, str.size() - 2);
     goLeft = ingang;
   }
 
   else if (repEnclosed(str)) {
-    str_left = str.substr(1, str.size() - 2);
+    str_left = str.substr(1, str.size() - 3);
     build_rep_tree(ingang, goLeft);
   }
   else if (split_concat(str, str_left, str_right)) {
@@ -49,9 +50,12 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   else {
     std::cerr << "Unrecognised structure" << str << std::endl;
   }
-
-  if (goLeft != NULL) Tree_building(str_left, goLeft);
-  if (goRight != NULL) Tree_building(str_right, goRight);
+  //std::cout<<goLeft<<" "<<goRight<<"\n";
+  if (goLeft != NULL) {db("-> going left\n"); Tree_building(str_left, goLeft);}
+  db("entering second part of recur.\n")
+  if (goRight != NULL) {db("-> going right\n"); Tree_building(str_right, goRight);}
+  
+  db("->going up one level\n")
 }
 
 bool Boom::enclosed(std::string str) {
@@ -62,7 +66,6 @@ bool Boom::enclosed(std::string str) {
 
 bool Boom::repEnclosed(std::string str) {
   db("checking if repeated enclosed\n")
-  db("str size:"<<str.size()<<"\n")
   if(str.size()>2) {
     std::string str_ending = str.substr(str.size() - 2); //get last 2 chars of string
     if ((str[0] == '(') && (str_ending == ")*")) return true;
@@ -73,8 +76,6 @@ bool Boom::repEnclosed(std::string str) {
 
 bool Boom::oneLetter(std::string str) {
   db("checking if only one letter\n")
-  std::cout<<"oneLetter got: '"<<str<<"'"<<std::endl;
-  std::cout<<str.size();
   if(str.size()==1) return true;
   else return false;
 }
@@ -110,12 +111,15 @@ bool Boom::split_or(const std::string str, std::string &str_left, std::string &s
 
   if (strSize < 2) return false;
   else {
-    unsigned int i = 1;
+    unsigned int i = 0;
 
     while (i < strSize) {
       if (str[i] == '|') {
+        //TODO really wierd stuff happening here NEED MIEL
         str_left = str.substr(0, i);
-        str_right = str.substr(i, strSize - i);
+        std::cout<<str.substr(0,i);
+        str_right = str.substr(i+1, strSize - i);
+        std::cout<<"i, l&r: "<<i<<", "<<str_left<<", "<<str_right<<std::endl;
         return true;
       } else i++;
     }
@@ -124,30 +128,35 @@ bool Boom::split_or(const std::string str, std::string &str_left, std::string &s
 }
 
 void Boom::build_rep_tree(Leaf* ingang, Leaf*& goLeft) {
+  db("*building repeating tree\n")
+  ingang->operand = REPETITION;
   ingang->left = new Leaf;
-  ingang->left->operand = REPETITION;
 
   goLeft = ingang->left;
 }
 
 void Boom::build_concat_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
+  db("*building concat tree\n")
+  ingang->operand = CONCAT;
   ingang->left = new Leaf;
-  ingang->left->operand = CONCAT;
+  ingang->right = new Leaf;
 
   goLeft = ingang->left;
   goRight = ingang->right;
 }
 
 void Boom::build_or_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
+  db("*building or tree\n")
+  ingang->operand = OR;
   ingang->left = new Leaf;
-  ingang->left->operand = OR;
+  ingang->right = new Leaf;
 
   goLeft = ingang->left;
   goRight = ingang->right;
 }
 
 void Boom::build_letter_tree(const std::string str, Leaf *ingang) {
-  ingang->left = new Leaf;
-  ingang->left->operand = LETTER;
+  db("*building letter tree\n")
+  ingang->operand = LETTER;
   ingang->letter = str[0];
 }
