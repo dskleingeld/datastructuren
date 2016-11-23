@@ -1,23 +1,18 @@
 CXX = g++
-CXXFLAGS= -Wall -pedantic -std=c++14
+CXXFLAGS= -Wall -pedantic -std=c++14 -g -DDEBUG
+#add the flag '-DDEBUG' to enable debug statements
 
-objects = main.o Cache.o MainData.o PirData.o Serial.o 
+objects = main.o Boom.o
 
-pi: $(objects)
-	$(CXX) $(CXXFLAGS) -o pi main.o Cache.o MainData.o PirData.o Serial.o \
-	-lboost_system -lboost_thread -lpthread
+regex: $(objects)
+	$(CXX) $(CXXFLAGS) -o regex main.o Boom.o
 
-main.o: main.cpp Serial.h dataStorage/MainData.h dataStorage/PirData.h
+main.o: main.cpp Boom.h 
 	$(CXX) $(CXXFLAGS) -c main.cpp
-Cache.o: dataStorage/Cache.cpp dataStorage/Cache.h
-	$(CXX) $(CXXFLAGS) -c dataStorage/Cache.cpp
-MainData.o: dataStorage/MainData.cpp dataStorage/MainData.h dataStorage/Cache.h
-	$(CXX) $(CXXFLAGS) -c dataStorage/MainData.cpp
-PirData.o: dataStorage/PirData.cpp dataStorage/PirData.h dataStorage/MainData.h
-	$(CXX) $(CXXFLAGS) -c dataStorage/PirData.cpp
-Serial.o: Serial.cpp
-	$(CXX) $(CXXFLAGS) -c Serial.cpp	
+Boom.o: Boom.cpp Boom.h
+	$(CXX) $(CXXFLAGS) -c Boom.cpp
+
 
 .PHONY : clean
 clean:
-	rm pi $(objects)
+	rm regex $(objects)

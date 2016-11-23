@@ -2,36 +2,39 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include "Boom.h"
 
 using namespace std;
 
 
 void mainloop(string input, bool& done) {
 	string expression;
-	string variable = "x";
 	string input_value;
 	string filename;
-	string substring;
-	double value;
-	int i = 0;
-	while ((input[i] != ' ') && (input[i] != 0)) {
-		// Empty space or end of string
-		substring += input[i];
-		i = i + 1;
+	string menuAction;
+
+	if( input == "end"){
+		done = true;
+		return;
 	}
-	if (substring == "exp") {
+
+	int sep = input.find(' ',0);//loc of space that seperates arguments
+	menuAction = input.substr(0, sep);
+
+	if (menuAction == "exp") {
+		expression = input.substr(sep+1);
+		Boom Boom(expression);
+	}
+	else if (menuAction == "dot") {
 		//TODO
 	}
-	else if (substring == "dot") {
+	else if (menuAction == "print") {
 		//TODO
 	}
-	else if (substring == "print") {
+	else if (menuAction == "eval") {
 		//TODO
 	}
-	else if (substring == "eval") {
-		//TODO
-	}
-	else if (substring == "end") {
+	else if (menuAction == "end") {
 		done = true;
 		return;
 	}

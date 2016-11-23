@@ -10,7 +10,7 @@ class Boom
     /*takes a string and creates a binairy tree from pointers storing the structure of the tree*/
     Boom(std::string expression);
     
-    /*tree element*/;
+    /*tree element*/
     enum Operand {
         LETTER, OR, REPETITION, CONCAT
     };
@@ -63,7 +63,7 @@ class Boom
     /*Adds a leaf of type OR, left and right again need to be passed along nicely*/
     void build_or_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight);
     /*Build the subtree for a single letter (just a leaf)*/
-    void build_letter_tree(const std::string str, Leaf* ingang)
+    void build_letter_tree(const std::string str, Leaf* ingang);
   };
 
 
