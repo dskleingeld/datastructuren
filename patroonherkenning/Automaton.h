@@ -19,16 +19,10 @@ class Boomaton : public Graph<Leaf*>{
         void addStar(int start, int end, Leaf* left);
         void addChoice(int start, int end, Leaf* left, Leaf* right);
 };
-
+/*
 class Automaton : public Graph<char>{
     public:
-        Automaton(int numNodes);
-        
-        void processOperation(Leaf* operationNode);
-        
-        void addConcat(int start, int end, Leaf* left, Leaf* right);
-        void addStar(int start, int end, Leaf* left);
-        void addChoice(int start, int end, Leaf* left, Leaf* right);
+        Automaton(int numNodes, Leaf* root);
 };
-
+*/
 #endif

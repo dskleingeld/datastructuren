@@ -4,35 +4,33 @@
 
 #include <string>
 
+/*tree element*/
+enum Operand {
+    LETTER, OR, REPETITION, CONCAT
+};
+//Struct for the leaves/nodes
+struct Leaf {
+  Leaf(){
+    left = nullptr;
+    right = nullptr;
+  }
+  Leaf* left;
+  Leaf* right;
+
+  Operand operand;
+  char letter;
+};
+
 class Boom
 {
   public:
     /*takes a string and creates a binairy tree from pointers storing the structure of the tree*/
     Boom(std::string expression);
     
-    /*tree element*/
-    enum Operand {
-        LETTER, OR, REPETITION, CONCAT
-    };
-    //Struct for the leaves/nodes
-    struct Leaf {
-      Leaf(){
-        left = NULL;
-        right = NULL;
-      }
-      Leaf* left;
-      Leaf* right;
-
-      Operand operand;
-      char letter;
-    };
-    
     //keeps track of starting point of the tree
     Leaf* root;
     
   private:
-
-
     /*recursively called function that takes a (sub) string and builds a pointer tree
      * with its (sub) root attached at the pointer ingang*/
     void Tree_building(std::string str, Leaf* ingang);

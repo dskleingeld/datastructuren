@@ -19,8 +19,8 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   //ingang is a new empty pointer with nothing attached
   std::string str_left;
   std::string str_right;
-  Leaf* goLeft = NULL;
-  Leaf* goRight = NULL;
+  Leaf* goLeft = nullptr;
+  Leaf* goRight = nullptr;
   std::cout << "str: " <<str<<std::endl;
 
   if (enclosed(str)) {
@@ -51,9 +51,9 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
     std::cerr << "Unrecognised structure" << str << std::endl;
   }
   //std::cout<<goLeft<<" "<<goRight<<"\n";
-  if (goLeft != NULL) {db("-> going left\n"); Tree_building(str_left, goLeft);}
+  if (goLeft != nullptr) {db("-> going left\n"); Tree_building(str_left, goLeft);}
   db("entering second part of recur.\n")
-  if (goRight != NULL) {db("-> going right\n"); Tree_building(str_right, goRight);}
+  if (goRight != nullptr) {db("-> going right\n"); Tree_building(str_right, goRight);}
   
   db("->going up one level\n")
 }

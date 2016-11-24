@@ -2,31 +2,55 @@
 #include "Automaton.h"
 #include "Boom.h"
 
-Automaton::Automaton(int numNodes) : Graph(numNodes){
-    this->numNodes = numNodes;
-    this->addEdge(0, 1, '$'); //add a lambda egde between i and f (always 0 and 1)
+Boomaton::Boomaton(int numNodes, Leaf* root) : Graph(numNodes){
+    numNodes = numNodes;
+    addEdge(0, 1, root); //add the tree to the initial edge
+    processOperation(0, 1);
 }
         
-void Automaton::addConcat(int start, int end, Leaf* left, Leaf* right){
+void Boomaton::addConcat(int start, int end, Leaf* concatNode){
+    removeEdge(start, end);
+    addEdge(start, lastGraphNode+1, concatNode->left);
+    addEdge(lastGraphNode+1, end, concatNode->right);
+}
+
+void Boomaton::addStar(int start, int end, Leaf* operationNode){
     
 }
 
-void Automaton::addStar(int start, int end, Leaf* left){
+void Boomaton::addChoice(int start, int end, Leaf* operationNode){
     
 }
 
-void Automaton::addChoice(int start, int end, Leaf* left, Leaf* right){
-    
+void Boomaton::nextLayer(int start, int end, Leaf* operationNode){
+    if(operationNode->left){
+        processOperation(start, end, operationNode->left);
+    }
+    if(operationNode->right){
+        processOperation(start, end, operationNode->right);
+    }
 }
 
-void Automaton::processOperation(Leaf* operationNode){
+void Boomaton::processOperation(int start, int end){
+    AdjListNode* prevNode;
+    operationNode = findEdge(start, end, prevNode)->edgeVal; //get the edgeVal of the edge between start and end (this is a Leaf*)
     switch(operationNode->operand){
         case CONCAT:
-            this.addConcat(
+            addConcat(start, end, operationNode);
+            break;
+        case REPETITION:
+            addStar(start, end, operationNode);
+            break;
+        case OR:
+            addStar(start, end, operationNode);
+            break;
+        case CHAR:
+            nextLayer(start, end, operationNode);
+    }
 }
 
 int main(){
-    Automaton floepie(10);
+    Boomaton floepie(10);
     floepie.printGraph();
     
     return 0;

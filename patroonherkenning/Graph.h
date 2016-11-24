@@ -24,6 +24,7 @@ class Graph{
     protected:
         GraphNode<T> list[maxNodes];
         int numNodes;
+        int lastGraphNode;
     public:
         Graph(int numNodes); //constructor
         
