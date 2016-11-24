@@ -105,9 +105,12 @@ bool Boom::split_concat(const std::string str, std::string &str_left, std::strin
   }
 }
 
-bool Boom::split_or(const std::string str, std::string &str_left, std::string &str_right) {
+bool Boom::split_or(const std::string str, std::string& str_left, std::string& str_right) {
   db("checking if choice/or \n")
   unsigned int strSize = (unsigned int) str.size();
+
+  std::string tempR;
+  std::string tempL;
 
   if (strSize < 2) return false;
   else {
@@ -115,11 +118,15 @@ bool Boom::split_or(const std::string str, std::string &str_left, std::string &s
 
     while (i < strSize) {
       if (str[i] == '|') {
-        //TODO really wierd stuff happening here NEED MIEL
+        tempL = str.substr(0, i);
+        tempR = str.substr(i+1);
+
+        std::cout<<tempL<<tempR<<std::endl;
+
         str_left = str.substr(0, i);
-        std::cout<<str.substr(0,i);
-        str_right = str.substr(i+1, strSize - i);
-        std::cout<<"i, l&r: "<<i<<", "<<str_left<<", "<<str_right<<std::endl;
+        str_right = str.substr(i+1);
+
+        std::cout<<str_left<<str_right<<std::endl;
         return true;
       } else i++;
     }

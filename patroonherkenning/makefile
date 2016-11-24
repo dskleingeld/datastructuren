@@ -7,7 +7,7 @@ all: regex
 debug: CXXFLAGS += -DDEBUG
 debug: regex
 
-objects = main.o Boom.o
+objects = main.o Boom.o Graph.o Automaton.o
 
 regex: $(objects)
 	$(CXX) $(CXXFLAGS) -o regex main.o Boom.o
@@ -16,7 +16,10 @@ main.o: main.cpp Boom.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
 Boom.o: Boom.cpp Boom.h
 	$(CXX) $(CXXFLAGS) -c Boom.cpp
-
+Automaton.o: Automaton.cpp Automaton.h Graph.h
+	$(CXX) $(CXXFLAGS) -c Automaton.cpp
+Graph.o: Graph.cpp Graph.h Boom.h
+	$(CXX) $(CXXFLAGS) -c Graph.cpp
 
 .PHONY : clean
 clean:
