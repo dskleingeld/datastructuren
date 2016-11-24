@@ -34,7 +34,7 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   else if (split_concat(str, str_left, str_right)) {
     build_concat_tree(ingang, goLeft, goRight);
   }
-  else if (split_or(str, str_left, str_left)) {
+  else if (split_or(str, str_left, str_right)) {
     build_or_tree(ingang, goLeft, goRight);
   }
   //both oneLetter functions handle all left string work.
@@ -168,18 +168,8 @@ bool Boom::split_or(const std::string str, std::string& str_left, std::string& s
       //if the current part does not belong to a bracket enclosed section
       if (bracketLevel == 0) {
         if (str[i] == '|') {
-          tempL = str.substr(0, i);
-          tempR = str.substr(i + 1);
-
-          std::cout << tempL << tempR << std::endl;
-
-          //str_left = str.substr(0, i);
-          //str_right = str.substr(i + 1);
-
-          str_left = tempL;
-          str_right = tempL;
-
-          std::cout << str_left << str_right << std::endl;
+          str_left = str.substr(0, i);
+          str_right = str.substr(i + 1);
           return true;
         }
       }
