@@ -1,12 +1,18 @@
+/**
+* Automaton: beschrijving van klasse/programma
+* @author Eva van Houten (s1478621)
+* @author David Kleingeld (s1432982)
+* @file Automaton.cpp
+* @date datum laatste wijziging
+**/
+
 #include "Graph.h"
 #include "Automaton.h"
 #include "Boom.h"
 
-
-Boomaton::Boomaton(int numNodes, Leaf* root) : Graph(numNodes){
-    numNodes = numNodes;
+Boomaton::Boomaton(Leaf* root) : Graph(){
     addEdge(0, 1, root); //add the tree to the initial edge
-    processOperation(0, 1, root);
+    processOperation(0, 1, root); //start processing the tree
 }
 
 void Boomaton::addConcat(int start, int end, Leaf* concatNode){
@@ -53,5 +59,18 @@ void Boomaton::processOperation(int start, int end, Leaf* branch){
         case LETTER:
             //done with this recursive step
             break;
+    }
+}
+
+Automaton::Automaton(Leaf* root) : Graph(){
+    Boomaton boomaton(root);
+    for(int i=0; i<=boomaton.lastGraphNode; i++){
+        AdjListNode<Leaf*>* follower = boomaton.list[i].firstAdjNode;
+        while(follower){
+            Leaf* edge = follower->edgeVal;
+            int dest = follower->destination;
+            addEdge(i, dest, edge->letter);
+            follower = follower->next;
+        }
     }
 }

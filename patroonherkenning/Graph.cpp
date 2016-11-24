@@ -1,13 +1,15 @@
+/**
+* Graph: beschrijving van klasse/programma
+* @author Eva van Houten (s1478621)
+* @author David Kleingeld (s1432982)
+* @file Graph.cpp
+* @date datum laatste wijziging
+**/
+
 #include "Graph.h"
-#include "Boom.h" //for making a Graph<Leaf*>
 
 template <typename T>
-Graph<T>::Graph(int numNodes){
-    this->numNodes = numNodes;
-}
-
-template <typename T>
-void Graph<T>::addEdge(int source, int destination, T edgeVal){
+void Graph<T>::addEdge(int source, int destination, const T & edgeVal){
     AdjListNode<T>* follower;
     if(list[source].firstAdjNode){ //there is already a dest node in the adj list
         follower = list[source].firstAdjNode;
@@ -36,7 +38,7 @@ void Graph<T>::addEdge(int source, int destination, T edgeVal){
 }
 
 template <typename T>
-AdjListNode<T>* Graph<T>::findEdge(int source, int destination, T edgeVal, AdjListNode<T>*& prevNode){
+AdjListNode<T>* Graph<T>::findEdge(int source, int destination, const T & edgeVal, AdjListNode<T>*& prevNode){
     if(list[source].firstAdjNode){
         AdjListNode<T>* toFind = list[source].firstAdjNode;
         prevNode = nullptr;
@@ -54,7 +56,7 @@ AdjListNode<T>* Graph<T>::findEdge(int source, int destination, T edgeVal, AdjLi
 }
 
 template <typename T>
-bool Graph<T>::removeEdge(int source, int destination, T edgeVal){
+bool Graph<T>::removeEdge(int source, int destination,const T & edgeVal){
     AdjListNode<T>* prevNode;
     AdjListNode<T>* toRemove = findEdge(source, destination, edgeVal, prevNode);
     if(toRemove){ //the edge exists
@@ -71,16 +73,16 @@ bool Graph<T>::removeEdge(int source, int destination, T edgeVal){
 }
 
 template <typename T>
-void Graph<T>::printGraph(){
-    for(int i=0; i<numNodes; i++){
-        std::cout<<i;
+void Graph<T>::print(std::ostream & out){
+    for(int i=0; i<=lastGraphNode; i++){
+        out<<i;
         AdjListNode<T>* follower = list[i].firstAdjNode;
         while(follower){
             T edg = follower->edgeVal;
             int dest = follower->destination;
-            std::cout << " -"<<edg<<"-> " << dest;
+            out << " -"<<edg<<"-> " << dest;
             follower = follower->next;
         }
-        std::cout << "\n";
+        out << "\n";
     }
 }
