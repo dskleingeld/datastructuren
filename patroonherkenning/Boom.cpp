@@ -1,3 +1,11 @@
+/**
+* Boom: the binary parse tree of a regular expression
+* @author Eva van Houten (s1478621)
+* @author David Kleingeld (s1432982)
+* @file Boom.cpp
+* @date datum laatste wijziging
+**/
+
 #include <iostream>
 #include "Boom.h"
 

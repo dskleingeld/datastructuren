@@ -1,6 +1,13 @@
+/**
+* Boom: the binary parse tree of a regular expression
+* @author Eva van Houten (s1478621)
+* @author David Kleingeld (s1432982)
+* @file Boom.h
+* @date datum laatste wijziging
+**/
+
 #ifndef BOOM_H
 #define BOOM_H
-/*This class contains a tree that is made from raw text input.*/
 
 #include <string>
 

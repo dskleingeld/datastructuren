@@ -1,27 +1,30 @@
 /**
-* Automaton: beschrijving van klasse/programma
+* Automaton: a directed, weighted graph describing a regular expression
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Automaton.cpp
 * @date datum laatste wijziging
 **/
 
+#include <string>
+#include <fstream>
 #include "Graph.h"
 #include "Automaton.h"
 #include "Boom.h"
 
-Boomaton::Boomaton(Leaf* root) : Graph(){
+Boomaton::Boomaton(Leaf* root){
     addEdge(0, 1, root); //add the tree to the initial edge
     processOperation(0, 1, root); //start processing the tree
 }
 
 void Boomaton::addConcat(int start, int end, Leaf* concatNode){
+    int newNode = lastGraphNode+1;
     removeEdge(start, end, concatNode);
-    addEdge(start, lastGraphNode+1, concatNode->left);
-    addEdge(lastGraphNode+1, end, concatNode->right);
+    addEdge(start, newNode, concatNode->left);
+    addEdge(newNode, end, concatNode->right);
     
-    processOperation(start, lastGraphNode+1, concatNode->left);
-    processOperation(lastGraphNode+1, end, concatNode->right);
+    processOperation(start, newNode, concatNode->left);
+    processOperation(newNode, end, concatNode->right);
 }
 
 void Boomaton::addStar(int start, int end, Leaf* starNode){
@@ -54,7 +57,7 @@ void Boomaton::processOperation(int start, int end, Leaf* branch){
             addStar(start, end, branch);
             break;
         case OR:
-            addStar(start, end, branch);
+            addChoice(start, end, branch);
             break;
         case LETTER:
             //done with this recursive step
@@ -62,7 +65,7 @@ void Boomaton::processOperation(int start, int end, Leaf* branch){
     }
 }
 
-Automaton::Automaton(Leaf* root) : Graph(){
+Automaton::Automaton(Leaf* root){
     Boomaton boomaton(root);
     for(int i=0; i<=boomaton.lastGraphNode; i++){
         AdjListNode<Leaf*>* follower = boomaton.list[i].firstAdjNode;
@@ -73,4 +76,28 @@ Automaton::Automaton(Leaf* root) : Graph(){
             follower = follower->next;
         }
     }
+}
+
+bool Automaton::toDot(std::string filename) {
+	std::ofstream myfile;
+	myfile.open(filename.c_str());
+	if (myfile.is_open()) {
+		myfile << "digraph G {\nrankdir=\"LR\"" << std::endl;
+        myfile << "0 [label=\"i\"]" <<std::endl;
+        myfile << "1 [label=\"f\"]" <<std::endl;
+		for(int i=0; i<=lastGraphNode; i++){
+            AdjListNode<char>* follower = list[i].firstAdjNode;
+            while(follower){
+                char edge = follower->edgeVal;
+                int dest = follower->destination;
+                myfile << i << " -> "<< dest << " [label=\"" << edge << "\"]\n";
+                follower = follower->next;
+            }
+        }
+        
+		myfile << "}";
+		myfile.close();
+        return true;
+	}
+    return false;
 }

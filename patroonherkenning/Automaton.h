@@ -38,6 +38,7 @@ class Automaton : public Graph<char>{
     * @return an Automaton object that implements the regex
     **/
     Automaton(Leaf* root);
+    bool toDot(std::string filename);
 };
 
 #endif //AUTOMATON_H

@@ -1,5 +1,5 @@
 /**
-* Graph<T>: beschrijving van klasse/programma
+* Graph<T>: a directed, weighted graph, with weigths of type T
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Graph.cpp
@@ -46,7 +46,7 @@ AdjListNode<T>* Graph<T>::findEdge(int source, int destination, const T & edgeVa
             prevNode = toFind; //points at the previously seen adjnode
             toFind = toFind->next;
         }
-        if(toFind->destination == destination && toFind->edgeVal = edgeVal){ //we have found our edge
+        if(toFind->destination == destination && toFind->edgeVal == edgeVal){ //we have found our edge
             return toFind;
         }
     }
