@@ -21,7 +21,6 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   std::string str_right;
   Leaf* goLeft = nullptr;
   Leaf* goRight = nullptr;
-  std::cout << "str: " <<str<<std::endl;
 
   if (enclosed(str)) {
     str_left = str.substr(1, str.size() - 2);
@@ -48,9 +47,9 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
     build_letter_tree(str, ingang);
   }
   else {
-    std::cerr << "Unrecognised structure" << str << std::endl;
+    std::cerr << "Unrecognised structure: " << str << std::endl;
   }
-  //std::cout<<goLeft<<" "<<goRight<<"\n";
+  std::cout << "lstr: " <<str_left<<"\t\t\trstr: "<<str_right<<std::endl;
   if (goLeft != nullptr) {db("-> going left\n"); Tree_building(str_left, goLeft);}
   db("entering second part of recur.\n")
   if (goRight != nullptr) {db("-> going right\n"); Tree_building(str_right, goRight);}
@@ -59,19 +58,43 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
 }
 
 bool Boom::enclosed(std::string str) {
+  unsigned int bracketLevel = 0;
+  unsigned int strSize = (unsigned int)str.size();
+
   db("checking if enclosed\n")
-  if((str[0]=='(') && (str.back()==')')) return true;
-  else return false;
+  if((str[0]=='(') && (str.back()==')')) {
+    //trace the bracket level from the begin to almost the end of the string.
+    //if it drops to zero anywhere the outermost brackets are not matching
+    for(unsigned int i=1; i<strSize; i++){
+      if(str[i-1]=='(') bracketLevel++;
+      else if(str[i-1]==')') bracketLevel--;
+      if(bracketLevel == 0) return false;
+    }
+    return true;
+  }
+  return false;
 }
 
 bool Boom::repEnclosed(std::string str) {
+  unsigned int bracketLevel = 0;
+  unsigned int strSize = (unsigned int)str.size();
+
   db("checking if repeated enclosed\n")
-  if(str.size()>2) {
+  if(strSize>2) {
     std::string str_ending = str.substr(str.size() - 2); //get last 2 chars of string
-    if ((str[0] == '(') && (str_ending == ")*")) return true;
+    if ((str[0] == '(') && (str_ending == ")*")) {
+      //trace the bracket level from the begin to almost the end of the string.
+      //if it drops to zero anywhere the outermost brackets are not matching
+      for(unsigned int i=1; i<strSize-1; i++){
+        if(str[i-1]=='(') bracketLevel++;
+        else if(str[i-1]==')') bracketLevel--;
+        if(bracketLevel == 0) return false;
+      }
+      return true;
+    }
+    else return false;
   }
   else return false;
-  return false;
 }
 
 bool Boom::oneLetter(std::string str) {
@@ -89,25 +112,46 @@ bool Boom::repOneLetter(std::string str) {
 bool Boom::split_concat(const std::string str, std::string &str_left, std::string &str_right) {
   db("checking if concatenation\n")
   unsigned int strSize = (unsigned int) str.size();
+  unsigned int bracketLevel = 0;
 
   if (strSize < 2) return false;
   else {
     unsigned int i = 1;
 
+    if(str[0]=='(') bracketLevel = 1;
     while (i < strSize) {
-      if (((isalpha(str[i - 1])) | (str[i - 1] == ')')) & (isalpha(str[i]) | str[i])) {
-        str_left = str.substr(0, i);
-        str_right = str.substr(i, strSize - i);
-        return true;
-      } else i++;
-    }
+      char cur = str[i];
+      char prev = str[i-1];
+
+      //check if we are leaving a bracket enclosed part of the string
+      if (str[i] == ')') bracketLevel--;
+
+      //if the current part does not belong to a bracket enclosed section
+      if (bracketLevel == 0) {
+        //check if there is a concatenation
+        if ( (isalpha(prev) && isalpha(cur)) |
+             (isalpha(prev) && cur=='(')     |
+             (prev==')'     && cur=='(')     |
+             (prev==')'     && isalpha(cur)) ) {
+          //cut the concatenation into two separate parts
+          str_left = str.substr(0, i);
+          str_right = str.substr(i, strSize - i);
+          return true;
+        }
+      }
+      //check if we are entering a bracketed part of the string
+      if (str[i] == '(') bracketLevel++;
+      i++;
+    }//end while
     return false;
   }
 }
 
+
 bool Boom::split_or(const std::string str, std::string& str_left, std::string& str_right) {
   db("checking if choice/or \n")
   unsigned int strSize = (unsigned int) str.size();
+  unsigned int bracketLevel = 0;
 
   std::string tempR;
   std::string tempL;
@@ -117,20 +161,33 @@ bool Boom::split_or(const std::string str, std::string& str_left, std::string& s
     unsigned int i = 0;
 
     while (i < strSize) {
-      if (str[i] == '|') {
-        tempL = str.substr(0, i);
-        tempR = str.substr(i+1);
 
-        std::cout<<tempL<<tempR<<std::endl;
+      //check if we are leaving a bracket enclosed part of the string
+      if (str[i] == ')') bracketLevel--;
 
-        str_left = str.substr(0, i);
-        str_right = str.substr(i+1);
+      //if the current part does not belong to a bracket enclosed section
+      if (bracketLevel == 0) {
+        if (str[i] == '|') {
+          tempL = str.substr(0, i);
+          tempR = str.substr(i + 1);
 
-        std::cout<<str_left<<str_right<<std::endl;
-        return true;
-      } else i++;
+          std::cout << tempL << tempR << std::endl;
+
+          //str_left = str.substr(0, i);
+          //str_right = str.substr(i + 1);
+
+          str_left = tempL;
+          str_right = tempL;
+
+          std::cout << str_left << str_right << std::endl;
+          return true;
+        }
+      }
+      //check if we are entering a bracket enclosed part of the string
+      if (str[i] == '(') bracketLevel++;
+      i++;
     }
-    return false;
+  return false;
   }
 }
 
