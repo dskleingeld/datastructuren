@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "Boom.h"
+#include "Automaton.h"
 
 using namespace std;
 
@@ -23,7 +24,9 @@ void mainloop(string input, bool& done) {
 
 	if (menuAction == "exp") {
 		expression = input.substr(sep+1);
-		Boom Boom(expression);
+		Boom boom(expression);
+        Automaton automaton(boom.getRoot());
+        automaton.print(std::cout);
 	}
 	else if (menuAction == "dot") {
 		//TODO

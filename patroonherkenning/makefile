@@ -12,7 +12,7 @@ objects = main.o Boom.o Graph.o Automaton.o
 regex: $(objects)
 	$(CXX) $(CXXFLAGS) -o regex main.o Boom.o
 
-main.o: main.cpp Boom.h 
+main.o: main.cpp Boom.h Automaton.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
 Boom.o: Boom.cpp Boom.h
 	$(CXX) $(CXXFLAGS) -c Boom.cpp
