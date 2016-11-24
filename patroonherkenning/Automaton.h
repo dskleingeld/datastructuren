@@ -13,11 +13,14 @@ class Boomaton : public Graph<Leaf*>{
     public:
         Boomaton(int numNodes, Leaf* root);
         
-        void processOperation(Leaf* operationNode);
+        void nextLayer(int start, int end);
+        void addConcat(int start, int end, Leaf* concatNode);
+        void addStar(int start, int end, Leaf* starNode);
+        void addChoice(int start, int end, Leaf* choiceNode);
         
-        void addConcat(int start, int end, Leaf* left, Leaf* right);
-        void addStar(int start, int end, Leaf* left);
-        void addChoice(int start, int end, Leaf* left, Leaf* right);
+        void processOperation(int start, int end);
+        
+        
 };
 /*
 class Automaton : public Graph<char>{
