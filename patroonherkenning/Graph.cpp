@@ -26,18 +26,25 @@ void Graph<T>::addEdge(int source, int destination, T edgeVal){
         newNode->next = nullptr;
         list[source].firstAdjNode = newNode;
     }
+    if(source > destination){
+        if(source > lastGraphNode){
+            lastGraphNode = source;
+        }
+    } else if(destination > lastGraphNode){
+        lastGraphNode = destination;
+    }
 }
 
 template <typename T>
-AdjListNode<T>* Graph<T>::findEdge(int source, int destination, AdjListNode<T>*& prevNode){
+AdjListNode<T>* Graph<T>::findEdge(int source, int destination, T edgeVal, AdjListNode<T>*& prevNode){
     if(list[source].firstAdjNode){
         AdjListNode<T>* toFind = list[source].firstAdjNode;
         prevNode = nullptr;
-        while(toFind->next && toFind->destination != destination){ //there is a next adjnode and we are not there yet
+        while(toFind->next && (toFind->destination != destination || toFind->edgeVal != edgeVal)){ //there is a next adjnode and we are not there yet
             prevNode = toFind; //points at the previously seen adjnode
             toFind = toFind->next;
         }
-        if(toFind->destination == destination){ //we have found our edge
+        if(toFind->destination == destination && toFind->edgeVal = edgeVal){ //we have found our edge
             return toFind;
         }
     }
@@ -47,9 +54,9 @@ AdjListNode<T>* Graph<T>::findEdge(int source, int destination, AdjListNode<T>*&
 }
 
 template <typename T>
-bool Graph<T>::removeEdge(int source, int destination){
+bool Graph<T>::removeEdge(int source, int destination, T edgeVal){
     AdjListNode<T>* prevNode;
-    AdjListNode<T>* toRemove = findEdge(source, destination, prevNode);
+    AdjListNode<T>* toRemove = findEdge(source, destination, edgeVal, prevNode);
     if(toRemove){ //the edge exists
         if(prevNode){ //it is not the first adjnode
             prevNode->next = toRemove->next;
