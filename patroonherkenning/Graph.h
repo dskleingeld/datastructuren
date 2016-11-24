@@ -1,5 +1,5 @@
 /**
-* Graph: beschrijving van klasse/programma
+* Graph<T>: a directed, weighted graph, with weigths of type T
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Graph.h
@@ -34,9 +34,7 @@ class Graph{
     * @param source the beginning of the edge
     * @param destination the end of the edge
     * @param edgeVal the value along the edge
-    * @pre exacte beschrijving preconditie
-    * @post exacte beschrijving postconditie
-    wat is er veranderd na het uitvoeren van de functie?
+    * @post the edge (source, destination, edgeVal) has been added
     **/
     void addEdge(int source, int destination, const T & edgeVal);
     /**
@@ -47,24 +45,19 @@ class Graph{
     * @param edgeVal the value along the edge (two edges between the
     * same nodes are allowed)
     * @return a boolean signalling success
-    * @pre exacte beschrijving preconditie
-    * @post exacte beschrijving postconditie
-    wat is er veranderd na het uitvoeren van de functie?
+    * @post the edge (source, destination, edgeVal) has been removed
     **/
     bool removeEdge(int source, int destination, const T & edgeVal);
     /**
     * @function print
     * @abstract print the Graph as an adjacency list
     * @param out the ostream to send the printing output to
-    * @pre exacte beschrijving preconditie
-    * @post exacte beschrijving postconditie
-    wat is er veranderd na het uitvoeren van de functie?
     **/
     void print(std::ostream & out);
     
     protected:
     GraphNode<T> list[maxNodes];
-    int lastGraphNode;
+    int lastGraphNode = 0;
     
     AdjListNode<T>* findEdge(int source, int destination, const T & edgeVal, AdjListNode<T>*& prevNode);
     

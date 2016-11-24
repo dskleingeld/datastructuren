@@ -1,5 +1,5 @@
 /**
-* Graph: beschrijving van klasse/programma
+* Graph<T>: beschrijving van klasse/programma
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Graph.cpp
