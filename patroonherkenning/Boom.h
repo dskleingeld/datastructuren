@@ -26,11 +26,14 @@ class Boom
   public:
     /*takes a string and creates a binairy tree from pointers storing the structure of the tree*/
     Boom(std::string expression);
-    
-    //keeps track of starting point of the tree
-    Leaf* root;
+
+    /*returns the root of the made tree to the user*/
+    Leaf* getRoot();
     
   private:
+    //keeps track of starting point of the tree
+    Leaf* root;
+
     /*recursively called function that takes a (sub) string and builds a pointer tree
      * with its (sub) root attached at the pointer ingang*/
     void Tree_building(std::string str, Leaf* ingang);

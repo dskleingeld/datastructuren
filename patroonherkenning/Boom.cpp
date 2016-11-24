@@ -15,6 +15,10 @@ Boom::Boom(std::string expression) {
   db("done with building initial tree")
 }
 
+Leaf* Boom::getRoot(){
+  return root;
+}
+
 void Boom::Tree_building(std::string str, Leaf* ingang) {
   //ingang is a new empty pointer with nothing attached
   std::string str_left;
