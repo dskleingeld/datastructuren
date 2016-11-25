@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage[bottom=2cm, top=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{graphviz}
+
+\title{\textbf{Patroonherkenning}\\ Datastructuren}
+\author{Eva van Houten, \texttt{s1478621}\\
+        David Kleingeld, \texttt{s1432982}}
+
+\begin{document}
+\maketitle
+
+\section*{Voorbeeld}
+Bij de expressie \verb;a(b|cd)*ef; vinden we de volgende automaat, gerepresenteerd door een adjacency list:
+\begin{verbatim}
+0 -a-> 2
+1
+2 -$-> 3 -b-> 3 -c-> 4
+3 -$-> 2 -e-> 5
+4 -d-> 3
+5 -f-> 1
+\end{verbatim}
+In dot-vorm is dit:\\
+\includedot[scale=0.7]{voorbeeld}\\
+De lege string wordt hierbij weergegeven als \verb;$;. Node 0 is de initial state en node 1 is de final state.
+
+\end{document}
