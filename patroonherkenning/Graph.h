@@ -3,7 +3,7 @@
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Graph.h
-* @date datum laatste wijziging
+* @date 25-11-2016
 **/
 
 #ifndef GRAPH_H
@@ -13,6 +13,7 @@
 
 const int maxNodes = 100;
 
+//A helper struct that forms the nodes in the adjacency lists
 template <typename T>
 struct AdjListNode{
     T edgeVal;
@@ -20,11 +21,13 @@ struct AdjListNode{
     AdjListNode<T>* next = nullptr;
 };
 
+//A helper struct that forms the graph nodes in the list
 template <typename T>
 struct GraphNode{
     AdjListNode<T>* firstAdjNode = nullptr;
 };
 
+//A templated weighted, directed graph
 template <typename T>
 class Graph{
     public:
@@ -60,8 +63,6 @@ class Graph{
     int lastGraphNode = 0;
     
     AdjListNode<T>* findEdge(int source, int destination, const T & edgeVal, AdjListNode<T>*& prevNode);
-    
-    
 };
 
 template <typename T>

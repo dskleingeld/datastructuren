@@ -3,7 +3,7 @@
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Automaton.h
-* @date datum laatste wijziging
+* @date 25-11-2016
 **/
 
 #ifndef AUTOMATON_H
@@ -38,6 +38,12 @@ class Automaton : public Graph<char>{
     * @return an Automaton object that implements the regex
     **/
     Automaton(Leaf* root);
+    /**
+    * @function Automaton
+    * @abstract (constructor) turn the supplied regex tree into an automaton
+    * @param root a pointer to the root of the regex tree
+    * @return an Automaton object that implements the regex
+    **/
     bool toDot(std::string filename);
 };
 
