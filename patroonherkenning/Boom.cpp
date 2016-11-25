@@ -3,7 +3,7 @@
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Boom.cpp
-* @date datum laatste wijziging
+* @date fri 25/11/2016
 **/
 
 #include <iostream>
@@ -27,7 +27,7 @@ Leaf* Boom::getRoot(){
   return root;
 }
 
-void Boom::Tree_building(std::string str, Leaf* ingang) {
+const void Boom::Tree_building(const std::string str, Leaf* ingang) {
   //ingang is a new empty pointer with nothing attached
   std::string str_left;
   std::string str_right;
@@ -60,7 +60,6 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   else {
     std::cerr << "Unrecognised structure: " << str << std::endl;
   }
-  std::cout << "lstr: " <<str_left<<"\t\t\trstr: "<<str_right<<std::endl;
   if (goLeft != nullptr) {db("-> going left\n"); Tree_building(str_left, goLeft);}
   db("entering second part of recur.\n")
   if (goRight != nullptr) {db("-> going right\n"); Tree_building(str_right, goRight);}
@@ -68,7 +67,7 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
   db("->going up one level\n")
 }
 
-bool Boom::enclosed(std::string str) {
+const bool Boom::enclosed(std::string str) {
   unsigned int bracketLevel = 0;
   unsigned int strSize = (unsigned int)str.size();
 
@@ -86,7 +85,7 @@ bool Boom::enclosed(std::string str) {
   return false;
 }
 
-bool Boom::repEnclosed(std::string str) {
+const bool Boom::repEnclosed(std::string str) {
   unsigned int bracketLevel = 0;
   unsigned int strSize = (unsigned int)str.size();
 
@@ -108,19 +107,19 @@ bool Boom::repEnclosed(std::string str) {
   else return false;
 }
 
-bool Boom::oneLetter(std::string str) {
+const bool Boom::oneLetter(std::string str) {
   db("checking if only one letter\n")
   if(str.size()==1) return true;
   else return false;
 }
 
-bool Boom::repOneLetter(std::string str) {
+const bool Boom::repOneLetter(std::string str) {
   db("checking if repeated one letter\n")
   if((str.size()==2) & (str[1]=='*')) return true;
   else return false;
 }
 
-bool Boom::split_concat(const std::string str, std::string &str_left, std::string &str_right) {
+const bool Boom::split_concat(const std::string str, std::string &str_left, std::string &str_right) {
   db("checking if concatenation\n")
   unsigned int strSize = (unsigned int) str.size();
   unsigned int bracketLevel = 0;
@@ -160,7 +159,7 @@ bool Boom::split_concat(const std::string str, std::string &str_left, std::strin
 }
 
 
-bool Boom::split_or(const std::string str, std::string& str_left, std::string& str_right) {
+const bool Boom::split_or(const std::string str, std::string& str_left, std::string& str_right) {
   db("checking if choice/or \n")
   unsigned int strSize = (unsigned int) str.size();
   unsigned int bracketLevel = 0;
@@ -193,7 +192,7 @@ bool Boom::split_or(const std::string str, std::string& str_left, std::string& s
   }
 }
 
-void Boom::build_rep_tree(Leaf* ingang, Leaf*& goLeft) {
+const void Boom::build_rep_tree(Leaf* ingang, Leaf*& goLeft) {
   db("*building repeating tree\n")
   ingang->operand = REPETITION;
   ingang->left = new Leaf;
@@ -201,7 +200,7 @@ void Boom::build_rep_tree(Leaf* ingang, Leaf*& goLeft) {
   goLeft = ingang->left;
 }
 
-void Boom::build_concat_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
+const void Boom::build_concat_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
   db("*building concat tree\n")
   ingang->operand = CONCAT;
   ingang->left = new Leaf;
@@ -211,7 +210,7 @@ void Boom::build_concat_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
   goRight = ingang->right;
 }
 
-void Boom::build_or_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
+const void Boom::build_or_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
   db("*building or tree\n")
   ingang->operand = OR;
   ingang->left = new Leaf;
@@ -221,7 +220,7 @@ void Boom::build_or_tree(Leaf* ingang, Leaf*& goLeft, Leaf*& goRight) {
   goRight = ingang->right;
 }
 
-void Boom::build_letter_tree(const std::string str, Leaf *ingang) {
+const void Boom::build_letter_tree(const std::string str, Leaf *ingang) {
   db("*building letter tree\n")
   ingang->operand = LETTER;
   ingang->letter = str[0];
