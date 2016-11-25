@@ -38,16 +38,15 @@ void Boom::Tree_building(std::string str, Leaf* ingang) {
     str_left = str.substr(1, str.size() - 2);
     goLeft = ingang;
   }
-
   else if (repEnclosed(str)) {
     str_left = str.substr(1, str.size() - 3);
     build_rep_tree(ingang, goLeft);
   }
-  else if (split_concat(str, str_left, str_right)) {
-    build_concat_tree(ingang, goLeft, goRight);
-  }
   else if (split_or(str, str_left, str_right)) {
     build_or_tree(ingang, goLeft, goRight);
+  }
+  else if (split_concat(str, str_left, str_right)) {
+    build_concat_tree(ingang, goLeft, goRight);
   }
   //both oneLetter functions handle all left string work.
   //further recursion stops here
@@ -144,6 +143,7 @@ bool Boom::split_concat(const std::string str, std::string &str_left, std::strin
         if ( (isalpha(prev) && isalpha(cur)) |
              (isalpha(prev) && cur=='(')     |
              (prev==')'     && cur=='(')     |
+             (prev=='*'     && isalpha(cur)) |
              (prev==')'     && isalpha(cur)) ) {
           //cut the concatenation into two separate parts
           str_left = str.substr(0, i);
