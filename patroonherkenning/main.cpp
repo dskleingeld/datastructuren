@@ -31,7 +31,9 @@ void mainloop(std::string input, bool& done, Automaton*& automaton) {
 		expression = input.substr(sep+1);
 		Boom boom(expression);
         automaton = new Automaton(boom.getRoot());
+        #ifdef DEBUG
         automaton->print(std::cout);
+        #endif
 	}
 	else if (menuAction == "dot") {
 		filename = input.substr(sep+1);
@@ -41,8 +43,16 @@ void mainloop(std::string input, bool& done, Automaton*& automaton) {
             std::cout << "Enter an expression first" << std::endl;
         }
 	}
-	else if (menuAction == "eval") {
-		//TODO
+	else if (menuAction == "mat") {
+		std::string toCheck = input.substr(sep+1);
+		if(toCheck == "$"){ //the empty string
+			toCheck = "";
+		}
+		if(automaton->checkString(toCheck, 0)){
+			std::cout << "The string matches!" << std::endl;
+		}else{
+			std::cout << "The string doesn't match." << std::endl;
+		}
 	}
 	else if (menuAction == "end") {
 		done = true;

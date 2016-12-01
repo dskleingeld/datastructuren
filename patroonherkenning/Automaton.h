@@ -45,6 +45,9 @@ class Automaton : public Graph<char>{
     * @return an Automaton object that implements the regex
     **/
     bool toDot(std::string filename);
+    bool checkString(std::string toCheck, int curNode);
+    private:
+    bool isChecked[numNodes]; //TODO: maak vectoren van
 };
 
 #endif //AUTOMATON_H

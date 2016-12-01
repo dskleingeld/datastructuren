@@ -101,3 +101,59 @@ bool Automaton::toDot(std::string filename) {
 	}
     return false;
 }
+
+bool Automaton::checkString(std::string toCheck, int curNode){
+    if(curNode == 1){
+        return true;
+    }
+    
+    int lambdaClosure[numNodes]; //keeps track of nodes reachable by 'empty' edges
+    int numLambdas = 0;
+    int charClosure[numNodes];
+    int numChars = 0;
+    
+    AdjListNode<char>* follower = list[curNode].firstAdjNode;
+    while(follower){
+        if(follower->edgeVal == '$'){
+            lambdaClosure[numLambdas] = follower->destination;
+            numLambdas++;
+        } else if(follower->edgeVal == toCheck[0]){
+            charClosure[numChars] = follower->destination;
+            numChars++;
+        }
+        follower = follower->next;
+    }
+    for(int i=0; i<numLambdas; i++){
+        int node = lambdaClosure[i];
+        #ifdef DEBUG
+        std::cout << toCheck << " lambda from " << curNode << " to " << node << std::endl;
+        #endif
+        if(!isChecked[node]){
+            isChecked[curNode] = true; //we are leaving by a lambda edge, so if we return here without chars there is no path
+            if(checkString(toCheck, node)){
+                #ifdef DEBUG
+                std::cout << toCheck << " LAMBDA " << node << std::endl;
+                #endif
+                return true;
+            }
+        }
+    }
+    for(int i=0; i<numChars; i++){
+        int node = charClosure[i];
+        #ifdef DEBUG
+        std::cout << toCheck << " from " << curNode << " to " << node << std::endl;
+        #endif
+        for(int i=0; i<numNodes; i++){
+            isChecked[i] = false; //as soon as we travel by char, all checked nodes are free again
+        }
+        if(checkString(toCheck.erase(0, 1), node)){
+            #ifdef DEBUG
+            std::cout << toCheck << " CHAR " << node << std::endl;
+            #endif
+            return true;
+        }
+    }
+    
+    return false;
+}
+                
