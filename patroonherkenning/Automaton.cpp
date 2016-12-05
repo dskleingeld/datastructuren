@@ -103,7 +103,7 @@ bool Automaton::toDot(std::string filename) {
 }
 
 bool Automaton::checkString(std::string toCheck, int curNode){
-    if(curNode == 1){
+    if(curNode == 1 && toCheck == ""){
         return true;
     }
     
