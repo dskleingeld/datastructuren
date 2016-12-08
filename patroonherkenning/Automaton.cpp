@@ -3,7 +3,7 @@
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Automaton.cpp
-* @date 25-11-2016
+* @date 08-12-2016
 **/
 
 #include <string>

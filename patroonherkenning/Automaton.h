@@ -3,7 +3,7 @@
 * @author Eva van Houten (s1478621)
 * @author David Kleingeld (s1432982)
 * @file Automaton.h
-* @date 25-11-2016
+* @date 08-12-2016
 **/
 
 #ifndef AUTOMATON_H
@@ -39,12 +39,18 @@ class Automaton : public Graph<char>{
     **/
     Automaton(Leaf* root);
     /**
-    * @function Automaton
-    * @abstract (constructor) turn the supplied regex tree into an automaton
-    * @param root a pointer to the root of the regex tree
-    * @return an Automaton object that implements the regex
+    * @function toDot
+    * @abstract output the automaton to a dot file
+    * @param filename the file to output to
+    * @return a boolean to signal success
     **/
     bool toDot(std::string filename);
+    /**
+    * @function checkString
+    * @abstract checks if a string fulfills the automaton's regex
+    * @param toCheck the string to check
+    * @param curNode the node to start checking from (call with 0)
+    * @return a boolean that is true if the string matches the expression
     bool checkString(std::string toCheck, int curNode);
     private:
     bool isChecked[numNodes]; //TODO: maak vectoren van
