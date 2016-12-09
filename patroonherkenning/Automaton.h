@@ -51,9 +51,10 @@ class Automaton : public Graph<char>{
     * @param toCheck the string to check
     * @param curNode the node to start checking from (call with 0)
     * @return a boolean that is true if the string matches the expression
+    **/
     bool checkString(std::string toCheck, int curNode);
     private:
-    bool isChecked[numNodes]; //TODO: maak vectoren van
+    bool isChecked[numNodes];
 };
 
 #endif //AUTOMATON_H
